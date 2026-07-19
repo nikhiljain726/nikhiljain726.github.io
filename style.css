@@ -1,0 +1,227 @@
+/* =========================================================================
+   House Style - personal site for Nikhil Jain
+   Ink on warm paper, one vermilion accent, three typefaces.
+   ========================================================================= */
+
+:root{
+  --ink:#17171A;
+  --ink-soft:#55555A;
+  --paper:#FBFAF6;
+  --tint:#F1EEE6;
+  --line:#E4DFD3;
+  --signal:#E1432A;            /* vermilion: orange pulled toward red, not YC orange */
+  --signal-rgb:225,67,42;
+  --measure:68ch;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:18px;
+  line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---- layout ------------------------------------------------------------- */
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+.rule{border:0;border-top:1px solid var(--line);margin:0}
+
+a{color:var(--signal);text-decoration:none;border-bottom:1px solid rgba(var(--signal-rgb),.4)}
+a:hover{border-bottom-color:var(--signal)}
+
+h1,h2,h3,h4{font-family:var(--serif);font-weight:500;letter-spacing:-.012em;line-height:1.12;color:var(--ink)}
+h2{font-size:1.7rem;margin:0 0 .4em}
+h3{font-size:1.22rem;font-weight:600;margin:0 0 .3em;letter-spacing:-.005em}
+
+.eyebrow{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.eyebrow .dot{color:var(--signal)}
+.muted{color:var(--ink-soft)}
+.measure{max-width:var(--measure)}
+
+/* ---- header ------------------------------------------------------------- */
+.site-header{position:sticky;top:0;z-index:40;
+  background:rgba(251,250,246,.9);backdrop-filter:saturate(1.2) blur(8px);
+  border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-family:var(--serif);font-weight:600;font-size:1.15rem;letter-spacing:-.015em;
+  color:var(--ink);border:0}
+.brand .s{color:var(--signal)}
+.nav{display:flex;gap:22px}
+.nav a{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);border:0}
+.nav a:hover,.nav a.active{color:var(--ink)}
+@media(max-width:620px){
+  .site-header .wrap{height:auto;flex-direction:column;gap:8px;padding-top:12px;padding-bottom:12px}
+  .nav{gap:16px;flex-wrap:wrap;justify-content:center}
+}
+
+/* ---- hero (home) -------------------------------------------------------- */
+.hero{padding:76px 0 44px}
+.hero h1{font-size:clamp(2.4rem,6vw,3.6rem);font-weight:500;letter-spacing:-.03em;margin:0 0 .35em;line-height:1.06}
+.hero .sub{font-size:1.22rem;line-height:1.5;max-width:40ch;margin:0;color:var(--ink)}
+.hero .purpose{margin:26px 0 0;max-width:52ch;color:var(--ink-soft);font-size:1.02rem}
+.hero .purpose strong{color:var(--ink);font-weight:600}
+
+/* ---- generic section ---------------------------------------------------- */
+.section{padding:40px 0}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:8px}
+.section-head a{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+.lead{font-size:1.12rem;line-height:1.6}
+
+/* ---- writing / post list ------------------------------------------------ */
+.postlist{list-style:none;margin:14px 0 0;padding:0}
+.postlist li{border-bottom:1px solid var(--line)}
+.postlist li:first-child{border-top:1px solid var(--line)}
+.postlist a{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+  padding:16px 0;border:0;color:var(--ink)}
+.postlist a:hover .t{color:var(--signal)}
+.postlist .t{font-family:var(--serif);font-size:1.16rem;font-weight:500;line-height:1.3;letter-spacing:-.01em}
+.postlist .t .tp{display:block;font-family:var(--sans);font-size:.92rem;font-weight:400;
+  color:var(--ink-soft);margin-top:3px;letter-spacing:0}
+.postlist .d{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);white-space:nowrap;flex:0 0 auto}
+.postlist li.draft a{cursor:default}
+.postlist li.draft a:hover .t{color:var(--ink)}
+.postlist .flag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--signal);border:1px solid rgba(var(--signal-rgb),.4);border-radius:5px;padding:2px 6px;margin-left:8px;vertical-align:middle}
+
+/* topic filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
+.filter{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--ink-soft);cursor:pointer}
+.filter:hover{border-color:var(--ink-soft)}
+.filter.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.topic-tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft)}
+
+/* ---- post page ---------------------------------------------------------- */
+.post{padding:52px 0 24px}
+.post .backlink{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+.post h1{font-size:clamp(2rem,4.6vw,2.9rem);font-weight:500;letter-spacing:-.02em;line-height:1.08;margin:22px 0 .2em;max-width:20ch}
+.post .byline{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:8px}
+.post-body{max-width:var(--measure);font-size:1.09rem;line-height:1.75}
+.post-body p{margin:0 0 1.15em}
+.post-body h2{font-family:var(--serif);font-size:1.5rem;font-weight:500;margin:1.8em 0 .5em;letter-spacing:-.01em}
+.post-body h3{font-size:1.16rem;margin:1.5em 0 .35em}
+.post-body ul,.post-body ol{margin:0 0 1.15em;padding-left:1.25em}
+.post-body li{margin:.35em 0}
+.post-body strong{font-weight:600}
+.post-body blockquote{margin:1.4em 0;padding:2px 0 2px 20px;border-left:2px solid var(--signal);
+  font-family:var(--serif);font-style:italic;font-size:1.4rem;line-height:1.35;color:var(--ink)}
+.post-body table{width:100%;border-collapse:collapse;margin:1.4em 0;font-size:.92rem}
+.post-body th,.post-body td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.post-body th{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:500}
+.post-body td.num{font-family:var(--mono)}
+.post-body .note{border-left:2px solid var(--signal);background:var(--tint);padding:14px 16px;
+  border-radius:0 8px 8px 0;font-size:.98rem;margin:1.4em 0}
+.post-foot{max-width:var(--measure);margin-top:36px;padding-top:20px;border-top:1px solid var(--line);
+  color:var(--ink-soft);font-size:.96rem}
+
+/* ---- skills ------------------------------------------------------------- */
+.skill-intro{max-width:var(--measure);font-size:1.06rem;color:var(--ink)}
+.skills{list-style:none;margin:26px 0 0;padding:0}
+.skills li{padding:22px 0;border-top:1px solid var(--line)}
+.skills li:last-child{border-bottom:1px solid var(--line)}
+.skill-top{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.skill-top h3{margin:0}
+.skill-tags{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.pill.type{color:var(--signal);border-color:rgba(var(--signal-rgb),.4)}
+.skill p{margin:.6em 0 .7em;color:var(--ink);max-width:var(--measure)}
+.skill .stack{font-family:var(--mono);font-size:.74rem;color:var(--ink-soft);letter-spacing:.02em}
+.skill .get{margin-top:12px;font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase}
+
+/* ---- about -------------------------------------------------------------- */
+.about-body{max-width:var(--measure);font-size:1.08rem;line-height:1.72}
+.about-body p{margin:0 0 1.1em}
+.timeline{list-style:none;margin:8px 0 0;padding:0}
+.timeline li{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:18px 0;border-top:1px solid var(--line)}
+.timeline li:last-child{border-bottom:1px solid var(--line)}
+.timeline .when{font-family:var(--mono);font-size:.74rem;color:var(--ink-soft);letter-spacing:.02em;padding-top:3px}
+.timeline .role{font-family:var(--serif);font-weight:600;font-size:1.08rem}
+.timeline .place{color:var(--ink-soft)}
+.timeline p{margin:.4em 0 0;color:var(--ink);font-size:.98rem}
+@media(max-width:560px){.timeline li{grid-template-columns:1fr;gap:4px}}
+.toolbox{max-width:var(--measure);margin-top:10px}
+.toolbox .row{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:.95rem}
+.toolbox .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);flex:0 0 140px;padding-top:2px}
+
+/* ---- footer ------------------------------------------------------------- */
+.site-footer{margin-top:40px;border-top:1px solid var(--line);padding:40px 0 72px}
+.site-footer .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:baseline}
+.site-footer .name{font-family:var(--mono);font-size:.74rem;color:var(--ink-soft);letter-spacing:.03em}
+.site-footer .links{display:flex;gap:18px}
+.site-footer .links a{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase}
+.colophon{margin-top:22px;max-width:56ch;color:var(--ink-soft);font-size:.88rem;line-height:1.6}
+.colophon .why{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--signal);display:block;margin-bottom:6px}
+
+/* ---- utilities ---------------------------------------------------------- */
+.spacer{height:8px}
+.center-note{max-width:var(--measure)}
+
+/* ---- motion ------------------------------------------------------------- */
+/* Entrance animations run on load, no JS needed. Staggered so the page
+   settles top to bottom. Everything is disabled under reduced-motion. */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.hero > .wrap > *{opacity:0;animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) forwards}
+.hero .eyebrow{animation-delay:.02s}
+.hero h1{animation-delay:.10s}
+.hero .sub{animation-delay:.20s}
+.hero .purpose{animation-delay:.30s}
+
+.section{opacity:0;animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .08s forwards}
+.post{opacity:0;animation:fadeUp .55s cubic-bezier(.2,.7,.2,1) forwards}
+.post h1{opacity:0;animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .08s forwards}
+.post .byline{opacity:0;animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .16s forwards}
+.post-body{opacity:0;animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) .24s forwards}
+
+/* staggered list reveal for writing and skills lists */
+.postlist li,.skills li,.timeline li{opacity:0;animation:fadeUp .5s ease forwards}
+.postlist li:nth-child(1),.skills li:nth-child(1),.timeline li:nth-child(1){animation-delay:.12s}
+.postlist li:nth-child(2),.skills li:nth-child(2),.timeline li:nth-child(2){animation-delay:.18s}
+.postlist li:nth-child(3),.skills li:nth-child(3),.timeline li:nth-child(3){animation-delay:.24s}
+.postlist li:nth-child(4),.skills li:nth-child(4),.timeline li:nth-child(4){animation-delay:.30s}
+.postlist li:nth-child(5),.skills li:nth-child(5),.timeline li:nth-child(5){animation-delay:.36s}
+.postlist li:nth-child(6),.skills li:nth-child(6),.timeline li:nth-child(6){animation-delay:.42s}
+.postlist li:nth-child(n+7),.skills li:nth-child(n+7),.timeline li:nth-child(n+7){animation-delay:.48s}
+.note-entry{opacity:0;animation:fadeUp .55s ease forwards;animation-delay:.1s}
+
+/* micro-interactions */
+.site-header{transition:box-shadow .3s ease}
+.brand{transition:opacity .2s ease}
+.brand:hover{opacity:.7}
+.nav a{position:relative;transition:color .2s ease}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--signal);
+  transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.nav a:hover::after,.nav a.active::after{transform:scaleX(1)}
+.postlist a{transition:transform .2s ease}
+.postlist li:hover a:not([href="#"]){transform:translateX(4px)}
+.postlist .t,.postlist a:hover .t{transition:color .2s ease}
+.skills li{transition:transform .2s ease}
+.filter{transition:background .2s ease,border-color .2s ease,color .2s ease}
+.btn{transition:transform .12s ease,background .2s ease,color .2s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+a{transition:border-color .2s ease,color .2s ease}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important}
+  .hero > .wrap > *,.section,.post,.post h1,.post .byline,.post-body,
+  .postlist li,.skills li,.timeline li,.note-entry{opacity:1 !important}
+}

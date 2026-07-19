@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cleaning up a CRM nobody wanted to touch &middot; Nikhil Jain</title>
+<meta name="description" content="Duplicate finder, dry-run merges, an audit log, and the unglamorous mail-thread linking that makes a CRM trustworthy again.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>Cleaning up a CRM nobody wanted to touch</h1>
+      <div class="byline">GTM & growth engineering &nbsp;&middot;&nbsp; Jun 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      <div class="post-body">
+
+        <p>Every CRM I have inherited was a mess, and this one was no exception. Duplicate organizations, the same person entered three times, deals stapled to the wrong account, email threads floating unlinked. Nobody wanted to touch it, because one wrong bulk edit can do real damage.</p>
+        <p>So I did not start with a bulk edit. I started with a way to see the mess and undo my own moves.</p>
+        <p>First, a duplicate finder that groups records by Pipedrive's own matching rules and suggests which record to keep, the richest one, with the most deals and activity behind it. Then merges that run one pair at a time, each with a dry run, so I could preview what would survive and what would get deleted before anything happened.</p>
+        <blockquote>A cleanup you cannot audit is not a cleanup. It is a second mess waiting to happen.</blockquote>
+        <p>Every merge, delete, and owner change writes a row to a local log: what changed, when, and which record won. If something looked wrong the next morning, I could read back exactly what the routine did, and Pipedrive keeps deletes recoverable for about a month on top of that.</p>
+        <p>The unglamorous parts mattered most. Linking old email threads to the right deal by matching the participant's email to a person. Emptying vendor fields on records marked as having no program, so a stale value would not quietly mislead a seller. None of it is clever. All of it is the difference between a CRM the team trusts and a dashboard they argue with. The tooling behind this is <a href="crm-needs-infrastructure.html">the MCP server I built for Pipedrive</a>.</p>
+      </div>
+      <div class="post-foot">
+        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

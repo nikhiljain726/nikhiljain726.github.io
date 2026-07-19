@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing &middot; Nikhil Jain</title>
+<meta name="description" content="Essays by Nikhil Jain on GTM engineering, AI and agent workflows, D2C, and performance marketing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>.wsearch{flex:1;min-width:200px;font-family:var(--sans);font-size:.95rem;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}.filters .count{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="writing.html" class="active">Writing</a>
+      <a href="skills.html">Skills</a>
+      <a href="prompts.html">Prompts</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a href="now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:56px">
+    <div class="wrap">
+      <div class="eyebrow">Writing</div>
+      <h2 style="font-size:clamp(1.9rem,4vw,2.6rem);margin:.2em 0 .3em">Notes, worked out in the open.</h2>
+      <p class="lead muted measure">Mostly things I built or ran, and what I got wrong before I got them right. Filter by topic.</p>
+      <div class="filters" id="filters">
+        <input id="wq" type="text" placeholder="Search writing" class="wsearch" aria-label="Search writing">
+        <button class="filter on" data-topic="all">All</button>
+        <button class="filter" data-topic="gtm">GTM &amp; growth engineering</button>
+        <button class="filter" data-topic="ai">AI &amp; agent workflows</button>
+        <button class="filter" data-topic="d2c">D2C &amp; founder lessons</button>
+        <button class="filter" data-topic="performance">Performance marketing</button>
+        <button class="filter" data-topic="career">Career &amp; notes</button>
+        <span class="count" id="wcount"></span>
+      </div>
+      <ul class="postlist" id="list">
+        <li data-topic="ai">
+          <a href="posts/pipedrive-mcp-server.html">
+            <span class="t">I built a 53-tool Pipedrive MCP server, and I cannot write code
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; Pipedrive has no native MCP. So I built one with Claude: 53 tools, dry-runs, an audit log, and the full server to copy.</span></span>
+            <span class="d">Jul 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/ai-model-bakeoff.html">
+            <span class="t">Four AI models, one research task, and the merge that almost shipped wrong
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; Recall beats tidiness, and the merge across four runs was itself software with a bug.</span></span>
+            <span class="d">Jul 2026</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/gtm-engineering-origin.html">
+            <span class="t">How GTM engineering became a job
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; The role is new, the work is not. Replacing the manual handoff with a system.</span></span>
+            <span class="d">Jul 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/crm-needs-infrastructure.html">
+            <span class="t">Your CRM needs infrastructure now
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; An agent is only as good as what it can touch. Why a CRM needs an MCP, not a read-only connector.</span></span>
+            <span class="d">Jul 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/nbs-agent-pipedrive.html">
+            <span class="t">The NBS agent that writes next actions into the CRM
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; A next-best-step agent that turns a 40-deal pipeline review into the three that need a human.</span></span>
+            <span class="d">Jun 2026</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/crm-cleanup.html">
+            <span class="t">Cleaning up a CRM nobody wanted to touch
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; Dry-run merges, an audit log, and the unglamorous linking that makes a CRM trustworthy.</span></span>
+            <span class="d">Jun 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/nrev-visitors-to-intent.html">
+            <span class="t">Turning anonymous website visitors into intent signals
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; Anonymous traffic into a short, ranked, same-day list a rep can act on.</span></span>
+            <span class="d">Jun 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/nrev-competitor-chasing.html">
+            <span class="t">Finding your competitors and who they're chasing
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; A competitor's attention is a map of the market's intent, and a workflow to read it.</span></span>
+            <span class="d">May 2026</span>
+          </a>
+        </li>
+        <li data-topic="ai">
+          <a href="posts/nrev-org-research.html">
+            <span class="t">Org research at scale, and recurring tasks with Claude Code
+              <span class="tp"><span class="topic-tag">AI & agent workflows</span> &nbsp; Hand account research to an agent, with rules, and keep it fresh on a schedule.</span></span>
+            <span class="d">May 2026</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/team-velocity.html">
+            <span class="t">Building velocity in a GTM team
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; Velocity is removing the things that make everyone wait.</span></span>
+            <span class="d">May 2026</span>
+          </a>
+        </li>
+        <li data-topic="d2c">
+          <a href="posts/d2c-to-3-crore.html">
+            <span class="t">Bootstrapping a D2C brand to 3 crore in year one
+              <span class="tp"><span class="topic-tag">D2C & founder lessons</span> &nbsp; 14,000 customers, a WhatsApp order flow, and the resource-planning mistake I kept making.</span></span>
+            <span class="d">Apr 2026</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/hiring-gtm-team.html">
+            <span class="t">How to hire for a GTM team
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; I hire for two things, and neither is on the resume.</span></span>
+            <span class="d">Apr 2026</span>
+          </a>
+        </li>
+        <li data-topic="d2c">
+          <a href="posts/art-galore-journey.html">
+            <span class="t">The Art Galore journey, from zero to 3 crore to shutdown
+              <span class="tp"><span class="topic-tag">D2C & founder lessons</span> &nbsp; The full arc of the brand I bootstrapped, and the two honest reasons I closed it.</span></span>
+            <span class="d">Mar 2026</span>
+          </a>
+        </li>
+        <li data-topic="performance">
+          <a href="posts/meesho-performance-plan.html">
+            <span class="t">A performance marketing plan for Meesho, worked end to end
+              <span class="tp"><span class="topic-tag">Performance marketing</span> &nbsp; Plan one lakh transactors under a 2.5 crore cap, then diagnose a 20 percent CPI overrun.</span></span>
+            <span class="d">Mar 2026</span>
+          </a>
+        </li>
+        <li data-topic="performance">
+          <a href="posts/50-crore-ad-spend.html">
+            <span class="t">What 50 crore in ad spend taught me about optimization
+              <span class="tp"><span class="topic-tag">Performance marketing</span> &nbsp; Managing large budgets at an agency, and why I built a tool called Periscope.</span></span>
+            <span class="d">Feb 2026</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/linkedin-automation.html">
+            <span class="t">Cutting our paid dependency with LinkedIn automation
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; How organic outbound and a re-engineered email motion moved the lead mix.</span></span>
+            <span class="d">Dec 2025</span>
+          </a>
+        </li>
+        <li data-topic="performance">
+          <a href="posts/meta-creative-engine.html">
+            <span class="t">Our Meta structure: 80 percent winners, 20 percent chaos
+              <span class="tp"><span class="topic-tag">Performance marketing</span> &nbsp; The algorithm does the targeting now. The lever is creative.</span></span>
+            <span class="d">2025</span>
+          </a>
+        </li>
+        <li data-topic="gtm">
+          <a href="posts/marketing-scorecard.html">
+            <span class="t">The marketing scorecard I plan the year around
+              <span class="tp"><span class="topic-tag">GTM & growth engineering</span> &nbsp; What gets measured gets managed. One view for the whole year.</span></span>
+            <span class="d">2023</span>
+          </a>
+        </li>
+        <li data-topic="d2c">
+          <a href="posts/product-is-the-foundation.html">
+            <span class="t">In D2C, the product is the foundation
+              <span class="tp"><span class="topic-tag">D2C & founder lessons</span> &nbsp; No growth hack covers a mediocre product. Fix the product first.</span></span>
+            <span class="d">2022</span>
+          </a>
+        </li>
+        <li data-topic="d2c">
+          <a href="posts/cod-economics.html">
+            <span class="t">Is COD good for end users? The hidden math of cash on delivery
+              <span class="tp"><span class="topic-tag">D2C & founder lessons</span> &nbsp; Selling 5 products but paying to ship 15, and who really pays for it.</span></span>
+            <span class="d">Nov 2021</span>
+          </a>
+        </li>
+        <li data-topic="career">
+          <a href="notes.html">
+            <span class="t">Notes: shorter reflections
+              <span class="tp"><span class="topic-tag">Career & notes</span> &nbsp; Super generalists, hard things, startup vs job, and standing out at work.</span></span>
+            <span class="d">Collection</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<script>
+  const items=[...document.querySelectorAll('#list li')];
+  const wq=document.getElementById('wq');const wc=document.getElementById('wcount');let topic='all';
+  function apply(){const t=(wq.value||'').trim().toLowerCase();let n=0;
+    items.forEach(li=>{const okT=(topic==='all'||li.dataset.topic===topic);const okS=(!t||li.innerText.toLowerCase().includes(t));const ok=okT&&okS;li.style.display=ok?'':'none';if(ok)n++;});
+    wc.textContent=n+' post'+(n===1?'':'s');}
+  document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;
+    document.querySelectorAll('.filter').forEach(f=>f.classList.toggle('on',f===b));topic=b.dataset.topic;apply();});
+  wq.addEventListener('input',apply);apply();
+</script>
+</body>
+</html>

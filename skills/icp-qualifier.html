@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICP qualifier and scorer &middot; Nikhil Jain</title>
+<meta name="description" content="A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"><style>
+  .snum{font-family:var(--mono);font-size:.78rem;color:var(--signal);letter-spacing:.06em;text-transform:uppercase;margin:36px 0 4px}
+  .sdesc{max-width:var(--measure);font-size:1.06rem;line-height:1.72}
+  .sdesc p{margin:0 0 1em}.sdesc ul{margin:0 0 1em;padding-left:1.2em}.sdesc li{margin:.35em 0}
+  .sdesc blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:2px solid var(--signal);font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.35}
+  .oc-btn{display:inline-block;font-family:var(--sans);font-weight:600;font-size:.92rem;padding:11px 18px;border-radius:9px;background:var(--signal);color:#fff;border:0;cursor:pointer;margin:6px 0}
+  .oc-btn:hover{filter:brightness(.95)}
+  .codeblock{background:#141417;border-radius:14px;overflow:hidden;margin:14px 0 6px;max-width:var(--measure)}
+  .codeblock .cbhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #2a2a30}
+  .codeblock .fn{font-family:var(--mono);font-size:.74rem;color:#b7b3a7;letter-spacing:.04em}
+  .codeblock .btns{display:flex;gap:8px}
+  .codeblock button{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;border-radius:7px;padding:6px 10px;cursor:pointer}
+  .codeblock .cpy{color:#f3efe6;border:1px solid #3a3a42;background:none}
+  .codeblock .oc{color:#141417;border:0;background:#f3efe6}
+  .codeblock pre{margin:0;padding:18px;font-family:var(--mono);font-size:.8rem;line-height:1.65;white-space:pre-wrap;color:#e6e3da;overflow-x:auto}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html">Writing</a>
+      <a href="../skills.html" class="active">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../skills.html">&larr; All skills</a>
+      <h1>ICP qualifier and scorer</h1>
+      <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Use to sort and score accounts against your ICP</div>
+      <button class="oc-btn" onclick="openInClaude()">Open in Claude &#8599;</button>
+      <div class="snum">01 / The problem it solves</div>
+      <div class="sdesc"><p>Most pipelines are full of accounts that were never going to close, and reps burn weeks finding that out one call at a time. The fix is to score fit before anyone dials, and to be honest about it. The hard part is not the scoring, it is refusing to reward an account that has a fatal disqualifier just because it looks impressive on paper.</p></div>
+      <div class="snum">02 / What it does</div>
+      <div class="sdesc"><p>Give it your ICP definition and a record, or a whole pasted list. For each one it returns a bucket (Customer, Prospect, Partner, or Disqualify), a 0-100 score, the single reason it scored that way, and the biggest risk. It runs on one domain or a batch, and the output drops straight into Clay, Apollo, or a sheet without rework.</p></div>
+      <div class="snum">03 / Why disqualifiers come first</div>
+      <div class="sdesc"><p>It checks hard disqualifiers before anything else. If one fires, the account is Disqualify and the scoring stops, and the skill tells you which disqualifier fired. That order is deliberate. A 90 on an account you can never sell to is a more expensive mistake than a 40 on one you can, because the 90 pulls a rep's time toward a dead end.</p><blockquote>A high score with a fatal disqualifier is worse than an honest low score.</blockquote></div>
+      <div class="snum">04 / How to use it</div>
+      <div class="sdesc"><p>Save the block as SKILL.md, or paste the body into your enrichment tool's prompt step. Give it your ICP and the records. Or click Open in Claude above to install it in one step.</p></div>
+      <div class="snum">05 / The SKILL.md</div>
+      <div class="sdesc"><p>Save this as SKILL.md inside a folder named after the skill, or paste the body into a Claude Project's custom instructions. Or just click Open in Claude and it will set it up for you.</p></div>
+      <div class="codeblock">
+        <div class="cbhead"><span class="fn">SKILL.md</span><div class="btns"><button class="oc" onclick="openInClaude()">Open in Claude</button><button class="cpy" onclick="copySkill()">Copy</button></div></div>
+        <pre>---
+name: icp-qualifier
+description: Classify and score a company or contact against an ICP. Buckets into Customer, Prospect, Partner, or Disqualify, and returns a 0-100 score with the one reason it scored that way and the biggest risk. Works on a single record or a pasted list. Portable into Clay, Apollo, or a spreadsheet.
+---
+
+# ICP qualifier
+
+You score how well a company or contact fits an ICP, so a rep knows who to touch first and why. Be blunt about disqualifiers. A high score with a fatal disqualifier is worse than an honest low score.
+
+## Input
+An ICP definition, and one record or a list of records.
+
+## How to work
+1. Check the hard disqualifiers first. If any is present, bucket as Disqualify and stop.
+2. Otherwise bucket as Customer, Prospect, or Partner.
+3. Score 0-100 on the traits that actually predict a win, not the wishlist.
+
+## Output, per record
+{ bucket, score_0_100, reason, biggest_risk }
+
+## Rules
+- Disqualifiers override the score. Say which one fired.
+- The reason is one line, concrete, and specific to the record.
+- No fabrication. If a needed fact is missing, say what you would need to confirm the score.
+- Keep buckets to the four exact words so the output filters cleanly.
+</pre>
+      </div>
+      <div class="snum">06 / Tips</div>
+      <div class="sdesc"><ul><li>Push it to name the disqualifiers explicitly. That list is more useful than the wishlist.</li><li>Feed it ten past wins and ten losses first, so its idea of fit is grounded in your real outcomes.</li><li>Re-run quarterly. Your ICP drifts as the product and market move.</li></ul></div>
+      <div class="post-foot" style="margin-top:30px">Using this, or improving it? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<div class="toast" id="toast">Copied</div>
+<script>
+function skillMd(){const pre=document.querySelector('.codeblock pre');return pre?pre.innerText:'';}
+function toast(m){const t=document.getElementById('toast');t.textContent=m||'Copied';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);}
+function copySkill(){if(navigator.clipboard)navigator.clipboard.writeText(skillMd());toast('Copied');}
+function openInClaude(){const md=skillMd();const p="I want to use this as a Claude skill. If you have the skill-creator skill, use it to install this so I can reuse it, then run it for me. Here is the SKILL.md:\n\n"+md;window.open("https://claude.ai/new?q="+encodeURIComponent(p),"_blank");}
+</script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompts &middot; Nikhil Jain</title>
+<meta name="description" content="A searchable GTM prompt library: copy-paste prompts for research, outbound, content, CRM, and RevOps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .pfilters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 4px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .pfilters .search{flex:1;min-width:220px;position:relative}
+  .pfilters input{width:100%;font-family:var(--sans);font-size:.95rem;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .pfilters select{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-soft);cursor:pointer}
+  .pfilters .reset{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);background:none;border:0;cursor:pointer}
+  .pfilters .count{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:22px}
+  .pcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:20px;display:flex;flex-direction:column}
+  .pcard .ptags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .stag,.ctag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:6px}
+  .stag{color:var(--signal);background:rgba(var(--signal-rgb),.08)}
+  .ctag{color:var(--ink-soft);background:var(--tint)}
+  .pcard h3{font-family:var(--serif);font-size:1.18rem;font-weight:600;letter-spacing:-.01em;line-height:1.2;margin:0 0 .35em}
+  .pcard>p{margin:0 0 16px;color:var(--ink-soft);font-size:.95rem;line-height:1.5;flex:1}
+  .pfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px solid var(--line)}
+  .roles{display:flex;flex-wrap:wrap;gap:6px}
+  .rl{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--line);border-radius:5px;padding:3px 6px}
+  .openp{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);background:none;border:0;cursor:pointer;white-space:nowrap}
+  .pcard.hide{display:none}
+  .modal{position:fixed;inset:0;background:rgba(23,23,26,.55);display:none;align-items:flex-start;justify-content:center;padding:6vh 20px;z-index:100;overflow:auto}
+  .modal.show{display:flex}
+  .msheet{background:var(--paper);border:1px solid var(--line);border-radius:16px;max-width:680px;width:100%;padding:28px}
+  .msheet h3{font-family:var(--serif);font-size:1.6rem;font-weight:500;letter-spacing:-.01em;margin:0 0 16px}
+  .msheet pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;font-family:var(--mono);font-size:.82rem;line-height:1.6;white-space:pre-wrap;color:var(--ink);margin:0}
+  .msheet h4{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:22px 0 6px}
+  .msheet p,.msheet li{font-size:.96rem;line-height:1.6}
+  .msheet .mtools{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-top:18px}
+  .mbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .mbar .cpy{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);border:1px solid rgba(var(--signal-rgb),.4);border-radius:7px;padding:6px 11px;background:none;cursor:pointer}
+  .mbar .cls{background:none;border:0;font-size:1.4rem;line-height:1;color:var(--ink-soft);cursor:pointer}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="writing.html">Writing</a>
+      <a href="skills.html">Skills</a>
+      <a href="prompts.html" class="active">Prompts</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a href="now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:56px">
+    <div class="wrap">
+      <div class="eyebrow">Prompts</div>
+      <h2 style="font-size:clamp(1.9rem,5vw,3rem);margin:.2em 0 .25em">The GTM prompt library</h2>
+      <p class="lead muted measure">Copy-paste prompts I actually use for GTM and marketing. Each one is ready to run, with the variables to swap, an example, and a couple of tips. Model-agnostic (Claude, ChatGPT, Gemini). This library keeps growing.</p>
+
+      <div class="pfilters">
+        <div class="search"><input id="q" type="text" placeholder="Search prompts" aria-label="Search prompts"></div>
+        <select id="fstage"><option value="">All stages</option><option value="discover">Discover</option><option value="engage">Engage & Convert</option><option value="close">Close & Expand</option><option value="cross">Cross-stage</option></select>
+        <select id="frole"><option value="">All roles</option><option value="ae">AE</option><option value="sdr">SDR/BDR</option><option value="mktg">Marketing</option><option value="dg">Demand Gen</option><option value="founder">Founder</option><option value="revops">RevOps</option><option value="sl">Sales Leadership</option><option value="content">Content & SEO</option></select>
+        <select id="ftool"><option value="">All tools</option><option value="chatgpt">ChatGPT</option><option value="claude">Claude</option><option value="gemini">Gemini</option><option value="nrev">nRev</option></select>
+        <button class="reset" id="reset">reset</button>
+        <span class="count" id="count"></span>
+      </div>
+
+      <div class="pgrid" id="grid">
+      <article class="pcard" data-stage="discover" data-roles="ae sdr sl" data-tools="claude chatgpt gemini" data-text="turn a company url into a first-call brief turn a company url into a sourced, opinionated first-call brief that maps your offer to the buyer&#x27;s real pressures and earns the next meeting. account research" data-title="Turn a company URL into a first-call brief">
+        <div class="ptags"><span class="stag">Discover</span><span class="ctag">Account Research</span></div>
+        <h3>Turn a company URL into a first-call brief</h3>
+        <p>Turn a company URL into a sourced, opinionated first-call brief that maps your offer to the buyer's real pressures and earns the next meeting.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">AE</span><span class="rl">SDR/BDR</span><span class="rl">Sales Leadership</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>You are prepping me for a first call with {{company}} (URL: {{url}}).\nRead their site, recent news, and any filings you can reach.\nReturn a one-page brief: what they do, rough scale, 3 pressures they likely feel right now, how {{my_offer}} maps to each pressure, two smart questions to ask, and one specific opener referencing something real about them.\nEvery factual claim needs a source URL. If you cannot source it, leave it out.</pre>
+        <h4>Example</h4><p>Feed it a retailer's URL and your product one-liner. You get talking points tied to their actual business, not a generic pitch.</p>
+        <h4>Tips</h4><ul><li>Paste 2-3 recent headlines about them to sharpen the pressures.</li><li>Ask it to flag anything it could not verify, so you do not repeat a guess on the call.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT, Gemini</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="discover" data-roles="revops sdr" data-tools="claude nrev" data-text="research whether a company sells ads profile any company for whether it runs its own advertising business, with a status, the vendor stack, and a source trail. built to avoid false negatives. account research" data-title="Research whether a company sells ads">
+        <div class="ptags"><span class="stag">Discover</span><span class="ctag">Account Research</span></div>
+        <h3>Research whether a company sells ads</h3>
+        <p>Profile any company for whether it runs its own advertising business, with a status, the vendor stack, and a source trail. Built to avoid false negatives.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">RevOps</span><span class="rl">SDR/BDR</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Research whether {{company}} runs its own advertising business.\nLook in order and stop when you can call it: 1) their own advertiser/partner pages, 2) filings, 3) trade press (home-market language), 4) hiring signals.\nReturn JSON: {status: Confirmed|Building|None, program_name, channels[], vendors[], confidence_0_1, evidence_summary, source_urls[]}.\nRules: a named, announced program is Building, never None. Buying ads is not selling ads. Never put a guessed value in a data field; say so in evidence_summary instead.</pre>
+        <h4>Example</h4><p>Run it per row over a CSV of companies to build a target list of who already sells ads and who is just starting.</p>
+        <h4>Tips</h4><ul><li>The tiered search order is what kills the lazy one-search-and-quit behaviour.</li><li>Sample 25 rows by hand before you trust it at scale.</li></ul>
+        <div class="mtools">Works with: Claude, nRev</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="discover" data-roles="mktg dg sl" data-tools="claude chatgpt gemini" data-text="define your icp and score an account distil real win/loss evidence into an icp and a scoring model your whole team can act on, built on disqualifiers, not aspiration. revops" data-title="Define your ICP and score an account">
+        <div class="ptags"><span class="stag">Discover</span><span class="ctag">RevOps</span></div>
+        <h3>Define your ICP and score an account</h3>
+        <p>Distil real win/loss evidence into an ICP and a scoring model your whole team can act on, built on disqualifiers, not aspiration.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">Marketing</span><span class="rl">Demand Gen</span><span class="rl">Sales Leadership</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>From these closed-won and closed-lost examples: {{examples}}, build our ICP.\nOutput: the 5 firmographic and behavioural traits that actually predict a win, the 3 hard disqualifiers, and a 0-100 scoring rubric a rep can apply in 30 seconds.\nThen score this account: {{account}}. Give the score, the one reason, and the biggest risk. Be blunt about disqualifiers.</pre>
+        <h4>Example</h4><p>Give it 10 wins and 10 losses. It tells you what your best customers have in common and who to stop chasing.</p>
+        <h4>Tips</h4><ul><li>Disqualifiers matter more than the wishlist. Push it to name them.</li><li>Re-run quarterly as your win data grows.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT, Gemini</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="engage" data-roles="sdr ae founder" data-tools="claude chatgpt gemini" data-text="write a cold email that earns a reply produce a tight, relevance-first cold email with one clear ask, built around the prospect&#x27;s trigger not your pitch. under 90 words, no fluff, no fabrication. cold outbound" data-title="Write a cold email that earns a reply">
+        <div class="ptags"><span class="stag">Engage & Convert</span><span class="ctag">Cold Outbound</span></div>
+        <h3>Write a cold email that earns a reply</h3>
+        <p>Produce a tight, relevance-first cold email with one clear ask, built around the prospect's trigger not your pitch. Under 90 words, no fluff, no fabrication.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">SDR/BDR</span><span class="rl">AE</span><span class="rl">Founder</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Write one cold email to {{name}}, {{title}} at {{company}}.\nUse only these researched facts: {{facts}}.\nRules: under 90 words, first line is a specific observation about their business (their trigger, not my pitch), one clear ask, no flattery, no buzzwords, no em dashes. Sound like a person, not a mail merge. Give me two subject lines under 5 words each.</pre>
+        <h4>Example</h4><p>Paste one real trigger (a launch, a hire, a page they shipped) and get an email that reads like you noticed.</p>
+        <h4>Tips</h4><ul><li>No trigger, no send. The whole email lives or dies on the first line.</li><li>Ask for two variants and split test the openers.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT, Gemini</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="engage" data-roles="sdr dg" data-tools="claude chatgpt" data-text="build a multi-touch outbound sequence generate a value-led outbound sequence across email and linkedin, with timing, angles, and exit conditions, tuned to one persona and pain. cold outbound" data-title="Build a multi-touch outbound sequence">
+        <div class="ptags"><span class="stag">Engage & Convert</span><span class="ctag">Cold Outbound</span></div>
+        <h3>Build a multi-touch outbound sequence</h3>
+        <p>Generate a value-led outbound sequence across email and LinkedIn, with timing, angles, and exit conditions, tuned to one persona and pain.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">SDR/BDR</span><span class="rl">Demand Gen</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Build a 6-touch, 14-day outbound sequence for {{persona}} at {{segment}}, whose main pain is {{pain}}.\nMix email and LinkedIn. For each touch: channel, day, angle, and the full copy. Each touch adds a new reason, never just bumps the thread. Include an exit condition and a breakup message.\nConstraints: plain language, no buzzwords, no em dashes.</pre>
+        <h4>Example</h4><p>One persona in, a full sequence out, each touch carrying a different piece of value.</p>
+        <h4>Tips</h4><ul><li>Force a new angle per touch, or it becomes nagging.</li><li>Keep the breakup honest, it gets more replies than the pitch.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="engage" data-roles="founder mktg content" data-tools="claude chatgpt gemini" data-text="turn a point of view into a linkedin post shape a raw opinion or experience into a linkedin post that sounds like you, leads with the point, and does not read like ai. content" data-title="Turn a point of view into a LinkedIn post">
+        <div class="ptags"><span class="stag">Engage & Convert</span><span class="ctag">Content</span></div>
+        <h3>Turn a point of view into a LinkedIn post</h3>
+        <p>Shape a raw opinion or experience into a LinkedIn post that sounds like you, leads with the point, and does not read like AI.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">Founder</span><span class="rl">Marketing</span><span class="rl">Content & SEO</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Turn this raw take into a LinkedIn post: {{notes}}.\nRules: lead with the point in the first line, short sentences, one idea each, a concrete example or number, and a plain closing thought. No hooks like &#x27;here is what nobody tells you&#x27;, no rule-of-three padding, no em dashes, no hashtags stuffed at the end. It has to sound like me: {{voice_sample}}.</pre>
+        <h4>Example</h4><p>Paste a messy voice-note transcript and a sample of your writing. Out comes a post in your register.</p>
+        <h4>Tips</h4><ul><li>Always give it a real sample of your writing, or it defaults to LinkedIn-generic.</li><li>Cut the last line if it moralizes.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT, Gemini</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="close" data-roles="ae sl" data-tools="claude" data-text="decide the next best action on a deal read a deal like a sharp sales manager and return the single next best action with a reason, ready to drop into the crm as a task. deal execution" data-title="Decide the next best action on a deal">
+        <div class="ptags"><span class="stag">Close & Expand</span><span class="ctag">Deal Execution</span></div>
+        <h3>Decide the next best action on a deal</h3>
+        <p>Read a deal like a sharp sales manager and return the single next best action with a reason, ready to drop into the CRM as a task.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">AE</span><span class="rl">Sales Leadership</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Here is a deal record: {{deal_json}}.\nActing like a sharp sales manager, decide the single next best action and why, in one line. Consider stage, days since last activity, open tasks, and notes. Output JSON: {action, reason, due_in_days}. If the deal is stale with no real path, say so plainly instead of inventing a step.</pre>
+        <h4>Example</h4><p>Run it across every open deal to turn a 40-line pipeline review into the 3 that need a human.</p>
+        <h4>Tips</h4><ul><li>Have it write the action as a CRM task, assigned, with the reason attached.</li><li>Trust the 'no path' verdict; it saves you chasing dead deals.</li></ul>
+        <div class="mtools">Works with: Claude</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="discover" data-roles="revops dg" data-tools="claude nrev" data-text="turn anonymous visitors into an intent list take resolved website-visitor data, filter to icp, score the visit as a signal, and hand back a short, ranked list a rep can work the same day. intent &amp; signals" data-title="Turn anonymous visitors into an intent list">
+        <div class="ptags"><span class="stag">Discover</span><span class="ctag">Intent & Signals</span></div>
+        <h3>Turn anonymous visitors into an intent list</h3>
+        <p>Take resolved website-visitor data, filter to ICP, score the visit as a signal, and hand back a short, ranked list a rep can work the same day.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">RevOps</span><span class="rl">Demand Gen</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Here is today&#x27;s resolved website-visitor data: {{visits}}.\nFor each company: filter to our ICP ({{icp}}), then score the visit as a signal using pages viewed, frequency, and recency. A pricing page twice this week outranks one blog visit last month.\nReturn a ranked list: company, fit reason, signal strength (high/med/low), and the single best reason to reach out now. Drop anything below ICP.</pre>
+        <h4>Example</h4><p>Feed it your de-anon feed each morning and route the 'high' rows to reps while the intent is warm.</p>
+        <h4>Tips</h4><ul><li>Filter hard to ICP first, or reps stop trusting the list.</li><li>Same-day routing is the whole point; a weekly digest gets ignored.</li></ul>
+        <div class="mtools">Works with: Claude, nRev</div>
+      </template>
+      </article>
+      <article class="pcard" data-stage="cross" data-roles="mktg founder content" data-tools="claude chatgpt gemini" data-text="de-slop a draft so it sounds human rewrite any text so it reads like a plain-spoken person wrote it, stripping the words and patterns that make writing sound like a model. content" data-title="De-slop a draft so it sounds human">
+        <div class="ptags"><span class="stag">Cross-stage</span><span class="ctag">Content</span></div>
+        <h3>De-slop a draft so it sounds human</h3>
+        <p>Rewrite any text so it reads like a plain-spoken person wrote it, stripping the words and patterns that make writing sound like a model.</p>
+        <div class="pfoot"><div class="roles"><span class="rl">Marketing</span><span class="rl">Founder</span><span class="rl">Content & SEO</span></div><button class="openp" onclick="openP(this)">open &rarr;</button></div>
+        <template>
+        <pre>Rewrite the text below so it reads like a plain-spoken person wrote it.\nRules: no em dashes, no rule-of-three padding, no negative parallelism (not X but Y), no words like leverage, unlock, seamless, robust, delve, or journey. Short sentences. Lead with the point. Keep my facts and meaning exactly. Return only the rewrite.\n\nText: {{draft}}</pre>
+        <h4>Example</h4><p>Paste anything that reads a bit too AI and get back something you would actually say out loud.</p>
+        <h4>Tips</h4><ul><li>Read the output aloud. If a line is not something you would say, cut it.</li><li>Keep a saved sample of your voice to paste in alongside.</li></ul>
+        <div class="mtools">Works with: Claude, ChatGPT, Gemini</div>
+      </template>
+      </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<div class="modal" id="modal"><div class="msheet">
+  <div class="mbar"><button class="cpy" id="mcopy">Copy prompt</button><button class="cls" id="mclose" aria-label="Close">&times;</button></div>
+  <h3 id="mtitle"></h3><div id="mbody"></div>
+</div></div>
+<div class="toast" id="toast">Copied</div>
+<script>
+const cards=[...document.querySelectorAll('.pcard')];
+const q=document.getElementById('q'),fs=document.getElementById('fstage'),fr=document.getElementById('frole'),ft=document.getElementById('ftool'),count=document.getElementById('count');
+function apply(){
+  const t=q.value.trim().toLowerCase(),s=fs.value,r=fr.value,tl=ft.value;let n=0;
+  cards.forEach(c=>{
+    const ok=(!t||c.dataset.text.includes(t))&&(!s||c.dataset.stage===s)&&(!r||c.dataset.roles.split(' ').includes(r))&&(!tl||c.dataset.tools.split(' ').includes(tl));
+    c.classList.toggle('hide',!ok); if(ok)n++;
+  });
+  count.textContent=n+' result'+(n===1?'':'s');
+}
+[q,fs,fr,ft].forEach(el=>el.addEventListener('input',apply));
+document.getElementById('reset').addEventListener('click',()=>{q.value='';fs.value='';fr.value='';ft.value='';apply();});
+apply();
+const modal=document.getElementById('modal');
+function openP(btn){
+  const c=btn.closest('.pcard');
+  document.getElementById('mtitle').textContent=c.dataset.title;
+  document.getElementById('mbody').innerHTML=c.querySelector('template').innerHTML;
+  modal.classList.add('show');
+}
+function toast(){const to=document.getElementById('toast');to.classList.add('show');setTimeout(()=>to.classList.remove('show'),1200);}
+document.getElementById('mclose').addEventListener('click',()=>modal.classList.remove('show'));
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
+document.getElementById('mcopy').addEventListener('click',()=>{const pre=document.querySelector('#mbody pre');if(pre&&navigator.clipboard)navigator.clipboard.writeText(pre.innerText);toast();});
+window.openP=openP;
+</script>
+</body>
+</html>

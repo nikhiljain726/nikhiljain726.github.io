@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The NBS agent that writes next actions into the CRM &middot; Nikhil Jain</title>
+<meta name="description" content="A next-best-step agent that reads a deal like a good manager and writes the next action into Pipedrive as an assigned task.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>The NBS agent that writes next actions into the CRM</h1>
+      <div class="byline">AI & agent workflows &nbsp;&middot;&nbsp; Jun 2026 &nbsp;&middot;&nbsp; 3 min read</div>
+      <div class="post-body">
+
+        <p>A pipeline review is mostly the same question asked forty times: what is the next best action on this deal, and is anyone doing it. I got tired of asking it by hand, so I built an agent to.</p>
+        <p>The NBS agent, for next best step, reads a deal the way a good manager would. It looks at the stage, the last activity, how long since anyone touched it, the open tasks, and the notes. Then it decides the single next best action and writes it straight into Pipedrive as a task on the deal, assigned to the owner, with a one-line reason.</p>
+        <blockquote>The point is not advice in a chat window. It is a task in the rep's list, with a reason attached.</blockquote>
+        <p>The guardrails are the same as everything else I build. It runs on a schedule, it logs what it created, and it writes tasks rather than silently changing deals, so a human is always the one who acts. A stale deal gets a nudge. A deal with no next activity gets one scheduled. A deal that has gone quiet for two weeks gets flagged for a person to look at.</p>
+        <p>It does not replace the pipeline review. It makes the review about the three deals that actually need a human, instead of the forty that just needed a reminder.</p>
+      </div>
+      <div class="post-foot">
+        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

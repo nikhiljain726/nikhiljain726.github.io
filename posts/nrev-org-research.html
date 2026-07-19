@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Org research at scale, and recurring tasks with Claude Code &middot; Nikhil Jain</title>
+<meta name="description" content="Account research is the work everyone agrees matters and nobody wants to do at volume. How I hand it to an agent, with rules.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>Org research at scale, and recurring tasks with Claude Code</h1>
+      <div class="byline">AI & agent workflows &nbsp;&middot;&nbsp; May 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      <div class="post-body">
+
+        <p>Account research is the work everyone agrees matters and nobody wants to do at volume. Reading a company's site, its filings, its press, and turning that into a few structured facts a seller can use. Fine for ten accounts. Miserable for eight hundred.</p>
+        <p>So I hand it to an agent, with rules. In nRev I point a prompt at a list of companies and enforce a strict output schema, so each row comes back the same shape: what the company does, its scale, its current setup, and a source for every claim. The prompt does the heavy lifting. It says where to look and in what order, and it forbids guessing, so the model admits uncertainty instead of laundering it into a clean-looking cell.</p>
+        <blockquote>At scale, the prompt does more work than the model. Tell it where to look, and never let it guess.</blockquote>
+        <p>The second half is keeping it fresh. Research decays. A program that did not exist last quarter exists now. So I set the research to run on a schedule with Claude Code, which loops over the list, browses, writes the output, and does it again next week without me starting it. Recurring tasks turn a one-time enrichment into a living dataset.</p>
+        <p>The rule I learned the hard way: sample before you spend, and check the merge. Run twenty-five rows by hand first, and when you combine runs from different models, test the combination, because it is code too and it will have bugs that look like clean data. I wrote up a full case of that in <a href="ai-model-bakeoff.html">the model bake-off</a>.</p>
+      </div>
+      <div class="post-foot">
+        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

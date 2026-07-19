@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills &middot; Nikhil Jain</title>
+<meta name="description" content="Reusable skills and agents Nikhil Jain has built: Claude skills with copyable SKILL.md, automations, playbooks, and an open-source Pipedrive MCP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><style>
+  .sfilters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 4px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .sfilters .search{flex:1;min-width:220px}.sfilters input{width:100%;font-size:.95rem;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .sfilters select{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-soft);cursor:pointer}
+  .sfilters .reset{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);background:none;border:0;cursor:pointer}
+  .sfilters .count{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:22px}
+  .scard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:20px;display:flex;flex-direction:column}
+  .scard .ptags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .scard .stag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:6px;color:var(--signal);background:rgba(var(--signal-rgb),.08)}
+  .scard .ctag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:6px;color:var(--ink-soft);background:var(--tint)}
+  .scard h3{font-family:var(--serif);font-size:1.18rem;font-weight:600;letter-spacing:-.01em;line-height:1.2;margin:0 0 .35em}
+  .scard>p{margin:0 0 16px;color:var(--ink-soft);font-size:.95rem;line-height:1.5;flex:1}
+  .scard .sfoot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--line)}
+  .scard .stack{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft)}
+  .scard .openp{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);border:0;background:none;text-decoration:none;white-space:nowrap}
+  .scard.hide{display:none}
+.ocmini{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--signal);border:0;border-radius:6px;padding:5px 9px;cursor:pointer;margin-left:8px}</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="writing.html">Writing</a>
+      <a href="skills.html" class="active">Skills</a>
+      <a href="prompts.html">Prompts</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a href="now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:56px">
+    <div class="wrap">
+      <div class="eyebrow">Skills</div>
+      <h2 style="font-size:clamp(1.9rem,5vw,3rem);margin:.2em 0 .25em">Skills I have built</h2>
+      <p class="lead muted measure">Small, reusable systems for GTM and research: Claude skills you can copy, automations, playbooks, and an open-source CRM server. The Claude skills open to a page with the full SKILL.md to copy. Nothing here carries anything proprietary.</p>
+      <div class="sfilters">
+        <div class="search"><input id="sq" type="text" placeholder="Search skills" aria-label="Search skills"></div>
+        <select id="stype"><option value="">All types</option><option value="skill">Claude skill</option><option value="auto">Automation</option><option value="play">Playbook</option><option value="infra">Infrastructure</option></select>
+        <select id="scat"><option value="">All areas</option><option value="ai">AI</option><option value="crm">CRM</option><option value="gtm">GTM</option><option value="research">Research</option></select>
+        <button class="reset" id="sreset">reset</button>
+        <span class="count" id="scount"></span>
+      </div>
+      <div class="sgrid" id="sgrid">
+      <article class="scard" data-type="skill" data-cat="research" data-text="account brief from a url turn a company url into a one-page, source-grounded first-call brief with a confirmed-versus-inferred split. never fabricates firmographics. research claude skill">
+        <div class="ptags"><span class="stag">Claude skill</span><span class="ctag">Research</span></div>
+        <h3>Account brief from a URL</h3>
+        <p>Turn a company URL into a one-page, source-grounded first-call brief with a confirmed-versus-inferred split. Never fabricates firmographics.</p>
+        <div class="sfoot"><span class="stack">Claude, any browser</span><a class="openp" href="skills/account-brief.html">open skill &rarr;</a> <button class="ocmini" data-slug="account-brief">in Claude &#8599;</button></div>
+      </article>
+      <article class="scard" data-type="skill" data-cat="research" data-text="ads-program research decide whether a company runs its own ads business, with a status, the vendor stack, and a source trail. built to avoid false negatives. research claude skill">
+        <div class="ptags"><span class="stag">Claude skill</span><span class="ctag">Research</span></div>
+        <h3>Ads-program research</h3>
+        <p>Decide whether a company runs its own ads business, with a status, the vendor stack, and a source trail. Built to avoid false negatives.</p>
+        <div class="sfoot"><span class="stack">Claude, nRev</span><a class="openp" href="skills/ads-program-research.html">open skill &rarr;</a> <button class="ocmini" data-slug="ads-program-research">in Claude &#8599;</button></div>
+      </article>
+      <article class="scard" data-type="skill" data-cat="gtm" data-text="icp qualifier and scorer classify a company or contact against your icp and score it 0-100, with the reason and the biggest risk. single record or a pasted list. gtm claude skill">
+        <div class="ptags"><span class="stag">Claude skill</span><span class="ctag">GTM</span></div>
+        <h3>ICP qualifier and scorer</h3>
+        <p>Classify a company or contact against your ICP and score it 0-100, with the reason and the biggest risk. Single record or a pasted list.</p>
+        <div class="sfoot"><span class="stack">Claude, Clay</span><a class="openp" href="skills/icp-qualifier.html">open skill &rarr;</a> <button class="ocmini" data-slug="icp-qualifier">in Claude &#8599;</button></div>
+      </article>
+      <article class="scard" data-type="infra" data-cat="crm" data-text="pipedrive mcp server an mcp server that gives any ai client 36 tools into pipedrive, with dry-run previews and an audit log. open source. crm infrastructure">
+        <div class="ptags"><span class="stag">Infrastructure</span><span class="ctag">CRM</span></div>
+        <h3>Pipedrive MCP server</h3>
+        <p>An MCP server that gives any AI client 36 tools into Pipedrive, with dry-run previews and an audit log. Open source.</p>
+        <div class="sfoot"><span class="stack">Python, MCP</span><a class="openp" href="posts/pipedrive-mcp-server.html">read the story &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="auto" data-cat="crm" data-text="nbs agent for the crm a next-best-step agent that reads each deal and writes the next action into the crm as an assigned task with a reason. crm automation">
+        <div class="ptags"><span class="stag">Automation</span><span class="ctag">CRM</span></div>
+        <h3>NBS agent for the CRM</h3>
+        <p>A next-best-step agent that reads each deal and writes the next action into the CRM as an assigned task with a reason.</p>
+        <div class="sfoot"><span class="stack">Claude, Pipedrive MCP</span><a class="openp" href="posts/nbs-agent-pipedrive.html">read the write-up &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="auto" data-cat="gtm" data-text="anonymous visitor to intent de-anonymize traffic to a company, filter to icp, score the visit, and route the warm ones to a rep the same day. gtm automation">
+        <div class="ptags"><span class="stag">Automation</span><span class="ctag">GTM</span></div>
+        <h3>Anonymous visitor to intent</h3>
+        <p>De-anonymize traffic to a company, filter to ICP, score the visit, and route the warm ones to a rep the same day.</p>
+        <div class="sfoot"><span class="stack">nRev, CRM</span><a class="openp" href="posts/nrev-visitors-to-intent.html">read the write-up &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="auto" data-cat="gtm" data-text="competitor and intent tracking find the real competitor set, watch who they are chasing, and turn that attention into a target list with a reason to reach out. gtm automation">
+        <div class="ptags"><span class="stag">Automation</span><span class="ctag">GTM</span></div>
+        <h3>Competitor and intent tracking</h3>
+        <p>Find the real competitor set, watch who they are chasing, and turn that attention into a target list with a reason to reach out.</p>
+        <div class="sfoot"><span class="stack">nRev, CRM</span><a class="openp" href="posts/nrev-competitor-chasing.html">read the write-up &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="auto" data-cat="research" data-text="org research at scale point a prompt at a list of companies, enforce a strict schema with a source per claim, and keep it fresh with claude code. research automation">
+        <div class="ptags"><span class="stag">Automation</span><span class="ctag">Research</span></div>
+        <h3>Org research at scale</h3>
+        <p>Point a prompt at a list of companies, enforce a strict schema with a source per claim, and keep it fresh with Claude Code.</p>
+        <div class="sfoot"><span class="stack">nRev, Claude Code</span><a class="openp" href="posts/nrev-org-research.html">read the write-up &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="play" data-cat="crm" data-text="crm cleanup and dedupe a safe way to dedupe and merge a messy crm: a duplicate finder that suggests the survivor, dry-run merges, and an audit log. crm playbook">
+        <div class="ptags"><span class="stag">Playbook</span><span class="ctag">CRM</span></div>
+        <h3>CRM cleanup and dedupe</h3>
+        <p>A safe way to dedupe and merge a messy CRM: a duplicate finder that suggests the survivor, dry-run merges, and an audit log.</p>
+        <div class="sfoot"><span class="stack">Pipedrive MCP</span><a class="openp" href="posts/crm-cleanup.html">read the write-up &rarr;</a></div>
+      </article>
+      <article class="scard" data-type="play" data-cat="ai" data-text="model bake-off and eval method a repeatable way to pick a browsing model for a research task: sample, price the mistakes, and test the merge. ai playbook">
+        <div class="ptags"><span class="stag">Playbook</span><span class="ctag">AI</span></div>
+        <h3>Model bake-off and eval method</h3>
+        <p>A repeatable way to pick a browsing model for a research task: sample, price the mistakes, and test the merge.</p>
+        <div class="sfoot"><span class="stack">any orchestration tool</span><a class="openp" href="posts/ai-model-bakeoff.html">read the write-up &rarr;</a></div>
+      </article>
+      </div>
+      <div class="eyebrow" style="margin:44px 0 6px">Selected work</div>
+      <p class="skill-intro" style="margin-bottom:8px">Older samples, kept for reference.</p>
+      <ul class="postlist">
+        <li><a href="posts/meesho-performance-plan.html"><span class="t">Meesho performance marketing plan, Q1 2020<span class="tp">A quarterly acquisition plan, written up with the original workbook linked.</span></span><span class="d">Case study</span></a></li>
+        <li><a href="assets/performance-marketing-assignment.pdf"><span class="t">Performance marketing assignment (original brief)<span class="tp">The brief the plan above answers.</span></span><span class="d">PDF</span></a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<script>
+const sc=[...document.querySelectorAll('.scard')];
+const sq=document.getElementById('sq'),st=document.getElementById('stype'),sca=document.getElementById('scat'),scn=document.getElementById('scount');
+function sapply(){const t=sq.value.trim().toLowerCase(),ty=st.value,c=sca.value;let n=0;
+  sc.forEach(x=>{const ok=(!t||x.dataset.text.includes(t))&&(!ty||x.dataset.type===ty)&&(!c||x.dataset.cat===c);x.classList.toggle('hide',!ok);if(ok)n++;});
+  scn.textContent=n+' result'+(n===1?'':'s');}
+[sq,st,sca].forEach(e=>e.addEventListener('input',sapply));
+document.getElementById('sreset').addEventListener('click',()=>{sq.value='';st.value='';sca.value='';sapply();});sapply();
+</script>
+<script>
+const SKMD={"account-brief": "---\nname: account-brief\ndescription: Use when a rep needs a first-call brief on a target account from just a company URL. Reads the live company pages and produces a one-page, source-grounded brief covering company, business model, buying signals, stakeholders, a pain hypothesis, and three talking points, with an explicit split between confirmed facts and inferences. Never fabricates firmographics.\n---\n\n# Account brief\n\nYou produce a tight, first-call account brief for a B2B rep. The rep reads it in under two minutes right before dialing and may reference it live. Be concrete, opinionated, and short. Never pad. A brief that is long and hedged is a failed brief.\n\n## Input\nA company URL, and optionally the product the rep sells.\n\n## How to work\n1. Read the company's own pages first: home, product, pricing, about, careers, newsroom.\n2. Then check filings and reputable press. Note the source for every claim.\n3. Keep what you confirmed separate from what you inferred. Never present an inference as a fact.\n\n## Output, one page\n- One line on what the company does.\n- Business model and rough scale (revenue, GMV, store count, headcount), each sourced.\n- Buying signals from the last six months: hiring, launches, funding, expansion.\n- Likely stakeholders for the offer, by role.\n- A single pain hypothesis, stated plainly.\n- Three talking points that connect their pain to the offer.\n- A Confirmed versus Inferred recap at the end.\n\n## Rules\n- Never fabricate firmographics. If you cannot find a number, write \"not found\".\n- No buzzwords, no em dashes, no filler.\n- If the site is thin, say so and keep the brief short.\n", "ads-program-research": "---\nname: ads-program-research\ndescription: Use to determine whether a company runs its own advertising business, such as a retail media network, sponsored listings, or a data product it sells to brands. Returns a status of Confirmed, Building, or None with a source trail and the vendor stack behind the program. Built to avoid false negatives. Never fabricates.\n---\n\n# Ads-program research\n\nYou research whether a company sells advertising, not whether it buys ads. Answer only from evidence you can source. A wrong \"None\" is the expensive error, because it looks finished and drops the account silently, so lean toward finding a program when there is credible signal.\n\n## How to work, in order\n1. The company's own advertiser or partner pages.\n2. Filings and investor material.\n3. Trade press, checked in the home-market language.\n4. Hiring signals for ad, monetization, or retail-media roles.\nStop as soon as you can call it.\n\n## Where programs hide, by business type\n- Marketplace: the seller portal, not the consumer homepage.\n- Fintech: offers and rewards.\n- Pharmacy or grocery: often a named data partner.\nA generic search on the homepage misses most of these.\n\n## Output, JSON\n{ status: Confirmed | Building | None, program_name, channels: [], vendors: [], confidence_0_1, evidence_summary, source_urls: [] }\n\n## Rules\n- A named, announced program counts as Building, never None.\n- Buying ads is not selling ads. A shopper-marketing program run through an agency is not an ad business on its own.\n- Never put a guessed value in a data field. If you are unsure, say so in evidence_summary.\n- Status is one of exactly three words, so a filter downstream does not break.\n", "icp-qualifier": "---\nname: icp-qualifier\ndescription: Classify and score a company or contact against an ICP. Buckets into Customer, Prospect, Partner, or Disqualify, and returns a 0-100 score with the one reason it scored that way and the biggest risk. Works on a single record or a pasted list. Portable into Clay, Apollo, or a spreadsheet.\n---\n\n# ICP qualifier\n\nYou score how well a company or contact fits an ICP, so a rep knows who to touch first and why. Be blunt about disqualifiers. A high score with a fatal disqualifier is worse than an honest low score.\n\n## Input\nAn ICP definition, and one record or a list of records.\n\n## How to work\n1. Check the hard disqualifiers first. If any is present, bucket as Disqualify and stop.\n2. Otherwise bucket as Customer, Prospect, or Partner.\n3. Score 0-100 on the traits that actually predict a win, not the wishlist.\n\n## Output, per record\n{ bucket, score_0_100, reason, biggest_risk }\n\n## Rules\n- Disqualifiers override the score. Say which one fired.\n- The reason is one line, concrete, and specific to the record.\n- No fabrication. If a needed fact is missing, say what you would need to confirm the score.\n- Keep buckets to the four exact words so the output filters cleanly.\n"};
+document.querySelectorAll(".ocmini").forEach(b=>b.addEventListener("click",()=>{const md=SKMD[b.dataset.slug]||"";const p="I want to use this as a Claude skill. If you have the skill-creator skill, use it to install this so I can reuse it, then run it for me. Here is the SKILL.md:\n\n"+md;window.open("https://claude.ai/new?q="+encodeURIComponent(p),"_blank");}));
+</script>
+</body>
+</html>

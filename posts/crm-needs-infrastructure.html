@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your CRM needs infrastructure now &middot; Nikhil Jain</title>
+<meta name="description" content="An AI agent is only as good as what it can touch. For a CRM in the age of AI, that means an MCP server, not a read-only connector.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>Your CRM needs infrastructure now</h1>
+      <div class="byline">AI & agent workflows &nbsp;&middot;&nbsp; Jul 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      <div class="post-body">
+
+        <p>An AI agent is only as good as what it can touch. Give it a chat window and it writes you an email. Give it your CRM and it can run your pipeline. The difference is infrastructure.</p>
+        <p>For a while the gap was that the tools could not act. They could suggest, but a human still had to click. That is changing fast, and the bottleneck is no longer the model. It is whether the model has a safe, complete way into your systems.</p>
+        <p>For a CRM, that way is an MCP server. It exposes the CRM to any AI client as a set of tools it can call: read a deal, score a contact, merge duplicates, write one field across a hundred records.</p>
+        <blockquote>In the age of AI, the CRM is not the product. Access to it is.</blockquote>
+        <p>The connectors that ship by default tend to be read-only and thin. They let an agent look, not act. The real work lives in the writes and the cleanup, and those need guardrails: a dry run before anything destructive, and a log of every change so you can see and undo what happened.</p>
+        <p>So I built my own for Pipedrive, with 36 tools and those guardrails baked in. Not because building it was fun, though it was, but because without it the agent is a very smart intern who is not allowed to use the keyboard. I wrote up how it works in <a href="crm-cleanup.html">the CRM cleanup</a>, and the code is open for anyone who wants it.</p>
+      </div>
+      <div class="post-foot">
+        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

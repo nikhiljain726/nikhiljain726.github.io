@@ -1,0 +1,2684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I built a 53-tool Pipedrive MCP server (and I cannot write code) &middot; Nikhil Jain</title>
+<meta name="description" content="A non-engineer's guide to a 53-tool Pipedrive MCP server: what it does, all 53 tools, the full server.py to copy, and how to run it on a Mac. Open source.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"><style>
+  .post-body .toollist{list-style:none;padding:0;margin:1.2em 0;max-width:var(--measure)}
+  .post-body .toollist li{padding:9px 0;border-bottom:1px solid var(--line);font-size:.98rem;line-height:1.5}
+  .post-body .toollist .tn{font-family:var(--mono);font-size:.82rem;color:var(--ink);font-weight:500}
+  .post-body .toollist .td{color:var(--ink-soft)}
+  .post-body code{font-family:var(--mono);font-size:.86em;background:var(--tint);padding:2px 6px;border-radius:5px}
+  .codeblock{background:#141417;border-radius:14px;overflow:hidden;margin:18px 0 6px;max-width:var(--measure)}
+  .codeblock .cbhead{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #2a2a30;position:sticky;top:0;background:#141417}
+  .codeblock .fn{font-family:var(--mono);font-size:.74rem;color:#b7b3a7;letter-spacing:.04em}
+  .codeblock .cpy{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:#f3efe6;border:1px solid #3a3a42;background:none;border-radius:7px;padding:6px 11px;cursor:pointer}
+  .codeblock pre{margin:0;padding:18px;font-family:var(--mono);font-size:.72rem;line-height:1.55;white-space:pre;color:#e6e3da;overflow-x:auto;max-height:560px;overflow-y:auto}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>I built a 53-tool Pipedrive MCP server, and I cannot write code</h1>
+      <div class="byline">AI &amp; agent workflows &nbsp;&middot;&nbsp; July 2026 &nbsp;&middot;&nbsp; 9 min read</div>
+      <div class="post-body">
+
+        <p>I run growth at a retail media company. I am not an engineer. A few weeks ago I asked Claude a simple question: if I have my Pipedrive API key, can I build a connector that reads and writes my CRM from a chat window? The answer turned out to be yes, and the thing I ended up with is now 53 tools deep and running our actual sales pipeline. I am putting the whole server up for anyone to use. This is the story of how it got built, because the how is more useful than the code.</p>
+        <p>The first surprise was how little I needed to know. An MCP server is just a small program that hands a set of tools to Claude. Each tool wraps one thing the Pipedrive API can do: search a deal, create a contact, add a note. Claude does the wrapping. I described what I wanted, Claude wrote the Python, and I copied files where I was told to copy them. My one contribution on day one was noticing my Mac had an old version of Python and installing a new one.</p>
+        <p>It worked on the first real test. I asked it to list my pipelines and it read back all six, live, from Pipedrive. That moment matters more than it sounds. The gap between this might work and this is reading my real CRM is the gap most people never cross, and it took about fifteen minutes.</p>
+
+        <h2>The tools came from problems, not from a plan</h2>
+        <p>I did not sit down and design 53 tools. I started with maybe twenty, the obvious ones, and then every few days I hit a wall and added whatever the wall demanded.</p>
+        <p>I needed to clean up duplicate contacts, so we added merge tools. Then I had 3,196 duplicate people and no way to find them programmatically, so we added a duplicate finder. Then I learned Pipedrive's own find-duplicates screen matches on name alone, which flags three different people named the same at three different companies as one person. Merging those would corrupt data you cannot get back. So the finder got rebuilt to match the way a careful human would: same name plus a shared email, phone, or company, never name by itself.</p>
+        <p>Then I wanted to attach 984 sent emails to the right deals. New tools. Then I wanted to tag deals with which of our product modules they cover. New tools. Then I wanted tasks to land in the right person's task list instead of mine, which meant learning that Pipedrive's older API calls the assignee user_id while the newer one calls it owner_id, and the tool had to speak the right one. New behavior.</p>
+        <p>This is the part worth copying. Do not try to build the complete thing up front. Build the tool you need the hour you need it. The server grew in the exact shape of the work, which is why it fits the work.</p>
+
+        <h2>The mistakes taught me the most</h2>
+        <p>Two of them stand out.</p>
+        <p>The first was a bug in how the email tool searched. It reported that I had 2 unlinked emails when Pipedrive's own screen clearly showed 984. The tool was only ever opening the top drawer of the filing cabinet. It counted every email it scanned against its limit, but only kept the unlinked ones, so a folder full of already-linked emails used up the whole budget before it ever reached the backlog. Once you see it, it is obvious. Before you see it, you trust a number that is wrong. That is the dangerous kind of bug, the one that answers confidently.</p>
+        <p>The second was subtler and I nearly walked into it. I asked whether I could skip the native merge and just copy one record's fields onto another, then delete the loser. It sounds equivalent. It is not. When Pipedrive merges two records, it re-points all the deals, activities, and notes that were attached to the loser so they now point at the survivor, then deletes the loser. A copy-and-delete moves the visible fields but orphans all of that history. You would keep the name and email and quietly lose the three open deals. The lesson: when a platform gives you a real merge, the value is not in the fields you can see, it is in the links you cannot.</p>
+
+        <h2>Safety stopped being optional</h2>
+        <p>There is a point where a toy becomes a machine that can hurt you, and you can feel it happen. For me it was the moment I was about to run merges across thousands of real records with no human watching each one. Merges cannot be undone.</p>
+        <p>So before any of that ran, we added two things. Every tool that changes data now takes a dry_run flag that shows you exactly what it would do without doing it. And every real change appends a line to a local log: what changed, which record survived, which was deleted, when. Neither is clever. Both are the difference between a mistake you can trace and a mistake you cannot.</p>
+        <p>If you build one of these, add those two things before you point it at anything you care about, not after. The urge is to add them after the first scare. Add them before.</p>
+
+        <h2>Then I moved it off my laptop</h2>
+        <p>The whole thing ran on my Mac, which meant it only worked when my Mac was on. To fix that I put the code in a private GitHub repo and connected it to Claude Code on the web, which runs in the cloud. The credentials stay out of the code entirely. The repo holds the tools, and my Pipedrive key lives in a separate environment setting that never gets saved into the repo. Same key stays private, code can be shared.</p>
+        <p>That separation is the quiet unlock for a team. A colleague can use the exact same tools with their own Pipedrive key, so every action is attributed to the right person, and if they leave you revoke one key without touching yours.</p>
+
+        <h2>What most connectors give you, and what this one does</h2>
+        <p>Most general MCP connectors for a CRM expose a handful of read-only tools. You can look, not act. That is fine for answering a question and useless for running a pipeline. This server has 53 tools, and most of them write: create, update, merge, dedupe, bulk-edit, reassign, link email, tag products, manage custom fields, and read back an audit log of everything it changed. The whole point was to close the gap between a chat window and the work.</p>
+
+        <h2>The 53 tools, one by one</h2>
+        <p>Every tool wraps one job the Pipedrive API can do. Reads are safe. The writes and merges are the ones with dry-run previews and an audit trail.</p>
+        <ul class="toollist">
+          <li><span class="tn">1. pipedrive_search_deals</span> <span class="td">Search for deals in Pipedrive by title/keyword.</span></li>
+          <li><span class="tn">2. pipedrive_list_deals</span> <span class="td">List deals from Pipedrive with optional status filter.</span></li>
+          <li><span class="tn">3. pipedrive_get_deal</span> <span class="td">Get full details of a single deal by its ID, including all custom fields.</span></li>
+          <li><span class="tn">4. pipedrive_create_deal</span> <span class="td">Create a new deal in Pipedrive.</span></li>
+          <li><span class="tn">5. pipedrive_update_deal</span> <span class="td">Update a deal&#x27;s properties (title, value, status, stage, contacts, etc.).</span></li>
+          <li><span class="tn">6. pipedrive_search_persons</span> <span class="td">Search for contacts/persons in Pipedrive by name, email, or phone number.</span></li>
+          <li><span class="tn">7. pipedrive_get_person</span> <span class="td">Get full details of a contact/person by their ID.</span></li>
+          <li><span class="tn">8. pipedrive_create_person</span> <span class="td">Create a new contact/person in Pipedrive.</span></li>
+          <li><span class="tn">9. pipedrive_update_person</span> <span class="td">Update a contact/person&#x27;s details in Pipedrive.</span></li>
+          <li><span class="tn">10. pipedrive_search_organizations</span> <span class="td">Search for organizations in Pipedrive by name.</span></li>
+          <li><span class="tn">11. pipedrive_create_organization</span> <span class="td">Create a new organization in Pipedrive.</span></li>
+          <li><span class="tn">12. pipedrive_list_activities</span> <span class="td">List activities (calls, meetings, tasks, emails, etc.) with optional filters by deal or person.</span></li>
+          <li><span class="tn">13. pipedrive_create_activity</span> <span class="td">Create a new activity (call, meeting, task, etc.) in Pipedrive, optionally linked to a deal/person/org and assigned to a specific user.</span></li>
+          <li><span class="tn">14. pipedrive_update_activity</span> <span class="td">Update an existing activity: change its subject, type, assigned owner, due date/time, links, note, or done status.</span></li>
+          <li><span class="tn">15. pipedrive_add_note</span> <span class="td">Add a note to a deal, person, or organization in Pipedrive.</span></li>
+          <li><span class="tn">16. pipedrive_get_notes</span> <span class="td">Get notes attached to a deal, person, or organization.</span></li>
+          <li><span class="tn">17. pipedrive_list_pipelines</span> <span class="td">List all pipelines in Pipedrive with their IDs and names.</span></li>
+          <li><span class="tn">18. pipedrive_get_stages</span> <span class="td">Get all stages of a specific pipeline.</span></li>
+          <li><span class="tn">19. pipedrive_list_leads</span> <span class="td">List leads from the Pipedrive leads inbox.</span></li>
+          <li><span class="tn">20. pipedrive_delete</span> <span class="td">Delete an entity (deal, person, organization, activity, or note) from Pipedrive.</span></li>
+          <li><span class="tn">21. pipedrive_merge_persons</span> <span class="td">Merge two duplicate persons/contacts.</span></li>
+          <li><span class="tn">22. pipedrive_merge_organizations</span> <span class="td">Merge two duplicate organizations.</span></li>
+          <li><span class="tn">23. pipedrive_merge_deals</span> <span class="td">Merge two duplicate deals.</span></li>
+          <li><span class="tn">24. pipedrive_list_fields</span> <span class="td">List field definitions for deals, persons, or organizations, mapping the human-readable name to the API key (40-char hash for custom fields). Essential for reading/writing custom fields like ICP score, confidence tier, or region by name.</span></li>
+          <li><span class="tn">25. pipedrive_set_custom_field</span> <span class="td">Set a single custom field value on a deal, person, or organization.</span></li>
+          <li><span class="tn">26. pipedrive_list_deals_filtered</span> <span class="td">List deals with server-side filters: by owner, person, org, stage, pipeline, status, or a saved filter_id.</span></li>
+          <li><span class="tn">27. pipedrive_list_persons_filtered</span> <span class="td">List persons with server-side filters: by owner, organization, or a saved filter_id.</span></li>
+          <li><span class="tn">28. pipedrive_list_organizations_filtered</span> <span class="td">List organizations with server-side filters: by owner or a saved filter_id.</span></li>
+          <li><span class="tn">29. pipedrive_list_filters</span> <span class="td">List all saved filters in Pipedrive with their IDs and types.</span></li>
+          <li><span class="tn">30. pipedrive_list_deal_participants</span> <span class="td">List all participants (contacts) associated with a deal.</span></li>
+          <li><span class="tn">31. pipedrive_add_deal_participant</span> <span class="td">Add a person as a participant on a deal, so multiple contacts can be tracked on one opportunity.</span></li>
+          <li><span class="tn">32. pipedrive_remove_deal_participant</span> <span class="td">Remove a participant from a deal.</span></li>
+          <li><span class="tn">33. pipedrive_set_labels</span> <span class="td">Set labels on a person or organization (e.g.</span></li>
+          <li><span class="tn">34. pipedrive_change_owner</span> <span class="td">Reassign a deal, person, or organization to a new owner.</span></li>
+          <li><span class="tn">35. pipedrive_list_users</span> <span class="td">List all users in the Pipedrive account with their IDs, names, and emails.</span></li>
+          <li><span class="tn">36. pipedrive_list_activity_types</span> <span class="td">List all activity types with their key strings and names (call, meeting, task, plus any custom types). Use to get valid &#x27;type&#x27; values for pipedrive_create_activity.</span></li>
+          <li><span class="tn">37. pipedrive_find_duplicates</span> <span class="td">Detect duplicate persons or organizations across the whole book (paginated), using Pipedrive&#x27;s own matching logic by default.</span></li>
+          <li><span class="tn">38. pipedrive_update_raw</span> <span class="td">Comprehensive update: write ANY standard or custom field(s) on a deal, person, or organization in a single call.</span></li>
+          <li><span class="tn">39. pipedrive_create_raw</span> <span class="td">Comprehensive create: make a new deal, person, or organization with ANY standard or custom fields populated up front, in one call.</span></li>
+          <li><span class="tn">40. pipedrive_batch_update</span> <span class="td">Comprehensive batch write: update many deals/persons/orgs in one call, each with any standard or custom fields.</span></li>
+          <li><span class="tn">41. pipedrive_list_mail_threads</span> <span class="td">List email threads across mail folders, defaulting to only those NOT yet linked to a deal.</span></li>
+          <li><span class="tn">42. pipedrive_get_mail_thread</span> <span class="td">Get one mail thread&#x27;s details plus its distinct participant email addresses and current deal link.</span></li>
+          <li><span class="tn">43. pipedrive_link_mail_thread_to_deal</span> <span class="td">Link an email thread to a deal.</span></li>
+          <li><span class="tn">44. pipedrive_read_audit_log</span> <span class="td">Read back the local audit log of every mutating action (merges, deletes, batch updates, owner changes, mail-thread links) this server has performed.</span></li>
+          <li><span class="tn">45. pipedrive_list_files</span> <span class="td">List files attached to a deal, person, or organization (proposals, contracts, decks). Returns file name, type, size, add time, and the deal/person/org it is linked to.</span></li>
+          <li><span class="tn">46. pipedrive_search_products</span> <span class="td">Search the product catalog by name or code.</span></li>
+          <li><span class="tn">47. pipedrive_list_deal_products</span> <span class="td">List the products/line-items attached to a deal (e.g.</span></li>
+          <li><span class="tn">48. pipedrive_add_deal_product</span> <span class="td">Attach a product/line-item to a deal (e.g.</span></li>
+          <li><span class="tn">49. pipedrive_remove_deal_product</span> <span class="td">Remove a product/line-item from a deal.</span></li>
+          <li><span class="tn">50. pipedrive_tag_deal_modules</span> <span class="td">Tag a deal with product modules by name (e.g.</span></li>
+          <li><span class="tn">51. pipedrive_batch_link_mail_threads</span> <span class="td">Process a folder&#x27;s unlinked email threads in one batch: for each, auto-match via exact participant email -&gt; person -&gt; open deal, and link it.</span></li>
+          <li><span class="tn">52. pipedrive_create_custom_field</span> <span class="td">Create a new custom field on deals, persons, or organizations.</span></li>
+          <li><span class="tn">53. pipedrive_update_custom_field</span> <span class="td">Edit an existing custom field&#x27;s schema: change its name, set/update its description (the &#x27;Field description&#x27; box in the screenshot), or add new dropdown options.</span></li>
+        </ul>
+
+        <h2>How to run it on a Mac</h2>
+        <p>No coding needed. About fifteen minutes end to end.</p>
+        <ol>
+          <li><strong>Install Python 3.</strong> Download it from python.org, or if you use Homebrew run <code>brew install python</code>. Check it worked: open Terminal and run <code>python3 --version</code>.</li>
+          <li><strong>Get the server file.</strong> Download <code>server.py</code> (embedded below, or from the GitHub repo) into a folder, for example <code>~/pipedrive-mcp</code>.</li>
+          <li><strong>Install the three dependencies.</strong> In Terminal: <code>pip3 install "mcp[cli]" httpx pydantic</code>.</li>
+          <li><strong>Get your Pipedrive details.</strong> In Pipedrive, go to Settings, then Personal preferences, then API, and copy your API token. Your domain is the part before .pipedrive.com in your account URL.</li>
+          <li><strong>Point Claude Desktop at it.</strong> Open Claude Desktop settings, edit the developer config file, and add the block below with the full path to your server.py and your two values.</li>
+          <li><strong>Restart Claude Desktop</strong> and ask it to list your pipelines. If it reads them back, you are live.</li>
+        </ol>
+        <div class="note">In claude_desktop_config.json:<br><br>{ "mcpServers": { "pipedrive": { "command": "python3", "args": ["/full/path/to/server.py"], "env": { "PIPEDRIVE_API_TOKEN": "your-token", "PIPEDRIVE_DOMAIN": "yourcompany" } } } }</div>
+        <p>To run it in the cloud instead of your laptop, put the file in a private GitHub repo, set the same two values as environment variables (never in the code), and connect it to Claude Code on the web.</p>
+
+        <h2>What I actually learned</h2>
+        <p>You do not need to know how to code to build software anymore. You need to know what you want, be willing to test it against reality, and be honest about what can go wrong. I supplied the domain knowledge, the CRM, the actual problems, and the judgment about what was too risky to automate. The code was the easy part, which is a sentence I could not have written a month ago.</p>
+        <p>The server is open source. Take it, point it at your own Pipedrive, add the tools your own walls demand. If you are not an engineer, that is not a disqualification. It might even be the point.</p>
+
+        <h2>The whole server</h2>
+        <p>Here is the complete file. Copy it, save it as server.py, and follow the Mac steps above.</p>
+        <div class="codeblock">
+          <div class="cbhead"><span class="fn">server.py &middot; 53 tools</span><button class="cpy" onclick="copyServer(this)">Copy</button></div>
+          <pre>&quot;&quot;&quot;
+Pipedrive MCP Server
+====================
+A Model Context Protocol server that connects Claude to your Pipedrive CRM.
+Supports reading and writing deals, contacts, organizations, activities, notes, and pipelines.
+Includes merge tools for deduplicating persons, organizations, and deals.
+
+Setup:
+  1. pip install &quot;mcp[cli]&quot; httpx pydantic
+  2. Set your env vars:
+       export PIPEDRIVE_API_TOKEN=&quot;your-api-token-here&quot;
+       export PIPEDRIVE_DOMAIN=&quot;yourcompany&quot;   (the part before .pipedrive.com)
+  3. Run:  python server.py
+&quot;&quot;&quot;
+
+import os
+import json
+import httpx
+from typing import Optional, List, Dict, Any
+from enum import Enum
+from pydantic import BaseModel, Field, ConfigDict
+from mcp.server.fastmcp import FastMCP
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+API_TOKEN = os.environ.get(&quot;PIPEDRIVE_API_TOKEN&quot;, &quot;&quot;)
+COMPANY_DOMAIN = os.environ.get(&quot;PIPEDRIVE_DOMAIN&quot;, &quot;&quot;)
+BASE_URL = f&quot;https://{COMPANY_DOMAIN}.pipedrive.com/api/v2&quot;
+BASE_URL_V1 = f&quot;https://{COMPANY_DOMAIN}.pipedrive.com/api/v1&quot;
+DEFAULT_LIMIT = 20
+REQUEST_TIMEOUT = 30
+
+mcp = FastMCP(&quot;pipedrive_mcp&quot;)
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
+
+def _headers() -&gt; dict:
+    return {
+        &quot;x-api-token&quot;: API_TOKEN,
+        &quot;Content-Type&quot;: &quot;application/json&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;,
+    }
+
+
+async def _get(path: str, params: dict | None = None, version: str = &quot;v2&quot;) -&gt; dict:
+    &quot;&quot;&quot;GET request to Pipedrive API.&quot;&quot;&quot;
+    base = BASE_URL if version == &quot;v2&quot; else BASE_URL_V1
+    url = f&quot;{base}/{path}&quot;
+    async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
+        resp = await client.get(url, headers=_headers(), params=params or {})
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _post(path: str, body: dict, version: str = &quot;v2&quot;) -&gt; dict:
+    &quot;&quot;&quot;POST request to Pipedrive API.&quot;&quot;&quot;
+    base = BASE_URL if version == &quot;v2&quot; else BASE_URL_V1
+    url = f&quot;{base}/{path}&quot;
+    async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
+        resp = await client.post(url, headers=_headers(), json=body)
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _put(path: str, body: dict, version: str = &quot;v2&quot;) -&gt; dict:
+    &quot;&quot;&quot;PUT request to Pipedrive API.&quot;&quot;&quot;
+    base = BASE_URL if version == &quot;v2&quot; else BASE_URL_V1
+    url = f&quot;{base}/{path}&quot;
+    async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
+        resp = await client.put(url, headers=_headers(), json=body)
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _patch(path: str, body: dict, version: str = &quot;v2&quot;) -&gt; dict:
+    &quot;&quot;&quot;PATCH request to Pipedrive API.&quot;&quot;&quot;
+    base = BASE_URL if version == &quot;v2&quot; else BASE_URL_V1
+    url = f&quot;{base}/{path}&quot;
+    async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
+        resp = await client.patch(url, headers=_headers(), json=body)
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _delete(path: str, version: str = &quot;v2&quot;) -&gt; dict:
+    &quot;&quot;&quot;DELETE request to Pipedrive API.&quot;&quot;&quot;
+    base = BASE_URL if version == &quot;v2&quot; else BASE_URL_V1
+    url = f&quot;{base}/{path}&quot;
+    async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
+        resp = await client.delete(url, headers=_headers())
+        resp.raise_for_status()
+        return resp.json()
+
+
+def _handle_error(e: Exception) -&gt; str:
+    if isinstance(e, httpx.HTTPStatusError):
+        status = e.response.status_code
+        try:
+            detail = e.response.json()
+        except Exception:
+            detail = e.response.text
+        if status == 401:
+            return f&quot;Error 401: Invalid API token. Check PIPEDRIVE_API_TOKEN. Detail: {detail}&quot;
+        if status == 403:
+            return f&quot;Error 403: Permission denied. Your token may not have access to this resource.&quot;
+        if status == 404:
+            return f&quot;Error 404: Resource not found. Check the ID you provided.&quot;
+        if status == 429:
+            return f&quot;Error 429: Rate limit exceeded. Wait a moment and try again.&quot;
+        return f&quot;Error {status}: {detail}&quot;
+    if isinstance(e, httpx.TimeoutException):
+        return &quot;Error: Request timed out. Try again.&quot;
+    return f&quot;Error: {type(e).__name__}: {e}&quot;
+
+
+def _fmt(data: Any) -&gt; str:
+    &quot;&quot;&quot;Format API response as readable JSON.&quot;&quot;&quot;
+    return json.dumps(data, indent=2, default=str)
+
+
+# ---------------------------------------------------------------------------
+# Audit logging
+# ---------------------------------------------------------------------------
+# Every mutating action (merge, delete, link, owner-change) is appended to a
+# local CSV so there is a durable, recoverable trace of what changed and when.
+# Location: alongside this server file, or override with PIPEDRIVE_AUDIT_LOG.
+
+import csv
+from datetime import datetime, timezone
+
+_AUDIT_PATH = os.environ.get(
+    &quot;PIPEDRIVE_AUDIT_LOG&quot;,
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), &quot;audit-log.csv&quot;),
+)
+_AUDIT_HEADER = [&quot;timestamp_utc&quot;, &quot;action&quot;, &quot;entity_type&quot;, &quot;kept_or_target_id&quot;, &quot;affected_or_deleted_id&quot;, &quot;detail&quot;]
+
+
+def _audit(action: str, entity_type: str, kept_or_target_id: Any, affected_or_deleted_id: Any, detail: str = &quot;&quot;) -&gt; None:
+    &quot;&quot;&quot;Append one row to the audit CSV. Best-effort: never breaks the tool call if logging fails.&quot;&quot;&quot;
+    try:
+        new_file = not os.path.exists(_AUDIT_PATH)
+        with open(_AUDIT_PATH, &quot;a&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as fh:
+            w = csv.writer(fh)
+            if new_file:
+                w.writerow(_AUDIT_HEADER)
+            w.writerow([
+                datetime.now(timezone.utc).isoformat(),
+                action, entity_type,
+                kept_or_target_id, affected_or_deleted_id,
+                detail,
+            ])
+    except Exception:
+        pass  # logging must never block the operation
+
+
+# ===========================================================================
+# DEALS
+# ===========================================================================
+
+class PipedriveSearchDealsInput(BaseModel):
+    &quot;&quot;&quot;Search deals by term.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    term: str = Field(..., description=&quot;Search term to look for in deal titles&quot;, min_length=1)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, description=&quot;Max results (1-100)&quot;, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_search_deals&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_search_deals(params: PipedriveSearchDealsInput) -&gt; str:
+    &quot;&quot;&quot;Search for deals in Pipedrive by title/keyword. Returns matching deals with their value, stage, and status.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;deals/search&quot;, {&quot;term&quot;: params.term, &quot;limit&quot;: params.limit}, version=&quot;v1&quot;)
+        items = data.get(&quot;data&quot;, {}).get(&quot;items&quot;, [])
+        if not items:
+            return f&quot;No deals found matching &#x27;{params.term}&#x27;.&quot;
+        results = []
+        for item in items:
+            d = item.get(&quot;item&quot;, {})
+            results.append({
+                &quot;id&quot;: d.get(&quot;id&quot;),
+                &quot;title&quot;: d.get(&quot;title&quot;),
+                &quot;value&quot;: d.get(&quot;value&quot;),
+                &quot;currency&quot;: d.get(&quot;currency&quot;),
+                &quot;status&quot;: d.get(&quot;status&quot;),
+                &quot;stage&quot;: d.get(&quot;stage&quot;, {}).get(&quot;name&quot;) if isinstance(d.get(&quot;stage&quot;), dict) else d.get(&quot;stage_id&quot;),
+                &quot;person&quot;: d.get(&quot;person&quot;, {}).get(&quot;name&quot;) if isinstance(d.get(&quot;person&quot;), dict) else None,
+                &quot;organization&quot;: d.get(&quot;organization&quot;, {}).get(&quot;name&quot;) if isinstance(d.get(&quot;organization&quot;), dict) else None,
+            })
+        return _fmt({&quot;count&quot;: len(results), &quot;deals&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveListDealsInput(BaseModel):
+    &quot;&quot;&quot;List deals with optional filters.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    status: Optional[str] = Field(default=None, description=&quot;Filter by status: open, won, lost, deleted&quot;)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+    cursor: Optional[str] = Field(default=None, description=&quot;Pagination cursor from previous response&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_deals&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_deals(params: PipedriveListDealsInput) -&gt; str:
+    &quot;&quot;&quot;List deals from Pipedrive with optional status filter. Returns deal details including value, stage, and contacts.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.status:
+            p[&quot;status&quot;] = params.status
+        if params.cursor:
+            p[&quot;cursor&quot;] = params.cursor
+        data = await _get(&quot;deals&quot;, p)
+        deals = data.get(&quot;data&quot;, [])
+        cursor = data.get(&quot;additional_data&quot;, {}).get(&quot;next_cursor&quot;)
+        return _fmt({&quot;count&quot;: len(deals), &quot;next_cursor&quot;: cursor, &quot;deals&quot;: deals})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveGetDealInput(BaseModel):
+    &quot;&quot;&quot;Get a single deal by ID.&quot;&quot;&quot;
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;The Pipedrive deal ID&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_get_deal&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_get_deal(params: PipedriveGetDealInput) -&gt; str:
+    &quot;&quot;&quot;Get full details of a single deal by its ID, including all custom fields.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;deals/{params.deal_id}&quot;)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveCreateDealInput(BaseModel):
+    &quot;&quot;&quot;Create a new deal.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    title: str = Field(..., description=&quot;Deal title&quot;, min_length=1, max_length=255)
+    value: Optional[float] = Field(default=None, description=&quot;Deal monetary value&quot;)
+    currency: Optional[str] = Field(default=None, description=&quot;3-letter currency code, e.g. USD, EUR, INR&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;ID of the contact person to link&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;ID of the organization to link&quot;)
+    pipeline_id: Optional[int] = Field(default=None, description=&quot;ID of the pipeline to place the deal in&quot;)
+    stage_id: Optional[int] = Field(default=None, description=&quot;ID of the stage within the pipeline&quot;)
+    status: Optional[str] = Field(default=&quot;open&quot;, description=&quot;Deal status: open, won, lost&quot;)
+    expected_close_date: Optional[str] = Field(default=None, description=&quot;Expected close date in YYYY-MM-DD format&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_deal&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_deal(params: PipedriveCreateDealInput) -&gt; str:
+    &quot;&quot;&quot;Create a new deal in Pipedrive. Returns the created deal with its ID.&quot;&quot;&quot;
+    try:
+        body = {&quot;title&quot;: params.title}
+        if params.value is not None:
+            body[&quot;value&quot;] = params.value
+        if params.currency:
+            body[&quot;currency&quot;] = params.currency
+        if params.person_id:
+            body[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if params.pipeline_id:
+            body[&quot;pipeline_id&quot;] = params.pipeline_id
+        if params.stage_id:
+            body[&quot;stage_id&quot;] = params.stage_id
+        if params.status:
+            body[&quot;status&quot;] = params.status
+        if params.expected_close_date:
+            body[&quot;expected_close_date&quot;] = params.expected_close_date
+        data = await _post(&quot;deals&quot;, body)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveUpdateDealInput(BaseModel):
+    &quot;&quot;&quot;Update an existing deal.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;The deal ID to update&quot;, ge=1)
+    title: Optional[str] = Field(default=None, description=&quot;New deal title&quot;)
+    value: Optional[float] = Field(default=None, description=&quot;New deal value&quot;)
+    currency: Optional[str] = Field(default=None, description=&quot;3-letter currency code&quot;)
+    status: Optional[str] = Field(default=None, description=&quot;New status: open, won, lost&quot;)
+    stage_id: Optional[int] = Field(default=None, description=&quot;Move to this stage ID&quot;)
+    expected_close_date: Optional[str] = Field(default=None, description=&quot;New expected close date (YYYY-MM-DD)&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Link to this contact person ID&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Link to this organization ID&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_update_deal&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_update_deal(params: PipedriveUpdateDealInput) -&gt; str:
+    &quot;&quot;&quot;Update a deal&#x27;s properties (title, value, status, stage, contacts, etc.).&quot;&quot;&quot;
+    try:
+        body = {}
+        if params.title:
+            body[&quot;title&quot;] = params.title
+        if params.value is not None:
+            body[&quot;value&quot;] = params.value
+        if params.currency:
+            body[&quot;currency&quot;] = params.currency
+        if params.status:
+            body[&quot;status&quot;] = params.status
+        if params.stage_id:
+            body[&quot;stage_id&quot;] = params.stage_id
+        if params.expected_close_date:
+            body[&quot;expected_close_date&quot;] = params.expected_close_date
+        if params.person_id:
+            body[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if not body:
+            return &quot;Error: No fields provided to update.&quot;
+        data = await _patch(f&quot;deals/{params.deal_id}&quot;, body)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# PERSONS (Contacts)
+# ===========================================================================
+
+class PipedriveSearchPersonsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    term: str = Field(..., description=&quot;Search term (name, email, phone)&quot;, min_length=1)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_search_persons&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_search_persons(params: PipedriveSearchPersonsInput) -&gt; str:
+    &quot;&quot;&quot;Search for contacts/persons in Pipedrive by name, email, or phone number.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;persons/search&quot;, {&quot;term&quot;: params.term, &quot;limit&quot;: params.limit}, version=&quot;v1&quot;)
+        items = data.get(&quot;data&quot;, {}).get(&quot;items&quot;, [])
+        if not items:
+            return f&quot;No persons found matching &#x27;{params.term}&#x27;.&quot;
+        results = []
+        for item in items:
+            d = item.get(&quot;item&quot;, {})
+            results.append({
+                &quot;id&quot;: d.get(&quot;id&quot;),
+                &quot;name&quot;: d.get(&quot;name&quot;),
+                &quot;emails&quot;: d.get(&quot;emails&quot;, []),
+                &quot;phones&quot;: d.get(&quot;phones&quot;, []),
+                &quot;organization&quot;: d.get(&quot;organization&quot;, {}).get(&quot;name&quot;) if isinstance(d.get(&quot;organization&quot;), dict) else None,
+            })
+        return _fmt({&quot;count&quot;: len(results), &quot;persons&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveGetPersonInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    person_id: int = Field(..., description=&quot;The Pipedrive person/contact ID&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_get_person&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_get_person(params: PipedriveGetPersonInput) -&gt; str:
+    &quot;&quot;&quot;Get full details of a contact/person by their ID.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;persons/{params.person_id}&quot;)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveCreatePersonInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    name: str = Field(..., description=&quot;Contact&#x27;s full name&quot;, min_length=1, max_length=255)
+    email: Optional[str] = Field(default=None, description=&quot;Email address&quot;)
+    phone: Optional[str] = Field(default=None, description=&quot;Phone number&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Organization ID to link to&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_person&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_person(params: PipedriveCreatePersonInput) -&gt; str:
+    &quot;&quot;&quot;Create a new contact/person in Pipedrive.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {&quot;name&quot;: params.name}
+        if params.email:
+            body[&quot;emails&quot;] = [{&quot;value&quot;: params.email, &quot;primary&quot;: True, &quot;label&quot;: &quot;work&quot;}]
+        if params.phone:
+            body[&quot;phones&quot;] = [{&quot;value&quot;: params.phone, &quot;primary&quot;: True, &quot;label&quot;: &quot;work&quot;}]
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        data = await _post(&quot;persons&quot;, body)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveUpdatePersonInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    person_id: int = Field(..., description=&quot;Person ID to update&quot;, ge=1)
+    name: Optional[str] = Field(default=None, description=&quot;Updated name&quot;)
+    email: Optional[str] = Field(default=None, description=&quot;Updated email&quot;)
+    phone: Optional[str] = Field(default=None, description=&quot;Updated phone&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Link to organization ID&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_update_person&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_update_person(params: PipedriveUpdatePersonInput) -&gt; str:
+    &quot;&quot;&quot;Update a contact/person&#x27;s details in Pipedrive.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {}
+        if params.name:
+            body[&quot;name&quot;] = params.name
+        if params.email:
+            body[&quot;emails&quot;] = [{&quot;value&quot;: params.email, &quot;primary&quot;: True, &quot;label&quot;: &quot;work&quot;}]
+        if params.phone:
+            body[&quot;phones&quot;] = [{&quot;value&quot;: params.phone, &quot;primary&quot;: True, &quot;label&quot;: &quot;work&quot;}]
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if not body:
+            return &quot;Error: No fields provided to update.&quot;
+        data = await _patch(f&quot;persons/{params.person_id}&quot;, body)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# ORGANIZATIONS
+# ===========================================================================
+
+class PipedriveSearchOrgsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    term: str = Field(..., description=&quot;Search term for organization name&quot;, min_length=1)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_search_organizations&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_search_organizations(params: PipedriveSearchOrgsInput) -&gt; str:
+    &quot;&quot;&quot;Search for organizations in Pipedrive by name.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;organizations/search&quot;, {&quot;term&quot;: params.term, &quot;limit&quot;: params.limit}, version=&quot;v1&quot;)
+        items = data.get(&quot;data&quot;, {}).get(&quot;items&quot;, [])
+        if not items:
+            return f&quot;No organizations found matching &#x27;{params.term}&#x27;.&quot;
+        results = []
+        for item in items:
+            d = item.get(&quot;item&quot;, {})
+            results.append({
+                &quot;id&quot;: d.get(&quot;id&quot;),
+                &quot;name&quot;: d.get(&quot;name&quot;),
+                &quot;address&quot;: d.get(&quot;address&quot;),
+            })
+        return _fmt({&quot;count&quot;: len(results), &quot;organizations&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveCreateOrgInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    name: str = Field(..., description=&quot;Organization name&quot;, min_length=1, max_length=255)
+    address: Optional[str] = Field(default=None, description=&quot;Organization address&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_organization&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_organization(params: PipedriveCreateOrgInput) -&gt; str:
+    &quot;&quot;&quot;Create a new organization in Pipedrive.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {&quot;name&quot;: params.name}
+        if params.address:
+            body[&quot;address&quot;] = params.address
+        data = await _post(&quot;organizations&quot;, body)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# ACTIVITIES
+# ===========================================================================
+
+class PipedriveListActivitiesInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Filter activities by deal ID&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Filter activities by person ID&quot;)
+    done: Optional[bool] = Field(default=None, description=&quot;Filter: True for done, False for upcoming&quot;)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_activities&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_activities(params: PipedriveListActivitiesInput) -&gt; str:
+    &quot;&quot;&quot;List activities (calls, meetings, tasks, emails, etc.) with optional filters by deal or person.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.deal_id:
+            p[&quot;deal_id&quot;] = params.deal_id
+        if params.person_id:
+            p[&quot;person_id&quot;] = params.person_id
+        if params.done is not None:
+            p[&quot;done&quot;] = 1 if params.done else 0
+        data = await _get(&quot;activities&quot;, p, version=&quot;v1&quot;)
+        activities = data.get(&quot;data&quot;, []) or []
+        return _fmt({&quot;count&quot;: len(activities), &quot;activities&quot;: activities})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveCreateActivityInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    subject: str = Field(..., description=&quot;Activity subject/title&quot;, min_length=1, max_length=255)
+    type: str = Field(default=&quot;task&quot;, description=&quot;Activity type KEY STRING (not display name). Common built-ins: call, meeting, task, deadline, email, lunch. Custom types use their key, e.g. &#x27;test&#x27; for &#x27;Tasks Powered by Jarvis&#x27;. Get valid keys from pipedrive_list_activity_types.&quot;)
+    owner_id: Optional[int] = Field(default=None, description=&quot;User ID this activity is ASSIGNED TO (routes the task into that user&#x27;s task list). If omitted, defaults to the API token&#x27;s own user. Get user IDs from pipedrive_list_users.&quot;)
+    due_date: Optional[str] = Field(default=None, description=&quot;Due date in YYYY-MM-DD format&quot;)
+    due_time: Optional[str] = Field(default=None, description=&quot;Due time in HH:MM format&quot;)
+    duration: Optional[str] = Field(default=None, description=&quot;Duration in HH:MM format&quot;)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Link to deal ID&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Link to person ID&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Link to organization ID&quot;)
+    note: Optional[str] = Field(default=None, description=&quot;Activity description/note&quot;)
+    done: Optional[bool] = Field(default=False, description=&quot;Mark as done immediately&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_activity&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_activity(params: PipedriveCreateActivityInput) -&gt; str:
+    &quot;&quot;&quot;Create a new activity (call, meeting, task, etc.) in Pipedrive, optionally linked to a deal/person/org and assigned to a specific user. Set owner_id to assign the task to someone other than the API user, and set type to a custom activity type key.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {&quot;subject&quot;: params.subject, &quot;type&quot;: params.type}
+        if params.owner_id:
+            body[&quot;user_id&quot;] = params.owner_id  # v1 uses user_id for the assignee
+        if params.due_date:
+            body[&quot;due_date&quot;] = params.due_date
+        if params.due_time:
+            body[&quot;due_time&quot;] = params.due_time
+        if params.duration:
+            body[&quot;duration&quot;] = params.duration
+        if params.deal_id:
+            body[&quot;deal_id&quot;] = params.deal_id
+        if params.person_id:
+            body[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if params.note:
+            body[&quot;note&quot;] = params.note
+        if params.done:
+            body[&quot;done&quot;] = 1
+        data = await _post(&quot;activities&quot;, body, version=&quot;v1&quot;)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveUpdateActivityInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    activity_id: int = Field(..., description=&quot;Activity ID to update&quot;, ge=1)
+    subject: Optional[str] = Field(default=None, description=&quot;Updated subject&quot;)
+    type: Optional[str] = Field(default=None, description=&quot;Updated activity type KEY STRING (e.g. &#x27;test&#x27; for &#x27;Tasks Powered by Jarvis&#x27;). Get keys from pipedrive_list_activity_types.&quot;)
+    owner_id: Optional[int] = Field(default=None, description=&quot;Reassign the activity to this user ID (routes it into their task list). Get user IDs from pipedrive_list_users.&quot;)
+    due_date: Optional[str] = Field(default=None, description=&quot;Updated due date (YYYY-MM-DD)&quot;)
+    due_time: Optional[str] = Field(default=None, description=&quot;Updated due time (HH:MM)&quot;)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Re-link to this deal ID&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Re-link to this person ID&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Re-link to this organization ID&quot;)
+    done: Optional[bool] = Field(default=None, description=&quot;Mark as done (True) or undone (False)&quot;)
+    note: Optional[str] = Field(default=None, description=&quot;Updated note/description&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_update_activity&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_update_activity(params: PipedriveUpdateActivityInput) -&gt; str:
+    &quot;&quot;&quot;Update an existing activity: change its subject, type, assigned owner, due date/time, links, note, or done status. Use owner_id to reassign a task to another user, and type to change the activity type (e.g. to &#x27;Tasks Powered by Jarvis&#x27;). This is the tool to fix owner/type on activities created without them.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {}
+        if params.subject:
+            body[&quot;subject&quot;] = params.subject
+        if params.type:
+            body[&quot;type&quot;] = params.type
+        if params.owner_id:
+            body[&quot;user_id&quot;] = params.owner_id  # v1 uses user_id for the assignee
+        if params.due_date:
+            body[&quot;due_date&quot;] = params.due_date
+        if params.due_time:
+            body[&quot;due_time&quot;] = params.due_time
+        if params.deal_id:
+            body[&quot;deal_id&quot;] = params.deal_id
+        if params.person_id:
+            body[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if params.done is not None:
+            body[&quot;done&quot;] = 1 if params.done else 0
+        if params.note:
+            body[&quot;note&quot;] = params.note
+        if not body:
+            return &quot;Error: No fields provided to update.&quot;
+        data = await _patch(f&quot;activities/{params.activity_id}&quot;, body, version=&quot;v1&quot;)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# NOTES
+# ===========================================================================
+
+class PipedriveAddNoteInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    content: str = Field(..., description=&quot;Note content (supports HTML)&quot;, min_length=1)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Attach note to this deal&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Attach note to this person&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Attach note to this organization&quot;)
+    pinned_to_deal_flag: Optional[bool] = Field(default=False, description=&quot;Pin note to the deal&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_add_note&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_add_note(params: PipedriveAddNoteInput) -&gt; str:
+    &quot;&quot;&quot;Add a note to a deal, person, or organization in Pipedrive.&quot;&quot;&quot;
+    try:
+        body: Dict[str, Any] = {&quot;content&quot;: params.content}
+        if params.deal_id:
+            body[&quot;deal_id&quot;] = params.deal_id
+        if params.person_id:
+            body[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            body[&quot;org_id&quot;] = params.org_id
+        if params.pinned_to_deal_flag:
+            body[&quot;pinned_to_deal_flag&quot;] = 1
+        data = await _post(&quot;notes&quot;, body, version=&quot;v1&quot;)
+        return _fmt(data.get(&quot;data&quot;, {}))
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveGetNotesInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Get notes for this deal&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Get notes for this person&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Get notes for this organization&quot;)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_get_notes&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_get_notes(params: PipedriveGetNotesInput) -&gt; str:
+    &quot;&quot;&quot;Get notes attached to a deal, person, or organization.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.deal_id:
+            p[&quot;deal_id&quot;] = params.deal_id
+        if params.person_id:
+            p[&quot;person_id&quot;] = params.person_id
+        if params.org_id:
+            p[&quot;org_id&quot;] = params.org_id
+        data = await _get(&quot;notes&quot;, p, version=&quot;v1&quot;)
+        notes = data.get(&quot;data&quot;, []) or []
+        return _fmt({&quot;count&quot;: len(notes), &quot;notes&quot;: notes})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# PIPELINES &amp; STAGES
+# ===========================================================================
+
+@mcp.tool(
+    name=&quot;pipedrive_list_pipelines&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_pipelines() -&gt; str:
+    &quot;&quot;&quot;List all pipelines in Pipedrive with their IDs and names.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;pipelines&quot;, version=&quot;v1&quot;)
+        pipelines = data.get(&quot;data&quot;, []) or []
+        results = [{&quot;id&quot;: p.get(&quot;id&quot;), &quot;name&quot;: p.get(&quot;name&quot;), &quot;active&quot;: p.get(&quot;active&quot;)} for p in pipelines]
+        return _fmt({&quot;count&quot;: len(results), &quot;pipelines&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveGetStagesInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    pipeline_id: int = Field(..., description=&quot;Pipeline ID to get stages for&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_get_stages&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_get_stages(params: PipedriveGetStagesInput) -&gt; str:
+    &quot;&quot;&quot;Get all stages of a specific pipeline. Useful to find stage IDs for moving deals.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;stages&quot;, {&quot;pipeline_id&quot;: params.pipeline_id}, version=&quot;v1&quot;)
+        stages = data.get(&quot;data&quot;, []) or []
+        results = [{&quot;id&quot;: s.get(&quot;id&quot;), &quot;name&quot;: s.get(&quot;name&quot;), &quot;order_nr&quot;: s.get(&quot;order_nr&quot;)} for s in stages]
+        return _fmt({&quot;count&quot;: len(results), &quot;stages&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# LEADS
+# ===========================================================================
+
+class PipedriveListLeadsInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+    cursor: Optional[str] = Field(default=None, description=&quot;Pagination cursor&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_leads&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_leads(params: PipedriveListLeadsInput) -&gt; str:
+    &quot;&quot;&quot;List leads from the Pipedrive leads inbox.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.cursor:
+            p[&quot;cursor&quot;] = params.cursor
+        data = await _get(&quot;leads&quot;, p, version=&quot;v1&quot;)
+        leads = data.get(&quot;data&quot;, []) or []
+        return _fmt({&quot;count&quot;: len(leads), &quot;leads&quot;: leads})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# DELETE (shared)
+# ===========================================================================
+
+class PipedriveDeleteInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;Type of entity to delete: deal, person, organization, activity, note&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the entity to delete&quot;, ge=1)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, do not delete. Return what WOULD be deleted so you can review first.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_delete&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_delete(params: PipedriveDeleteInput) -&gt; str:
+    &quot;&quot;&quot;Delete an entity (deal, person, organization, activity, or note) from Pipedrive. This is destructive; records are recoverable for ~30 days. Set dry_run=true to preview. Every real delete is written to the audit log.&quot;&quot;&quot;
+    try:
+        entity_map = {
+            &quot;deal&quot;: &quot;deals&quot;,
+            &quot;person&quot;: &quot;persons&quot;,
+            &quot;organization&quot;: &quot;organizations&quot;,
+            &quot;activity&quot;: &quot;activities&quot;,
+            &quot;note&quot;: &quot;notes&quot;,
+        }
+        et = params.entity_type.lower()
+        path_prefix = entity_map.get(et)
+        if not path_prefix:
+            return f&quot;Error: Unknown entity type &#x27;{params.entity_type}&#x27;. Must be one of: deal, person, organization, activity, note.&quot;
+        if params.dry_run:
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;would_delete&quot;: et,
+                &quot;id&quot;: params.entity_id,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+        version = &quot;v1&quot; if et in (&quot;activity&quot;, &quot;note&quot;) else &quot;v2&quot;
+        await _delete(f&quot;{path_prefix}/{params.entity_id}&quot;, version=version)
+        _audit(&quot;delete&quot;, et, &quot;&quot;, params.entity_id, &quot;&quot;)
+        return f&quot;Successfully deleted {params.entity_type} #{params.entity_id}. (logged)&quot;
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# MERGE (Deduplication)
+# ===========================================================================
+
+class PipedriveMergePersonsInput(BaseModel):
+    &quot;&quot;&quot;Merge two duplicate persons. The merge_with_id record is kept; the person at the URL is merged into it and deleted.&quot;&quot;&quot;
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    person_id: int = Field(..., description=&quot;ID of the person to merge FROM (this one gets deleted)&quot;, ge=1)
+    merge_with_id: int = Field(..., description=&quot;ID of the person to merge INTO (this one is kept)&quot;, ge=1)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, do not merge. Return what WOULD happen (which id survives, which is deleted) so you can review first.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_merge_persons&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_merge_persons(params: PipedriveMergePersonsInput) -&gt; str:
+    &quot;&quot;&quot;Merge two duplicate persons/contacts. The merge_with_id person is kept and receives all data (deals, activities, notes, emails, phones) from the person_id record, which is then deleted. This cannot be undone. Set dry_run=true to preview without merging. Every real merge is written to the audit log.&quot;&quot;&quot;
+    try:
+        if params.dry_run:
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;would_keep_id&quot;: params.merge_with_id,
+                &quot;would_delete_id&quot;: params.person_id,
+                &quot;action&quot;: &quot;merge_persons&quot;,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+        data = await _put(
+            f&quot;persons/{params.person_id}/merge&quot;,
+            {&quot;merge_with_id&quot;: params.merge_with_id},
+            version=&quot;v1&quot;,
+        )
+        merged = data.get(&quot;data&quot;, {})
+        _audit(&quot;merge&quot;, &quot;person&quot;, params.merge_with_id, params.person_id, f&quot;survivor={merged.get(&#x27;name&#x27;)}&quot;)
+        return _fmt({
+            &quot;status&quot;: &quot;merged&quot;,
+            &quot;kept_id&quot;: params.merge_with_id,
+            &quot;deleted_id&quot;: params.person_id,
+            &quot;logged&quot;: True,
+            &quot;result&quot;: {
+                &quot;id&quot;: merged.get(&quot;id&quot;),
+                &quot;name&quot;: merged.get(&quot;name&quot;),
+                &quot;email&quot;: merged.get(&quot;email&quot;),
+                &quot;phone&quot;: merged.get(&quot;phone&quot;),
+                &quot;org_id&quot;: merged.get(&quot;org_id&quot;),
+            },
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveMergeOrganizationsInput(BaseModel):
+    &quot;&quot;&quot;Merge two duplicate organizations. The merge_with_id record is kept; the org at the URL is merged into it and deleted.&quot;&quot;&quot;
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    org_id: int = Field(..., description=&quot;ID of the organization to merge FROM (this one gets deleted)&quot;, ge=1)
+    merge_with_id: int = Field(..., description=&quot;ID of the organization to merge INTO (this one is kept)&quot;, ge=1)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, do not merge. Return what WOULD happen so you can review first.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_merge_organizations&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_merge_organizations(params: PipedriveMergeOrganizationsInput) -&gt; str:
+    &quot;&quot;&quot;Merge two duplicate organizations. The merge_with_id org is kept and receives all data (persons, deals, activities, notes) from the org_id record, which is then deleted. This cannot be undone. Set dry_run=true to preview. Every real merge is written to the audit log.&quot;&quot;&quot;
+    try:
+        if params.dry_run:
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;would_keep_id&quot;: params.merge_with_id,
+                &quot;would_delete_id&quot;: params.org_id,
+                &quot;action&quot;: &quot;merge_organizations&quot;,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+        data = await _put(
+            f&quot;organizations/{params.org_id}/merge&quot;,
+            {&quot;merge_with_id&quot;: params.merge_with_id},
+            version=&quot;v1&quot;,
+        )
+        merged = data.get(&quot;data&quot;, {})
+        _audit(&quot;merge&quot;, &quot;organization&quot;, params.merge_with_id, params.org_id, f&quot;survivor={merged.get(&#x27;name&#x27;)}&quot;)
+        return _fmt({
+            &quot;status&quot;: &quot;merged&quot;,
+            &quot;kept_id&quot;: params.merge_with_id,
+            &quot;deleted_id&quot;: params.org_id,
+            &quot;logged&quot;: True,
+            &quot;result&quot;: {
+                &quot;id&quot;: merged.get(&quot;id&quot;),
+                &quot;name&quot;: merged.get(&quot;name&quot;),
+                &quot;address&quot;: merged.get(&quot;address&quot;),
+                &quot;people_count&quot;: merged.get(&quot;people_count&quot;),
+            },
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveMergeDealsInput(BaseModel):
+    &quot;&quot;&quot;Merge two duplicate deals. The merge_with_id record is kept; the deal at the URL is merged into it and deleted.&quot;&quot;&quot;
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;ID of the deal to merge FROM (this one gets deleted)&quot;, ge=1)
+    merge_with_id: int = Field(..., description=&quot;ID of the deal to merge INTO (this one is kept)&quot;, ge=1)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, do not merge. Return what WOULD happen so you can review first.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_merge_deals&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_merge_deals(params: PipedriveMergeDealsInput) -&gt; str:
+    &quot;&quot;&quot;Merge two duplicate deals. The merge_with_id deal is kept and receives all data (activities, notes, participants, followers) from the deal_id record, which is then deleted. This cannot be undone. Set dry_run=true to preview. Every real merge is written to the audit log.&quot;&quot;&quot;
+    try:
+        if params.dry_run:
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;would_keep_id&quot;: params.merge_with_id,
+                &quot;would_delete_id&quot;: params.deal_id,
+                &quot;action&quot;: &quot;merge_deals&quot;,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+        data = await _put(
+            f&quot;deals/{params.deal_id}/merge&quot;,
+            {&quot;merge_with_id&quot;: params.merge_with_id},
+            version=&quot;v1&quot;,
+        )
+        merged = data.get(&quot;data&quot;, {})
+        _audit(&quot;merge&quot;, &quot;deal&quot;, params.merge_with_id, params.deal_id, f&quot;survivor={merged.get(&#x27;title&#x27;)}&quot;)
+        return _fmt({
+            &quot;status&quot;: &quot;merged&quot;,
+            &quot;kept_id&quot;: params.merge_with_id,
+            &quot;deleted_id&quot;: params.deal_id,
+            &quot;logged&quot;: True,
+            &quot;result&quot;: {
+                &quot;id&quot;: merged.get(&quot;id&quot;),
+                &quot;title&quot;: merged.get(&quot;title&quot;),
+                &quot;value&quot;: merged.get(&quot;value&quot;),
+                &quot;status&quot;: merged.get(&quot;status&quot;),
+                &quot;stage_id&quot;: merged.get(&quot;stage_id&quot;),
+            },
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# CUSTOM FIELDS (map hash keys to human names, read/write ICP fields by name)
+# ===========================================================================
+
+# Simple in-process cache so we don&#x27;t refetch field schemas on every call.
+_FIELD_CACHE: Dict[str, list] = {}
+
+
+async def _fetch_fields(entity: str) -&gt; list:
+    &quot;&quot;&quot;Fetch and cache custom+default field definitions for deal/person/organization.&quot;&quot;&quot;
+    if entity in _FIELD_CACHE:
+        return _FIELD_CACHE[entity]
+    endpoint = {
+        &quot;deal&quot;: &quot;dealFields&quot;,
+        &quot;person&quot;: &quot;personFields&quot;,
+        &quot;organization&quot;: &quot;organizationFields&quot;,
+    }[entity]
+    fields = []
+    more = True
+    start = 0
+    while more:
+        data = await _get(endpoint, {&quot;start&quot;: start, &quot;limit&quot;: 100}, version=&quot;v1&quot;)
+        fields.extend(data.get(&quot;data&quot;, []) or [])
+        pag = data.get(&quot;additional_data&quot;, {}).get(&quot;pagination&quot;, {})
+        more = pag.get(&quot;more_items_in_collection&quot;, False)
+        start = pag.get(&quot;next_start&quot;, 0) or 0
+        if not more:
+            break
+    _FIELD_CACHE[entity] = fields
+    return fields
+
+
+class PipedriveListFieldsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;Which entity&#x27;s fields to list: deal, person, or organization&quot;)
+    custom_only: Optional[bool] = Field(default=True, description=&quot;Return only custom fields (True) or all fields (False)&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_fields&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_fields(params: PipedriveListFieldsInput) -&gt; str:
+    &quot;&quot;&quot;List field definitions for deals, persons, or organizations, mapping the human-readable name to the API key (40-char hash for custom fields). Essential for reading/writing custom fields like ICP score, confidence tier, or region by name. Also returns options for dropdown/label fields with their IDs.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        if entity not in (&quot;deal&quot;, &quot;person&quot;, &quot;organization&quot;):
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        fields = await _fetch_fields(entity)
+        results = []
+        for f in fields:
+            key = f.get(&quot;key&quot;, &quot;&quot;)
+            is_custom = len(key) == 40  # custom fields have 40-char hash keys
+            if params.custom_only and not is_custom:
+                continue
+            entry = {
+                &quot;name&quot;: f.get(&quot;name&quot;),
+                &quot;key&quot;: key,
+                &quot;field_type&quot;: f.get(&quot;field_type&quot;),
+                &quot;is_custom&quot;: is_custom,
+            }
+            # Include options for enum/set/label fields so caller can map value -&gt; id
+            if f.get(&quot;options&quot;):
+                entry[&quot;options&quot;] = [{&quot;id&quot;: o.get(&quot;id&quot;), &quot;label&quot;: o.get(&quot;label&quot;)} for o in f[&quot;options&quot;]]
+            results.append(entry)
+        return _fmt({&quot;entity&quot;: entity, &quot;count&quot;: len(results), &quot;fields&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveSetCustomFieldInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the record to update&quot;, ge=1)
+    field_key: str = Field(..., description=&quot;The 40-char custom field hash key (get it from pipedrive_list_fields)&quot;)
+    value: str = Field(..., description=&quot;Value to set. For dropdown/label fields, pass the option ID as a string. For text/number fields, the raw value.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_set_custom_field&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_set_custom_field(params: PipedriveSetCustomFieldInput) -&gt; str:
+    &quot;&quot;&quot;Set a single custom field value on a deal, person, or organization. Use pipedrive_list_fields first to get the field_key and (for dropdown fields) the option ID. Good for writing ICP score, confidence tier, region, or any custom attribute.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        path_map = {&quot;deal&quot;: &quot;deals&quot;, &quot;person&quot;: &quot;persons&quot;, &quot;organization&quot;: &quot;organizations&quot;}
+        if entity not in path_map:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        # v2 accepts custom_fields object; value may be numeric, string, or option id
+        val: Any = params.value
+        if val.isdigit():
+            val = int(val)
+        body = {&quot;custom_fields&quot;: {params.field_key: val}}
+        data = await _patch(f&quot;{path_map[entity]}/{params.entity_id}&quot;, body)
+        return _fmt({&quot;status&quot;: &quot;updated&quot;, &quot;entity&quot;: entity, &quot;id&quot;: params.entity_id, &quot;field&quot;: params.field_key, &quot;value&quot;: params.value})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# FILTERED LIST PULLS (query by owner / stage / person / org / filter_id)
+# ===========================================================================
+
+class PipedriveListDealsFilteredInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    owner_id: Optional[int] = Field(default=None, description=&quot;Only deals owned by this user ID&quot;)
+    person_id: Optional[int] = Field(default=None, description=&quot;Only deals linked to this person ID&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Only deals linked to this organization ID&quot;)
+    stage_id: Optional[int] = Field(default=None, description=&quot;Only deals in this stage ID&quot;)
+    pipeline_id: Optional[int] = Field(default=None, description=&quot;Only deals in this pipeline ID&quot;)
+    status: Optional[str] = Field(default=None, description=&quot;open, won, lost, or deleted (comma-separated allowed)&quot;)
+    filter_id: Optional[int] = Field(default=None, description=&quot;Use a saved Pipedrive filter ID (overrides other filters)&quot;)
+    sort_by: Optional[str] = Field(default=None, description=&quot;Field to sort by: id, update_time, add_time&quot;)
+    sort_direction: Optional[str] = Field(default=None, description=&quot;asc or desc&quot;)
+    limit: Optional[int] = Field(default=100, ge=1, le=500)
+    cursor: Optional[str] = Field(default=None, description=&quot;Pagination cursor&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_deals_filtered&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_deals_filtered(params: PipedriveListDealsFilteredInput) -&gt; str:
+    &quot;&quot;&quot;List deals with server-side filters: by owner, person, org, stage, pipeline, status, or a saved filter_id. This is the workhorse for pipeline hygiene audits and territory pulls. Returns up to 500 per page with a cursor for more.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.filter_id:
+            p[&quot;filter_id&quot;] = params.filter_id
+        else:
+            if params.owner_id:
+                p[&quot;owner_id&quot;] = params.owner_id
+            if params.person_id:
+                p[&quot;person_id&quot;] = params.person_id
+            if params.org_id:
+                p[&quot;org_id&quot;] = params.org_id
+            if params.stage_id:
+                p[&quot;stage_id&quot;] = params.stage_id
+            if params.pipeline_id:
+                p[&quot;pipeline_id&quot;] = params.pipeline_id
+            if params.status:
+                p[&quot;status&quot;] = params.status
+        if params.sort_by:
+            p[&quot;sort_by&quot;] = params.sort_by
+        if params.sort_direction:
+            p[&quot;sort_direction&quot;] = params.sort_direction
+        if params.cursor:
+            p[&quot;cursor&quot;] = params.cursor
+        data = await _get(&quot;deals&quot;, p)
+        deals = data.get(&quot;data&quot;, []) or []
+        cursor = data.get(&quot;additional_data&quot;, {}).get(&quot;next_cursor&quot;)
+        slim = [{
+            &quot;id&quot;: d.get(&quot;id&quot;), &quot;title&quot;: d.get(&quot;title&quot;), &quot;value&quot;: d.get(&quot;value&quot;),
+            &quot;currency&quot;: d.get(&quot;currency&quot;), &quot;status&quot;: d.get(&quot;status&quot;),
+            &quot;stage_id&quot;: d.get(&quot;stage_id&quot;), &quot;pipeline_id&quot;: d.get(&quot;pipeline_id&quot;),
+            &quot;owner_id&quot;: d.get(&quot;owner_id&quot;), &quot;org_id&quot;: d.get(&quot;org_id&quot;), &quot;person_id&quot;: d.get(&quot;person_id&quot;),
+            &quot;update_time&quot;: d.get(&quot;update_time&quot;), &quot;next_activity_date&quot;: d.get(&quot;next_activity_date&quot;),
+        } for d in deals]
+        return _fmt({&quot;count&quot;: len(slim), &quot;next_cursor&quot;: cursor, &quot;deals&quot;: slim})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveListPersonsFilteredInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    owner_id: Optional[int] = Field(default=None, description=&quot;Only persons owned by this user ID&quot;)
+    org_id: Optional[int] = Field(default=None, description=&quot;Only persons linked to this organization ID&quot;)
+    filter_id: Optional[int] = Field(default=None, description=&quot;Use a saved Pipedrive filter ID&quot;)
+    limit: Optional[int] = Field(default=100, ge=1, le=500)
+    cursor: Optional[str] = Field(default=None, description=&quot;Pagination cursor&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_persons_filtered&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_persons_filtered(params: PipedriveListPersonsFilteredInput) -&gt; str:
+    &quot;&quot;&quot;List persons with server-side filters: by owner, organization, or a saved filter_id. Use for contact territory pulls and enrichment batches.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.filter_id:
+            p[&quot;filter_id&quot;] = params.filter_id
+        else:
+            if params.owner_id:
+                p[&quot;owner_id&quot;] = params.owner_id
+            if params.org_id:
+                p[&quot;org_id&quot;] = params.org_id
+        if params.cursor:
+            p[&quot;cursor&quot;] = params.cursor
+        data = await _get(&quot;persons&quot;, p)
+        persons = data.get(&quot;data&quot;, []) or []
+        cursor = data.get(&quot;additional_data&quot;, {}).get(&quot;next_cursor&quot;)
+        slim = [{
+            &quot;id&quot;: d.get(&quot;id&quot;), &quot;name&quot;: d.get(&quot;name&quot;),
+            &quot;emails&quot;: d.get(&quot;emails&quot;), &quot;phones&quot;: d.get(&quot;phones&quot;),
+            &quot;org_id&quot;: d.get(&quot;org_id&quot;), &quot;owner_id&quot;: d.get(&quot;owner_id&quot;),
+            &quot;label_ids&quot;: d.get(&quot;label_ids&quot;), &quot;update_time&quot;: d.get(&quot;update_time&quot;),
+        } for d in persons]
+        return _fmt({&quot;count&quot;: len(slim), &quot;next_cursor&quot;: cursor, &quot;persons&quot;: slim})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveListOrgsFilteredInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    owner_id: Optional[int] = Field(default=None, description=&quot;Only orgs owned by this user ID&quot;)
+    filter_id: Optional[int] = Field(default=None, description=&quot;Use a saved Pipedrive filter ID&quot;)
+    limit: Optional[int] = Field(default=100, ge=1, le=500)
+    cursor: Optional[str] = Field(default=None, description=&quot;Pagination cursor&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_organizations_filtered&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_organizations_filtered(params: PipedriveListOrgsFilteredInput) -&gt; str:
+    &quot;&quot;&quot;List organizations with server-side filters: by owner or a saved filter_id. Use for account territory pulls and label audits.&quot;&quot;&quot;
+    try:
+        p: dict = {&quot;limit&quot;: params.limit}
+        if params.filter_id:
+            p[&quot;filter_id&quot;] = params.filter_id
+        elif params.owner_id:
+            p[&quot;owner_id&quot;] = params.owner_id
+        if params.cursor:
+            p[&quot;cursor&quot;] = params.cursor
+        data = await _get(&quot;organizations&quot;, p)
+        orgs = data.get(&quot;data&quot;, []) or []
+        cursor = data.get(&quot;additional_data&quot;, {}).get(&quot;next_cursor&quot;)
+        slim = [{
+            &quot;id&quot;: d.get(&quot;id&quot;), &quot;name&quot;: d.get(&quot;name&quot;),
+            &quot;owner_id&quot;: d.get(&quot;owner_id&quot;), &quot;label_ids&quot;: d.get(&quot;label_ids&quot;),
+            &quot;people_count&quot;: d.get(&quot;people_count&quot;), &quot;update_time&quot;: d.get(&quot;update_time&quot;),
+        } for d in orgs]
+        return _fmt({&quot;count&quot;: len(slim), &quot;next_cursor&quot;: cursor, &quot;organizations&quot;: slim})
+    except Exception as e:
+        return _handle_error(e)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_filters&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_filters() -&gt; str:
+    &quot;&quot;&quot;List all saved filters in Pipedrive with their IDs and types. Use the returned filter_id in the *_filtered list tools to reuse complex saved queries.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;filters&quot;, version=&quot;v1&quot;)
+        filters = data.get(&quot;data&quot;, []) or []
+        results = [{&quot;id&quot;: f.get(&quot;id&quot;), &quot;name&quot;: f.get(&quot;name&quot;), &quot;type&quot;: f.get(&quot;type&quot;)} for f in filters]
+        return _fmt({&quot;count&quot;: len(results), &quot;filters&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# DEAL PARTICIPANTS (multiple contacts per deal)
+# ===========================================================================
+
+class PipedriveListParticipantsInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID to list participants for&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_deal_participants&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_deal_participants(params: PipedriveListParticipantsInput) -&gt; str:
+    &quot;&quot;&quot;List all participants (contacts) associated with a deal. Useful for multi-threaded, account-based deals with champions, economic buyers, and blockers.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;deals/{params.deal_id}/participants&quot;, version=&quot;v1&quot;)
+        parts = data.get(&quot;data&quot;, []) or []
+        results = []
+        for p in parts:
+            person = p.get(&quot;person&quot;, {}) if isinstance(p.get(&quot;person&quot;), dict) else {}
+            results.append({
+                &quot;participant_id&quot;: p.get(&quot;id&quot;),
+                &quot;person_id&quot;: p.get(&quot;person_id&quot;) or person.get(&quot;id&quot;),
+                &quot;name&quot;: person.get(&quot;name&quot;),
+            })
+        return _fmt({&quot;deal_id&quot;: params.deal_id, &quot;count&quot;: len(results), &quot;participants&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveAddParticipantInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID to add a participant to&quot;, ge=1)
+    person_id: int = Field(..., description=&quot;Person ID to add as a participant&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_add_deal_participant&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_add_deal_participant(params: PipedriveAddParticipantInput) -&gt; str:
+    &quot;&quot;&quot;Add a person as a participant on a deal, so multiple contacts can be tracked on one opportunity.&quot;&quot;&quot;
+    try:
+        data = await _post(f&quot;deals/{params.deal_id}/participants&quot;, {&quot;person_id&quot;: params.person_id}, version=&quot;v1&quot;)
+        return _fmt({&quot;status&quot;: &quot;added&quot;, &quot;deal_id&quot;: params.deal_id, &quot;person_id&quot;: params.person_id, &quot;result&quot;: data.get(&quot;data&quot;, {})})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveRemoveParticipantInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID&quot;, ge=1)
+    participant_id: int = Field(..., description=&quot;The participant ID (from pipedrive_list_deal_participants, not the person_id)&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_remove_deal_participant&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_remove_deal_participant(params: PipedriveRemoveParticipantInput) -&gt; str:
+    &quot;&quot;&quot;Remove a participant from a deal. Use the participant_id returned by pipedrive_list_deal_participants.&quot;&quot;&quot;
+    try:
+        await _delete(f&quot;deals/{params.deal_id}/participants/{params.participant_id}&quot;, version=&quot;v1&quot;)
+        return f&quot;Removed participant #{params.participant_id} from deal #{params.deal_id}.&quot;
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# LABELS (add / remove, e.g. &quot;Osmos Universe&quot; tagging)
+# ===========================================================================
+
+class PipedriveSetLabelsInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;person or organization&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the record&quot;, ge=1)
+    label_ids: List[int] = Field(..., description=&quot;Full list of label IDs to set on the record. This REPLACES existing labels. Get label option IDs from pipedrive_list_fields (look for the &#x27;label&#x27; field&#x27;s options).&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_set_labels&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_set_labels(params: PipedriveSetLabelsInput) -&gt; str:
+    &quot;&quot;&quot;Set labels on a person or organization (e.g. tag with &#x27;Osmos Universe&#x27;). Pass the complete list of label IDs you want the record to have; this replaces the current set. To add without losing existing labels, first read the record, then send the combined list. Get label IDs from pipedrive_list_fields.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        path_map = {&quot;person&quot;: &quot;persons&quot;, &quot;organization&quot;: &quot;organizations&quot;}
+        if entity not in path_map:
+            return &quot;Error: entity_type must be person or organization.&quot;
+        body = {&quot;label_ids&quot;: params.label_ids}
+        data = await _patch(f&quot;{path_map[entity]}/{params.entity_id}&quot;, body)
+        d = data.get(&quot;data&quot;, {})
+        return _fmt({&quot;status&quot;: &quot;updated&quot;, &quot;entity&quot;: entity, &quot;id&quot;: params.entity_id, &quot;label_ids&quot;: d.get(&quot;label_ids&quot;)})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# OWNER REASSIGNMENT (for team departures / territory changes)
+# ===========================================================================
+
+class PipedriveChangeOwnerInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the record to reassign&quot;, ge=1)
+    new_owner_id: int = Field(..., description=&quot;User ID of the new owner&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_change_owner&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_change_owner(params: PipedriveChangeOwnerInput) -&gt; str:
+    &quot;&quot;&quot;Reassign a deal, person, or organization to a new owner. Combine with the *_filtered list tools to bulk-reassign a departing rep&#x27;s book of business to their replacement.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        path_map = {&quot;deal&quot;: &quot;deals&quot;, &quot;person&quot;: &quot;persons&quot;, &quot;organization&quot;: &quot;organizations&quot;}
+        if entity not in path_map:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        data = await _patch(f&quot;{path_map[entity]}/{params.entity_id}&quot;, {&quot;owner_id&quot;: params.new_owner_id})
+        _audit(&quot;change_owner&quot;, entity, params.entity_id, &quot;&quot;, f&quot;new_owner={params.new_owner_id}&quot;)
+        return _fmt({&quot;status&quot;: &quot;reassigned&quot;, &quot;entity&quot;: entity, &quot;id&quot;: params.entity_id, &quot;new_owner_id&quot;: params.new_owner_id, &quot;logged&quot;: True})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# USERS &amp; ACTIVITY TYPES (lookups for assignment)
+# ===========================================================================
+
+@mcp.tool(
+    name=&quot;pipedrive_list_users&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_users() -&gt; str:
+    &quot;&quot;&quot;List all users in the Pipedrive account with their IDs, names, and emails. Use to find the user_id for assigning deals, activities, or ownership (e.g. finding a teammate&#x27;s ID).&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;users&quot;, version=&quot;v1&quot;)
+        users = data.get(&quot;data&quot;, []) or []
+        results = [{&quot;id&quot;: u.get(&quot;id&quot;), &quot;name&quot;: u.get(&quot;name&quot;), &quot;email&quot;: u.get(&quot;email&quot;), &quot;active&quot;: u.get(&quot;active_flag&quot;)} for u in users]
+        return _fmt({&quot;count&quot;: len(results), &quot;users&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_activity_types&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_activity_types() -&gt; str:
+    &quot;&quot;&quot;List all activity types with their key strings and names (call, meeting, task, plus any custom types). Use to get valid &#x27;type&#x27; values for pipedrive_create_activity.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;activityTypes&quot;, version=&quot;v1&quot;)
+        types = data.get(&quot;data&quot;, []) or []
+        results = [{&quot;id&quot;: t.get(&quot;id&quot;), &quot;name&quot;: t.get(&quot;name&quot;), &quot;key_string&quot;: t.get(&quot;key_string&quot;)} for t in types]
+        return _fmt({&quot;count&quot;: len(results), &quot;activity_types&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# DUPLICATE FINDER (proactive, pairs with merge tools)
+# ===========================================================================
+
+class PipedriveFindDuplicatesInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;person or organization&quot;)
+    max_records: Optional[int] = Field(default=2000, description=&quot;Max records to scan across pages (paginates in chunks of 500)&quot;, ge=1, le=20000)
+    match_mode: Optional[str] = Field(default=&quot;pipedrive&quot;, description=(
+        &quot;Matching strictness. &#x27;pipedrive&#x27; mirrors Pipedrive&#x27;s own rules: persons match on same name + &quot;
+        &quot;(same email OR same phone OR same org); orgs match on same name + same address. &quot;
+        &quot;&#x27;strict&#x27; requires an exact shared email (persons) or exact name+address (orgs). &quot;
+        &quot;&#x27;name_only&#x27; groups purely by normalized name (loosest, most false positives).&quot;
+    ))
+
+
+def _norm(s: Any) -&gt; str:
+    # Coerce anything non-string to a safe string first. v2 can return structured
+    # values (e.g. address as a dict, or email/phone entries as dicts); guard them all.
+    if s is None:
+        return &quot;&quot;
+    if isinstance(s, dict):
+        # Prefer a human-readable subfield if present, else stringify the whole thing.
+        s = s.get(&quot;value&quot;) or s.get(&quot;formatted_address&quot;) or s.get(&quot;name&quot;) or &quot;&quot;
+        if isinstance(s, dict):
+            s = &quot;&quot;
+    if not isinstance(s, str):
+        s = str(s)
+    return &quot;&quot;.join(ch for ch in s.lower().strip() if ch.isalnum())
+
+
+def _completeness_score(r: dict) -&gt; int:
+    &quot;&quot;&quot;Rough richness score so we can suggest which record to KEEP (higher = keep).&quot;&quot;&quot;
+    score = 0
+    for key in (&quot;emails&quot;, &quot;phones&quot;, &quot;label_ids&quot;):
+        v = r.get(key)
+        if v:
+            score += len(v) if isinstance(v, list) else 1
+    if r.get(&quot;org_id&quot;):
+        score += 1
+    if r.get(&quot;address&quot;):
+        score += 1
+    # counts if present in payload
+    for c in (&quot;open_deals_count&quot;, &quot;closed_deals_count&quot;, &quot;activities_count&quot;, &quot;done_activities_count&quot;, &quot;notes_count&quot;, &quot;people_count&quot;):
+        try:
+            score += int(r.get(c) or 0)
+        except (TypeError, ValueError):
+            pass
+    return score
+
+
+async def _paginate(path: str, max_records: int) -&gt; list:
+    &quot;&quot;&quot;Pull up to max_records records, following v2 cursor pagination in pages of 500.&quot;&quot;&quot;
+    out: list = []
+    cursor = None
+    while len(out) &lt; max_records:
+        page_limit = min(500, max_records - len(out))
+        params = {&quot;limit&quot;: page_limit}
+        if cursor:
+            params[&quot;cursor&quot;] = cursor
+        data = await _get(path, params)
+        batch = data.get(&quot;data&quot;, []) or []
+        out.extend(batch)
+        cursor = data.get(&quot;additional_data&quot;, {}).get(&quot;next_cursor&quot;)
+        if not cursor or not batch:
+            break
+    return out
+
+
+@mcp.tool(
+    name=&quot;pipedrive_find_duplicates&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_find_duplicates(params: PipedriveFindDuplicatesInput) -&gt; str:
+    &quot;&quot;&quot;Detect duplicate persons or organizations across the whole book (paginated), using Pipedrive&#x27;s own matching logic by default. Returns ready-to-act duplicate groups: each group includes a suggested keep_id (the richest/oldest record) and merge_ids (the others), so a routine can hand them straight to pipedrive_merge_persons / pipedrive_merge_organizations. Read-only: it never merges anything itself.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        if entity not in (&quot;person&quot;, &quot;organization&quot;):
+            return &quot;Error: entity_type must be person or organization.&quot;
+        mode = (params.match_mode or &quot;pipedrive&quot;).lower()
+        if mode not in (&quot;pipedrive&quot;, &quot;strict&quot;, &quot;name_only&quot;):
+            return &quot;Error: match_mode must be pipedrive, strict, or name_only.&quot;
+        path = &quot;persons&quot; if entity == &quot;person&quot; else &quot;organizations&quot;
+        records = await _paginate(path, params.max_records)
+
+        # Build a composite signature for each record based on entity + mode.
+        # Records sharing any signature are grouped as duplicates.
+        # We map signature -&gt; set of record ids, then coalesce ids that co-occur.
+        from collections import defaultdict
+
+        sig_to_ids: Dict[str, set] = defaultdict(set)
+        rec_by_id: Dict[int, dict] = {}
+
+        for r in records:
+            rid = r.get(&quot;id&quot;)
+            if rid is None:
+                continue
+            rec_by_id[rid] = r
+            name_key = _norm(r.get(&quot;name&quot;, &quot;&quot;))
+            if not name_key:
+                continue
+
+            if entity == &quot;person&quot;:
+                emails = [(_norm(e.get(&quot;value&quot;)) if isinstance(e, dict) else _norm(e)) for e in (r.get(&quot;emails&quot;) or [])]
+                emails = [e for e in emails if e]
+                phones = [(_norm(p.get(&quot;value&quot;)) if isinstance(p, dict) else _norm(p)) for p in (r.get(&quot;phones&quot;) or [])]
+                phones = [p for p in phones if p]
+                org = r.get(&quot;org_id&quot;)
+                org_id = org.get(&quot;value&quot;) if isinstance(org, dict) else org
+
+                if mode == &quot;name_only&quot;:
+                    sig_to_ids[f&quot;n:{name_key}&quot;].add(rid)
+                elif mode == &quot;strict&quot;:
+                    for e in emails:
+                        sig_to_ids[f&quot;e:{e}&quot;].add(rid)
+                else:  # pipedrive rules: name + (email | phone | org)
+                    for e in emails:
+                        sig_to_ids[f&quot;ne:{name_key}|{e}&quot;].add(rid)
+                    for p in phones:
+                        sig_to_ids[f&quot;np:{name_key}|{p}&quot;].add(rid)
+                    if org_id:
+                        sig_to_ids[f&quot;no:{name_key}|{org_id}&quot;].add(rid)
+            else:  # organization
+                addr = _norm(r.get(&quot;address&quot;, &quot;&quot;))
+                if mode == &quot;name_only&quot;:
+                    sig_to_ids[f&quot;n:{name_key}&quot;].add(rid)
+                else:  # both &#x27;pipedrive&#x27; and &#x27;strict&#x27; for orgs: name + address
+                    if addr:
+                        sig_to_ids[f&quot;na:{name_key}|{addr}&quot;].add(rid)
+                    elif mode == &quot;pipedrive&quot;:
+                        # pipedrive flags same-name orgs even without address as weaker candidates
+                        sig_to_ids[f&quot;n:{name_key}&quot;].add(rid)
+
+        # Coalesce: union any id-sets that overlap (a record can share different sigs with different peers)
+        groups: List[set] = []
+        for ids in sig_to_ids.values():
+            if len(ids) &lt; 2:
+                continue
+            placed = False
+            for g in groups:
+                if g &amp; ids:
+                    g |= ids
+                    placed = True
+                    break
+            if not placed:
+                groups.append(set(ids))
+        # second pass to merge any groups that now overlap
+        merged = True
+        while merged:
+            merged = False
+            for i in range(len(groups)):
+                for j in range(i + 1, len(groups)):
+                    if groups[i] &amp; groups[j]:
+                        groups[i] |= groups[j]
+                        groups.pop(j)
+                        merged = True
+                        break
+                if merged:
+                    break
+
+        # Build routine-ready output with a suggested keep_id per group
+        results = []
+        for g in groups:
+            members = [rec_by_id[i] for i in g if i in rec_by_id]
+            if len(members) &lt; 2:
+                continue
+            # keep the richest; tie-break to the oldest (smallest id)
+            members_sorted = sorted(members, key=lambda r: (-_completeness_score(r), r.get(&quot;id&quot;)))
+            keep = members_sorted[0]
+            merge_ids = [m.get(&quot;id&quot;) for m in members_sorted[1:]]
+            results.append({
+                &quot;name&quot;: keep.get(&quot;name&quot;),
+                &quot;keep_id&quot;: keep.get(&quot;id&quot;),
+                &quot;merge_ids&quot;: merge_ids,
+                &quot;members&quot;: [{
+                    &quot;id&quot;: m.get(&quot;id&quot;),
+                    &quot;name&quot;: m.get(&quot;name&quot;),
+                    &quot;emails&quot;: [e.get(&quot;value&quot;) if isinstance(e, dict) else e for e in (m.get(&quot;emails&quot;) or [])],
+                    &quot;org_id&quot;: (m.get(&quot;org_id&quot;, {}).get(&quot;value&quot;) if isinstance(m.get(&quot;org_id&quot;), dict) else m.get(&quot;org_id&quot;)),
+                    &quot;richness&quot;: _completeness_score(m),
+                } for m in members_sorted],
+            })
+
+        # Largest groups first so a routine can tackle the messiest records early
+        results.sort(key=lambda x: len(x[&quot;merge_ids&quot;]), reverse=True)
+
+        return _fmt({
+            &quot;entity&quot;: entity,
+            &quot;match_mode&quot;: mode,
+            &quot;scanned&quot;: len(records),
+            &quot;duplicate_group_count&quot;: len(results),
+            &quot;total_records_mergeable&quot;: sum(len(r[&quot;merge_ids&quot;]) for r in results),
+            &quot;groups&quot;: results,
+            &quot;how_to_use&quot;: (
+                f&quot;For each group, call pipedrive_merge_{&#x27;persons&#x27; if entity==&#x27;person&#x27; else &#x27;organizations&#x27;} &quot;
+                f&quot;once per id in merge_ids, passing that id as the merge-FROM and keep_id as merge_with_id. &quot;
+                &quot;keep_id is the richest record (most deals/activities/contacts); it survives. Merges are irreversible.&quot;
+            ),
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# COMPREHENSIVE RAW WRITE LAYER
+# ===========================================================================
+# These tools write ANY field (standard or custom) on deals, persons, orgs.
+# They handle the Pipedrive v2 format rules so Claude does not send bad payloads:
+#   - custom fields (40-char hash keys) are auto-wrapped in a &quot;custom_fields&quot; object
+#   - label_ids must be an array of ints
+#   - visible_to must be an int
+#   - multi-option (set) fields take an array of option IDs; use null (not []) to clear
+#
+# STANDARD_KEYS lists the top-level standard fields each entity accepts on PATCH/POST.
+# Anything not in this list AND 40 chars long is treated as a custom field.
+
+STANDARD_KEYS = {
+    &quot;deal&quot;: {
+        &quot;title&quot;, &quot;value&quot;, &quot;currency&quot;, &quot;user_id&quot;, &quot;owner_id&quot;, &quot;person_id&quot;, &quot;org_id&quot;,
+        &quot;pipeline_id&quot;, &quot;stage_id&quot;, &quot;status&quot;, &quot;expected_close_date&quot;, &quot;probability&quot;,
+        &quot;lost_reason&quot;, &quot;visible_to&quot;, &quot;add_time&quot;, &quot;won_time&quot;, &quot;lost_time&quot;, &quot;close_time&quot;,
+        &quot;label_ids&quot;, &quot;creator_user_id&quot;,
+    },
+    &quot;person&quot;: {
+        &quot;name&quot;, &quot;owner_id&quot;, &quot;org_id&quot;, &quot;emails&quot;, &quot;phones&quot;, &quot;visible_to&quot;, &quot;label_ids&quot;,
+        &quot;marketing_status&quot;, &quot;add_time&quot;,
+    },
+    &quot;organization&quot;: {
+        &quot;name&quot;, &quot;owner_id&quot;, &quot;address&quot;, &quot;visible_to&quot;, &quot;label_ids&quot;, &quot;add_time&quot;,
+    },
+}
+
+_PATH_MAP = {&quot;deal&quot;: &quot;deals&quot;, &quot;person&quot;: &quot;persons&quot;, &quot;organization&quot;: &quot;organizations&quot;}
+
+
+def _split_fields(entity: str, fields: dict) -&gt; dict:
+    &quot;&quot;&quot;Separate standard top-level fields from custom (hash) fields and build a v2 body.
+
+    - Standard keys stay top-level.
+    - 40-char keys go inside custom_fields.
+    - label_ids and visible_to are coerced to the correct types.
+    &quot;&quot;&quot;
+    body: Dict[str, Any] = {}
+    custom: Dict[str, Any] = {}
+    std = STANDARD_KEYS.get(entity, set())
+    for k, v in fields.items():
+        if len(k) == 40 and k not in std:
+            custom[k] = v
+        else:
+            # Type coercions for known-fussy standard fields
+            if k == &quot;label_ids&quot; and v is not None:
+                if isinstance(v, list):
+                    body[k] = [int(x) for x in v]
+                else:
+                    body[k] = [int(x) for x in str(v).split(&quot;,&quot;) if str(x).strip()]
+            elif k == &quot;visible_to&quot; and v is not None:
+                body[k] = int(v)
+            else:
+                body[k] = v
+    if custom:
+        body[&quot;custom_fields&quot;] = custom
+    return body
+
+
+class PipedriveUpdateRawInput(BaseModel):
+    &quot;&quot;&quot;Update any set of fields on a record. fields_json is a JSON object of key-&gt;value.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the record to update&quot;, ge=1)
+    fields_json: str = Field(..., description=(
+        &quot;A JSON object string mapping field keys to values. &quot;
+        &quot;Standard fields use plain names (title, value, status, owner_id, stage_id, &quot;
+        &quot;probability, lost_reason, visible_to, label_ids, expected_close_date, etc). &quot;
+        &quot;Custom fields use their 40-char hash key (from pipedrive_list_fields). &quot;
+        &quot;label_ids is an array of ints e.g. [3,7]. Dropdown custom fields take the option &quot;
+        &quot;ID; multi-option (set) fields take an array of option IDs. &quot;
+        &quot;Example: {\&quot;status\&quot;:\&quot;won\&quot;,\&quot;probability\&quot;:90,\&quot;dcf558aac1ae4e8c4f849ba5e668430d8df9be12\&quot;:\&quot;Enterprise\&quot;}&quot;
+    ))
+
+
+@mcp.tool(
+    name=&quot;pipedrive_update_raw&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_update_raw(params: PipedriveUpdateRawInput) -&gt; str:
+    &quot;&quot;&quot;Comprehensive update: write ANY standard or custom field(s) on a deal, person, or organization in a single call. Pass fields as a JSON object. Custom fields (40-char hash keys, from pipedrive_list_fields) are auto-wrapped correctly; label_ids and visible_to are coerced to the right types. This is the tool to use for anything the named update tools do not cover.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        if entity not in _PATH_MAP:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        try:
+            fields = json.loads(params.fields_json)
+        except json.JSONDecodeError as je:
+            return f&quot;Error: fields_json is not valid JSON. {je}&quot;
+        if not isinstance(fields, dict) or not fields:
+            return &quot;Error: fields_json must be a non-empty JSON object.&quot;
+        body = _split_fields(entity, fields)
+        data = await _patch(f&quot;{_PATH_MAP[entity]}/{params.entity_id}&quot;, body)
+        d = data.get(&quot;data&quot;, {})
+        return _fmt({&quot;status&quot;: &quot;updated&quot;, &quot;entity&quot;: entity, &quot;id&quot;: params.entity_id, &quot;written&quot;: list(fields.keys()), &quot;result_id&quot;: d.get(&quot;id&quot;)})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveCreateRawInput(BaseModel):
+    &quot;&quot;&quot;Create a record with any set of fields. fields_json is a JSON object of key-&gt;value.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    fields_json: str = Field(..., description=(
+        &quot;A JSON object string of fields for the new record. Required: deal needs &#x27;title&#x27;, &quot;
+        &quot;person and organization need &#x27;name&#x27;. Standard fields use plain names; custom fields &quot;
+        &quot;use their 40-char hash key. Same format rules as pipedrive_update_raw. &quot;
+        &quot;Example: {\&quot;title\&quot;:\&quot;Meesho RFP\&quot;,\&quot;value\&quot;:50000,\&quot;currency\&quot;:\&quot;USD\&quot;,\&quot;stage_id\&quot;:12}&quot;
+    ))
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_raw&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_raw(params: PipedriveCreateRawInput) -&gt; str:
+    &quot;&quot;&quot;Comprehensive create: make a new deal, person, or organization with ANY standard or custom fields populated up front, in one call. Pass fields as a JSON object. Same format handling as pipedrive_update_raw.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        if entity not in _PATH_MAP:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        try:
+            fields = json.loads(params.fields_json)
+        except json.JSONDecodeError as je:
+            return f&quot;Error: fields_json is not valid JSON. {je}&quot;
+        if not isinstance(fields, dict) or not fields:
+            return &quot;Error: fields_json must be a non-empty JSON object.&quot;
+        required = &quot;title&quot; if entity == &quot;deal&quot; else &quot;name&quot;
+        if required not in fields:
+            return f&quot;Error: {entity} requires &#x27;{required}&#x27; in fields_json.&quot;
+        body = _split_fields(entity, fields)
+        data = await _post(_PATH_MAP[entity], body)
+        d = data.get(&quot;data&quot;, {})
+        return _fmt({&quot;status&quot;: &quot;created&quot;, &quot;entity&quot;: entity, &quot;id&quot;: d.get(&quot;id&quot;), &quot;written&quot;: list(fields.keys())})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveBatchUpdateInput(BaseModel):
+    &quot;&quot;&quot;Update many records of the same entity type in one call. Each item is {id, fields}.&quot;&quot;&quot;
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    updates_json: str = Field(..., description=(
+        &quot;A JSON array of update objects. Each object is {\&quot;id\&quot;: &lt;record_id&gt;, \&quot;fields\&quot;: {&lt;key&gt;:&lt;value&gt;, ...}}. &quot;
+        &quot;Same field format rules as pipedrive_update_raw. Processes sequentially and reports per-record success/failure. &quot;
+        &quot;Example: [{\&quot;id\&quot;:101,\&quot;fields\&quot;:{\&quot;9dc80c...\&quot;:85}},{\&quot;id\&quot;:102,\&quot;fields\&quot;:{\&quot;9dc80c...\&quot;:40}}]. &quot;
+        &quot;Best for writing ICP scores or labels across many records. Keep batches to a few hundred to stay within rate limits.&quot;
+    ))
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, do not write. Return the resolved payload for each record (how fields would be split into standard vs custom) so you can review before executing.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_batch_update&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_batch_update(params: PipedriveBatchUpdateInput) -&gt; str:
+    &quot;&quot;&quot;Comprehensive batch write: update many deals/persons/orgs in one call, each with any standard or custom fields. Pass a JSON array of {id, fields} objects. Runs sequentially, continues past individual failures, and returns a per-record report. Set dry_run=true to preview the resolved payloads without writing. Use for bulk ICP scoring, label tagging, or owner cleanup across your universe.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        if entity not in _PATH_MAP:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        try:
+            updates = json.loads(params.updates_json)
+        except json.JSONDecodeError as je:
+            return f&quot;Error: updates_json is not valid JSON. {je}&quot;
+        if not isinstance(updates, list) or not updates:
+            return &quot;Error: updates_json must be a non-empty JSON array.&quot;
+
+        if params.dry_run:
+            preview = []
+            for i, item in enumerate(updates):
+                if not isinstance(item, dict) or &quot;id&quot; not in item or &quot;fields&quot; not in item:
+                    preview.append({&quot;index&quot;: i, &quot;error&quot;: &quot;each item needs &#x27;id&#x27; and &#x27;fields&#x27;&quot;})
+                    continue
+                preview.append({&quot;id&quot;: item[&quot;id&quot;], &quot;resolved_body&quot;: _split_fields(entity, item[&quot;fields&quot;])})
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;entity&quot;: entity,
+                &quot;total&quot;: len(updates),
+                &quot;preview&quot;: preview,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+
+        succeeded, failed = [], []
+        for i, item in enumerate(updates):
+            if not isinstance(item, dict) or &quot;id&quot; not in item or &quot;fields&quot; not in item:
+                failed.append({&quot;index&quot;: i, &quot;error&quot;: &quot;each item needs &#x27;id&#x27; and &#x27;fields&#x27;&quot;})
+                continue
+            try:
+                body = _split_fields(entity, item[&quot;fields&quot;])
+                await _patch(f&quot;{_PATH_MAP[entity]}/{int(item[&#x27;id&#x27;])}&quot;, body)
+                succeeded.append(item[&quot;id&quot;])
+                _audit(&quot;batch_update&quot;, entity, item[&quot;id&quot;], &quot;&quot;, &quot;,&quot;.join(item[&quot;fields&quot;].keys()))
+            except Exception as ie:
+                failed.append({&quot;id&quot;: item.get(&quot;id&quot;), &quot;error&quot;: _handle_error(ie)})
+
+        return _fmt({
+            &quot;entity&quot;: entity,
+            &quot;total&quot;: len(updates),
+            &quot;succeeded_count&quot;: len(succeeded),
+            &quot;failed_count&quot;: len(failed),
+            &quot;succeeded_ids&quot;: succeeded,
+            &quot;failed&quot;: failed,
+            &quot;logged&quot;: True,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# MAIL THREADS (link email conversations to deals)
+# ===========================================================================
+# Pipedrive stores email conversations as &quot;mail threads&quot;. A thread can be linked
+# to exactly ONE item (deal, lead, or project). These tools let a routine find
+# unlinked threads and attach them to the right deal.
+#
+# Matching strategy (chosen): exact recipient email -&gt; person -&gt; that person&#x27;s deal.
+# Endpoints (all v1):
+#   GET  /mailbox/mailThreads?folder={inbox|sent|drafts|archive}
+#   GET  /mailbox/mailThreads/{id}/mailMessages   (to read participant emails)
+#   PUT  /mailbox/mailThreads/{id}   body {deal_id: N}   (reversible; relink anytime)
+
+_MAIL_FOLDERS = [&quot;inbox&quot;, &quot;sent&quot;, &quot;drafts&quot;, &quot;archive&quot;]
+
+
+async def _thread_participant_emails(thread_id: int) -&gt; list:
+    &quot;&quot;&quot;Return the distinct non-account email addresses seen in a thread&#x27;s messages.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;mailbox/mailThreads/{thread_id}/mailMessages&quot;, {&quot;include_body&quot;: 0}, version=&quot;v1&quot;)
+    except Exception:
+        return []
+    msgs = data.get(&quot;data&quot;, []) or []
+    emails: list = []
+    for m in msgs:
+        for field in (&quot;from&quot;, &quot;to&quot;, &quot;cc&quot;):
+            parties = m.get(field) or []
+            if isinstance(parties, list):
+                for p in parties:
+                    val = (p.get(&quot;email_address&quot;) if isinstance(p, dict) else None) or &quot;&quot;
+                    val = val.lower().strip()
+                    if val and val not in emails:
+                        emails.append(val)
+    return emails
+
+
+class PipedriveListMailThreadsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    folder: Optional[str] = Field(default=&quot;all&quot;, description=&quot;Folder to scan: inbox, sent, drafts, archive, or &#x27;all&#x27; for every folder&quot;)
+    unlinked_only: Optional[bool] = Field(default=True, description=&quot;Return only threads not yet linked to a deal/lead&quot;)
+    scan_depth_per_folder: Optional[int] = Field(default=2000, description=&quot;How many threads to SCAN per folder (paginated in pages of 200). This is the search depth, NOT the number returned. Raise it if a folder is mostly already-linked and the unlinked backlog is older/deeper.&quot;, ge=1, le=20000)
+    max_unlinked: Optional[int] = Field(default=200, description=&quot;Stop scanning a folder once this many matching (unlinked) threads have been collected. Caps the result size independently of scan depth.&quot;, ge=1, le=5000)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_mail_threads&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_mail_threads(params: PipedriveListMailThreadsInput) -&gt; str:
+    &quot;&quot;&quot;List email threads across mail folders, defaulting to only those NOT yet linked to a deal. Returns thread id, subject, current deal_id (null if unlinked), participant count, and last-message time. Use this to find email conversations that still need to be attached to a deal, then pass each to pipedrive_link_mail_thread_to_deal.&quot;&quot;&quot;
+    try:
+        folders = _MAIL_FOLDERS if (params.folder or &quot;all&quot;).lower() == &quot;all&quot; else [params.folder.lower()]
+        for f in folders:
+            if f not in _MAIL_FOLDERS:
+                return f&quot;Error: folder must be one of {_MAIL_FOLDERS} or &#x27;all&#x27;.&quot;
+
+        all_threads = []
+        folder_stats = {}
+        for folder in folders:
+            start = 0
+            scanned = 0
+            collected = 0
+            while scanned &lt; params.scan_depth_per_folder and collected &lt; params.max_unlinked:
+                page = min(200, params.scan_depth_per_folder - scanned)
+                data = await _get(&quot;mailbox/mailThreads&quot;, {&quot;folder&quot;: folder, &quot;start&quot;: start, &quot;limit&quot;: page}, version=&quot;v1&quot;)
+                batch = data.get(&quot;data&quot;, []) or []
+                if not batch:
+                    break
+                scanned += len(batch)
+                for t in batch:
+                    deal_id = t.get(&quot;deal_id&quot;)
+                    lead_id = t.get(&quot;lead_id&quot;)
+                    if params.unlinked_only and (deal_id or lead_id):
+                        continue
+                    all_threads.append({
+                        &quot;thread_id&quot;: t.get(&quot;id&quot;),
+                        &quot;folder&quot;: folder,
+                        &quot;subject&quot;: t.get(&quot;subject&quot;),
+                        &quot;deal_id&quot;: deal_id,
+                        &quot;lead_id&quot;: lead_id,
+                        &quot;message_count&quot;: t.get(&quot;message_count&quot;),
+                        &quot;parties_count&quot;: t.get(&quot;parties_count&quot;) or (len(t.get(&quot;parties&quot;, {}).get(&quot;to&quot;, [])) if isinstance(t.get(&quot;parties&quot;), dict) else None),
+                        &quot;last_message_timestamp&quot;: t.get(&quot;last_message_timestamp&quot;),
+                        &quot;snippet&quot;: t.get(&quot;snippet&quot;),
+                    })
+                    collected += 1
+                    if collected &gt;= params.max_unlinked:
+                        break
+                pag = data.get(&quot;additional_data&quot;, {}).get(&quot;pagination&quot;, {})
+                if not pag.get(&quot;more_items_in_collection&quot;):
+                    break
+                start = pag.get(&quot;next_start&quot;, start + page)
+            folder_stats[folder] = {&quot;scanned&quot;: scanned, &quot;matched&quot;: collected, &quot;hit_scan_limit&quot;: scanned &gt;= params.scan_depth_per_folder}
+
+        # Warn if any folder was capped by scan depth while still finding matches - backlog may be deeper
+        capped = [f for f, st in folder_stats.items() if st[&quot;hit_scan_limit&quot;]]
+        return _fmt({
+            &quot;folders_scanned&quot;: folders,
+            &quot;unlinked_only&quot;: params.unlinked_only,
+            &quot;count&quot;: len(all_threads),
+            &quot;per_folder&quot;: folder_stats,
+            &quot;scan_depth_note&quot;: (
+                f&quot;Folders that hit the scan-depth cap: {capped}. Raise scan_depth_per_folder to look deeper for older unlinked threads.&quot;
+                if capped else &quot;Full folders scanned; no scan-depth cap was hit.&quot;
+            ),
+            &quot;threads&quot;: all_threads,
+            &quot;next_step&quot;: &quot;For each thread, call pipedrive_link_mail_thread_to_deal with the thread_id; it matches the thread&#x27;s recipient email to a person and links their deal.&quot;,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveGetMailThreadInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    thread_id: int = Field(..., description=&quot;The mail thread ID&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_get_mail_thread&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_get_mail_thread(params: PipedriveGetMailThreadInput) -&gt; str:
+    &quot;&quot;&quot;Get one mail thread&#x27;s details plus its distinct participant email addresses and current deal link. Use to inspect a thread before linking, or to see who is on the conversation.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;mailbox/mailThreads/{params.thread_id}&quot;, version=&quot;v1&quot;)
+        t = data.get(&quot;data&quot;, {}) or {}
+        emails = await _thread_participant_emails(params.thread_id)
+        return _fmt({
+            &quot;thread_id&quot;: t.get(&quot;id&quot;),
+            &quot;subject&quot;: t.get(&quot;subject&quot;),
+            &quot;deal_id&quot;: t.get(&quot;deal_id&quot;),
+            &quot;lead_id&quot;: t.get(&quot;lead_id&quot;),
+            &quot;message_count&quot;: t.get(&quot;message_count&quot;),
+            &quot;participant_emails&quot;: emails,
+            &quot;last_message_timestamp&quot;: t.get(&quot;last_message_timestamp&quot;),
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveLinkMailThreadInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    thread_id: int = Field(..., description=&quot;The mail thread ID to link&quot;, ge=1)
+    deal_id: Optional[int] = Field(default=None, description=&quot;Deal ID to link the thread to. If omitted, the tool auto-matches via the thread&#x27;s recipient email -&gt; person -&gt; their deal.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_link_mail_thread_to_deal&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_link_mail_thread_to_deal(params: PipedriveLinkMailThreadInput) -&gt; str:
+    &quot;&quot;&quot;Link an email thread to a deal. If deal_id is given, links directly. If omitted, auto-matches: reads the thread&#x27;s participant emails, finds the matching person by exact email, and links the thread to that person&#x27;s open deal (only when the match is unambiguous). Reversible: call again with a different deal_id to relink. Note: a thread can be linked to only one item.&quot;&quot;&quot;
+    try:
+        resolved_deal_id = params.deal_id
+        match_note = &quot;explicit deal_id provided&quot;
+
+        if resolved_deal_id is None:
+            # Auto-match: participant email -&gt; person (exact) -&gt; their deal
+            emails = await _thread_participant_emails(params.thread_id)
+            # Drop obvious internal/account addresses so we match the external party
+            external = [e for e in emails if &quot;pipedrivemail.com&quot; not in e]
+            candidate_persons = []
+            for em in external:
+                pdata = await _get(&quot;persons/search&quot;, {&quot;term&quot;: em, &quot;fields&quot;: &quot;email&quot;, &quot;exact_match&quot;: 1, &quot;limit&quot;: 5}, version=&quot;v1&quot;)
+                items = pdata.get(&quot;data&quot;, {}).get(&quot;items&quot;, []) or []
+                for it in items:
+                    person = it.get(&quot;item&quot;, {})
+                    if person.get(&quot;id&quot;) and person[&quot;id&quot;] not in [c[&quot;id&quot;] for c in candidate_persons]:
+                        candidate_persons.append({&quot;id&quot;: person[&quot;id&quot;], &quot;name&quot;: person.get(&quot;name&quot;), &quot;email&quot;: em})
+
+            if not candidate_persons:
+                return _fmt({&quot;status&quot;: &quot;skipped&quot;, &quot;reason&quot;: &quot;no person matched any participant email exactly&quot;, &quot;thread_id&quot;: params.thread_id, &quot;emails_checked&quot;: external})
+
+            # Collect open deals across matched persons
+            deals_found = []
+            for cp in candidate_persons:
+                ddata = await _get(&quot;deals&quot;, {&quot;person_id&quot;: cp[&quot;id&quot;], &quot;status&quot;: &quot;open&quot;, &quot;limit&quot;: 10})
+                for d in (ddata.get(&quot;data&quot;, []) or []):
+                    deals_found.append({&quot;deal_id&quot;: d.get(&quot;id&quot;), &quot;title&quot;: d.get(&quot;title&quot;), &quot;person_id&quot;: cp[&quot;id&quot;], &quot;person&quot;: cp[&quot;name&quot;]})
+
+            if len(deals_found) == 0:
+                return _fmt({&quot;status&quot;: &quot;skipped&quot;, &quot;reason&quot;: &quot;matched a person but they have no open deal to link&quot;, &quot;thread_id&quot;: params.thread_id, &quot;matched_persons&quot;: candidate_persons})
+            if len(deals_found) &gt; 1:
+                return _fmt({&quot;status&quot;: &quot;ambiguous&quot;, &quot;reason&quot;: &quot;more than one open deal matched; not auto-linking. Re-call with an explicit deal_id.&quot;, &quot;thread_id&quot;: params.thread_id, &quot;candidate_deals&quot;: deals_found})
+
+            resolved_deal_id = deals_found[0][&quot;deal_id&quot;]
+            match_note = f&quot;auto-matched via {deals_found[0][&#x27;person&#x27;]} -&gt; deal &#x27;{deals_found[0][&#x27;title&#x27;]}&#x27;&quot;
+
+        # Perform the link
+        await _put(f&quot;mailbox/mailThreads/{params.thread_id}&quot;, {&quot;deal_id&quot;: resolved_deal_id}, version=&quot;v1&quot;)
+        _audit(&quot;link_mail_thread&quot;, &quot;deal&quot;, resolved_deal_id, params.thread_id, match_note)
+        return _fmt({
+            &quot;status&quot;: &quot;linked&quot;,
+            &quot;thread_id&quot;: params.thread_id,
+            &quot;deal_id&quot;: resolved_deal_id,
+            &quot;match&quot;: match_note,
+            &quot;reversible&quot;: &quot;Yes. Call again with a different deal_id to relink.&quot;,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# AUDIT LOG (read back what the mutating tools recorded)
+# ===========================================================================
+
+class PipedriveReadAuditLogInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    last_n: Optional[int] = Field(default=50, description=&quot;Return the most recent N rows&quot;, ge=1, le=5000)
+    action_filter: Optional[str] = Field(default=None, description=&quot;Only rows with this action: merge, delete, batch_update, change_owner, link_mail_thread&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_read_audit_log&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_read_audit_log(params: PipedriveReadAuditLogInput) -&gt; str:
+    &quot;&quot;&quot;Read back the local audit log of every mutating action (merges, deletes, batch updates, owner changes, mail-thread links) this server has performed. Each row has timestamp, action, entity, the surviving/target id, the affected/deleted id, and a detail note. This is the recovery reference and the answer to &#x27;what did the routine do&#x27;.&quot;&quot;&quot;
+    try:
+        if not os.path.exists(_AUDIT_PATH):
+            return _fmt({&quot;audit_log_path&quot;: _AUDIT_PATH, &quot;rows&quot;: [], &quot;note&quot;: &quot;No audit log yet; no mutating actions have been recorded.&quot;})
+        with open(_AUDIT_PATH, &quot;r&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as fh:
+            rows = list(csv.DictReader(fh))
+        if params.action_filter:
+            rows = [r for r in rows if r.get(&quot;action&quot;) == params.action_filter]
+        rows = rows[-params.last_n:]
+        return _fmt({&quot;audit_log_path&quot;: _AUDIT_PATH, &quot;count&quot;: len(rows), &quot;rows&quot;: rows})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# FILES (read attachments on a deal / person / organization)
+# ===========================================================================
+
+class PipedriveListFilesInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    entity_id: int = Field(..., description=&quot;ID of the record whose files to list&quot;, ge=1)
+    limit: Optional[int] = Field(default=50, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_files&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_files(params: PipedriveListFilesInput) -&gt; str:
+    &quot;&quot;&quot;List files attached to a deal, person, or organization (proposals, contracts, decks). Returns file name, type, size, add time, and the deal/person/org it is linked to. Read-only. Useful for deal review and handoff prep.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        path_map = {&quot;deal&quot;: &quot;deals&quot;, &quot;person&quot;: &quot;persons&quot;, &quot;organization&quot;: &quot;organizations&quot;}
+        if entity not in path_map:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        data = await _get(f&quot;{path_map[entity]}/{params.entity_id}/files&quot;, {&quot;limit&quot;: params.limit}, version=&quot;v1&quot;)
+        files = data.get(&quot;data&quot;, []) or []
+        results = [{
+            &quot;id&quot;: f.get(&quot;id&quot;),
+            &quot;name&quot;: f.get(&quot;name&quot;) or f.get(&quot;file_name&quot;),
+            &quot;file_type&quot;: f.get(&quot;file_type&quot;),
+            &quot;size&quot;: f.get(&quot;file_size&quot;),
+            &quot;add_time&quot;: f.get(&quot;add_time&quot;),
+            &quot;deal_id&quot;: f.get(&quot;deal_id&quot;),
+            &quot;person_id&quot;: f.get(&quot;person_id&quot;),
+            &quot;org_id&quot;: f.get(&quot;org_id&quot;),
+            &quot;url&quot;: f.get(&quot;url&quot;),
+        } for f in files]
+        return _fmt({&quot;entity&quot;: entity, &quot;id&quot;: params.entity_id, &quot;count&quot;: len(results), &quot;files&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# PRODUCTS / DEAL LINE-ITEMS (track which modules a deal covers)
+# ===========================================================================
+
+class PipedriveSearchProductsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    term: str = Field(..., description=&quot;Search term for product name or code&quot;, min_length=1)
+    limit: Optional[int] = Field(default=DEFAULT_LIMIT, ge=1, le=100)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_search_products&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_search_products(params: PipedriveSearchProductsInput) -&gt; str:
+    &quot;&quot;&quot;Search the product catalog by name or code. Returns product id, name, code, and prices. Use to find the product_id before attaching a product/module to a deal.&quot;&quot;&quot;
+    try:
+        data = await _get(&quot;products/search&quot;, {&quot;term&quot;: params.term, &quot;limit&quot;: params.limit}, version=&quot;v1&quot;)
+        items = data.get(&quot;data&quot;, {}).get(&quot;items&quot;, []) or []
+        results = []
+        for it in items:
+            p = it.get(&quot;item&quot;, {})
+            results.append({&quot;id&quot;: p.get(&quot;id&quot;), &quot;name&quot;: p.get(&quot;name&quot;), &quot;code&quot;: p.get(&quot;code&quot;)})
+        if not results:
+            return f&quot;No products found matching &#x27;{params.term}&#x27;.&quot;
+        return _fmt({&quot;count&quot;: len(results), &quot;products&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveListDealProductsInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID whose attached products/line-items to list&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_list_deal_products&quot;,
+    annotations={&quot;readOnlyHint&quot;: True, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_list_deal_products(params: PipedriveListDealProductsInput) -&gt; str:
+    &quot;&quot;&quot;List the products/line-items attached to a deal (e.g. which Osmos modules a deal covers). Returns the attachment id (needed to remove), product id, name, item price, quantity, and sum.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;deals/{params.deal_id}/products&quot;, {&quot;include_product_data&quot;: 1}, version=&quot;v1&quot;)
+        prods = data.get(&quot;data&quot;, []) or []
+        results = [{
+            &quot;attachment_id&quot;: p.get(&quot;id&quot;),
+            &quot;product_id&quot;: p.get(&quot;product_id&quot;),
+            &quot;name&quot;: p.get(&quot;name&quot;),
+            &quot;item_price&quot;: p.get(&quot;item_price&quot;),
+            &quot;quantity&quot;: p.get(&quot;quantity&quot;),
+            &quot;sum&quot;: p.get(&quot;sum&quot;),
+            &quot;currency&quot;: p.get(&quot;currency&quot;),
+        } for p in prods]
+        return _fmt({&quot;deal_id&quot;: params.deal_id, &quot;count&quot;: len(results), &quot;products&quot;: results})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveAddDealProductInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID to attach the product to&quot;, ge=1)
+    product_id: int = Field(..., description=&quot;Product ID to attach (from pipedrive_search_products)&quot;, ge=1)
+    item_price: float = Field(..., description=&quot;Price per item for this deal (numeric)&quot;)
+    quantity: Optional[float] = Field(default=1, description=&quot;Quantity (numeric)&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_add_deal_product&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_add_deal_product(params: PipedriveAddDealProductInput) -&gt; str:
+    &quot;&quot;&quot;Attach a product/line-item to a deal (e.g. tag a deal with an Osmos module). Requires product_id, item_price, and quantity as numbers. Returns the attachment id.&quot;&quot;&quot;
+    try:
+        body = {&quot;product_id&quot;: params.product_id, &quot;item_price&quot;: params.item_price, &quot;quantity&quot;: params.quantity or 1}
+        data = await _post(f&quot;deals/{params.deal_id}/products&quot;, body, version=&quot;v1&quot;)
+        d = data.get(&quot;data&quot;, {})
+        _audit(&quot;add_deal_product&quot;, &quot;deal&quot;, params.deal_id, params.product_id, f&quot;attachment={d.get(&#x27;id&#x27;)}&quot;)
+        return _fmt({&quot;status&quot;: &quot;attached&quot;, &quot;deal_id&quot;: params.deal_id, &quot;product_id&quot;: params.product_id, &quot;attachment_id&quot;: d.get(&quot;id&quot;), &quot;logged&quot;: True})
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveRemoveDealProductInput(BaseModel):
+    model_config = ConfigDict(extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID&quot;, ge=1)
+    attachment_id: int = Field(..., description=&quot;The product attachment id (from pipedrive_list_deal_products, NOT the product_id)&quot;, ge=1)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_remove_deal_product&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: True, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_remove_deal_product(params: PipedriveRemoveDealProductInput) -&gt; str:
+    &quot;&quot;&quot;Remove a product/line-item from a deal. Use the attachment_id from pipedrive_list_deal_products, not the product_id.&quot;&quot;&quot;
+    try:
+        await _delete(f&quot;deals/{params.deal_id}/products/{params.attachment_id}&quot;, version=&quot;v1&quot;)
+        _audit(&quot;remove_deal_product&quot;, &quot;deal&quot;, params.deal_id, params.attachment_id, &quot;&quot;)
+        return f&quot;Removed product attachment #{params.attachment_id} from deal #{params.deal_id}. (logged)&quot;
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# MODULE TAGGING (convenience: name -&gt; product_id -&gt; attach, for module-mapper)
+# ===========================================================================
+
+class PipedriveTagDealModulesInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    deal_id: int = Field(..., description=&quot;Deal ID to tag with module products&quot;, ge=1)
+    module_names: List[str] = Field(..., description=&quot;Module names to attach as products, e.g. [\&quot;Onsite\&quot;,\&quot;Instore\&quot;]. Each is resolved to its catalog product by exact name match.&quot;)
+    replace_existing: Optional[bool] = Field(default=False, description=&quot;If true, remove all currently attached products on the deal first, then attach the given modules. If false, add to whatever is already there.&quot;)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, resolve names to product IDs and report the plan without changing the deal.&quot;)
+
+
+async def _product_default_price(product_id: int) -&gt; float:
+    &quot;&quot;&quot;Fetch a product and return its default (first) catalog price, or 0 if none set.&quot;&quot;&quot;
+    try:
+        data = await _get(f&quot;products/{product_id}&quot;, version=&quot;v1&quot;)
+        prices = (data.get(&quot;data&quot;, {}) or {}).get(&quot;prices&quot;, []) or []
+        if prices and isinstance(prices, list):
+            return float(prices[0].get(&quot;price&quot;, 0) or 0)
+    except Exception:
+        pass
+    return 0.0
+
+
+@mcp.tool(
+    name=&quot;pipedrive_tag_deal_modules&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_tag_deal_modules(params: PipedriveTagDealModulesInput) -&gt; str:
+    &quot;&quot;&quot;Tag a deal with Osmos modules by name (e.g. [&quot;Onsite&quot;,&quot;Instore&quot;]). Resolves each module name to its catalog product via exact-name search, attaches it to the deal at the product&#x27;s default catalog price, quantity 1. Set replace_existing=true to clear current products first. Set dry_run=true to see the resolved plan without writing. Built for module-mapper output to flow straight onto the deal.&quot;&quot;&quot;
+    try:
+        # Resolve each module name to a product_id (exact match)
+        resolved, unresolved = [], []
+        for name in params.module_names:
+            sdata = await _get(&quot;products/search&quot;, {&quot;term&quot;: name, &quot;exact_match&quot;: 1, &quot;limit&quot;: 5}, version=&quot;v1&quot;)
+            items = sdata.get(&quot;data&quot;, {}).get(&quot;items&quot;, []) or []
+            match = None
+            for it in items:
+                p = it.get(&quot;item&quot;, {})
+                if (p.get(&quot;name&quot;) or &quot;&quot;).strip().lower() == name.strip().lower():
+                    match = p
+                    break
+            if match is None and items:
+                match = items[0].get(&quot;item&quot;, {})  # fall back to top hit
+            if match and match.get(&quot;id&quot;):
+                price = await _product_default_price(match[&quot;id&quot;])
+                resolved.append({&quot;module&quot;: name, &quot;product_id&quot;: match[&quot;id&quot;], &quot;product_name&quot;: match.get(&quot;name&quot;), &quot;price&quot;: price})
+            else:
+                unresolved.append(name)
+
+        if params.dry_run:
+            return _fmt({
+                &quot;dry_run&quot;: True,
+                &quot;deal_id&quot;: params.deal_id,
+                &quot;replace_existing&quot;: params.replace_existing,
+                &quot;would_attach&quot;: resolved,
+                &quot;unresolved_names&quot;: unresolved,
+                &quot;note&quot;: &quot;No changes made. Re-call with dry_run=false to execute.&quot;,
+            })
+
+        if unresolved:
+            return _fmt({
+                &quot;status&quot;: &quot;aborted&quot;,
+                &quot;reason&quot;: &quot;some module names did not resolve to a product; nothing was changed&quot;,
+                &quot;unresolved_names&quot;: unresolved,
+                &quot;resolved&quot;: resolved,
+                &quot;hint&quot;: &quot;Check the exact product names in your catalog, or create the missing module products first.&quot;,
+            })
+
+        removed = []
+        if params.replace_existing:
+            existing = await _get(f&quot;deals/{params.deal_id}/products&quot;, {&quot;include_product_data&quot;: 0}, version=&quot;v1&quot;)
+            for p in (existing.get(&quot;data&quot;, []) or []):
+                try:
+                    await _delete(f&quot;deals/{params.deal_id}/products/{p.get(&#x27;id&#x27;)}&quot;, version=&quot;v1&quot;)
+                    removed.append(p.get(&quot;id&quot;))
+                except Exception:
+                    pass
+
+        attached = []
+        for r in resolved:
+            body = {&quot;product_id&quot;: r[&quot;product_id&quot;], &quot;item_price&quot;: r[&quot;price&quot;], &quot;quantity&quot;: 1}
+            data = await _post(f&quot;deals/{params.deal_id}/products&quot;, body, version=&quot;v1&quot;)
+            attached.append({&quot;module&quot;: r[&quot;module&quot;], &quot;product_id&quot;: r[&quot;product_id&quot;], &quot;attachment_id&quot;: data.get(&quot;data&quot;, {}).get(&quot;id&quot;)})
+
+        _audit(&quot;tag_modules&quot;, &quot;deal&quot;, params.deal_id, &quot;&quot;, f&quot;modules={&#x27;,&#x27;.join(m[&#x27;module&#x27;] for m in resolved)}; replaced={len(removed)}&quot;)
+        return _fmt({
+            &quot;status&quot;: &quot;tagged&quot;,
+            &quot;deal_id&quot;: params.deal_id,
+            &quot;attached&quot;: attached,
+            &quot;removed_attachments&quot;: removed if params.replace_existing else &quot;n/a (add mode)&quot;,
+            &quot;logged&quot;: True,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# BATCH MAIL-THREAD LINKING (process the unlinked backlog in chunks)
+# ===========================================================================
+
+async def _match_thread_to_deal(thread_id: int, ambiguous_tiebreak: bool) -&gt; dict:
+    &quot;&quot;&quot;Resolve one thread to a deal via exact participant email -&gt; person -&gt; open deal.
+    Returns a dict describing the outcome without performing the link.
+    ambiguous_tiebreak: if True, when multiple open deals match, pick the most recently updated one.
+    &quot;&quot;&quot;
+    emails = await _thread_participant_emails(thread_id)
+    external = [e for e in emails if &quot;pipedrivemail.com&quot; not in e]
+    persons = []
+    for em in external:
+        pdata = await _get(&quot;persons/search&quot;, {&quot;term&quot;: em, &quot;fields&quot;: &quot;email&quot;, &quot;exact_match&quot;: 1, &quot;limit&quot;: 5}, version=&quot;v1&quot;)
+        for it in (pdata.get(&quot;data&quot;, {}).get(&quot;items&quot;, []) or []):
+            p = it.get(&quot;item&quot;, {})
+            if p.get(&quot;id&quot;) and p[&quot;id&quot;] not in [c[&quot;id&quot;] for c in persons]:
+                persons.append({&quot;id&quot;: p[&quot;id&quot;], &quot;name&quot;: p.get(&quot;name&quot;), &quot;email&quot;: em})
+
+    if not persons:
+        return {&quot;thread_id&quot;: thread_id, &quot;outcome&quot;: &quot;skipped&quot;, &quot;reason&quot;: &quot;no person matched participant emails&quot;, &quot;emails&quot;: external}
+
+    deals = []
+    for cp in persons:
+        ddata = await _get(&quot;deals&quot;, {&quot;person_id&quot;: cp[&quot;id&quot;], &quot;status&quot;: &quot;open&quot;, &quot;limit&quot;: 20})
+        for d in (ddata.get(&quot;data&quot;, []) or []):
+            deals.append({&quot;deal_id&quot;: d.get(&quot;id&quot;), &quot;title&quot;: d.get(&quot;title&quot;), &quot;update_time&quot;: d.get(&quot;update_time&quot;), &quot;person&quot;: cp[&quot;name&quot;]})
+
+    if len(deals) == 0:
+        return {&quot;thread_id&quot;: thread_id, &quot;outcome&quot;: &quot;skipped&quot;, &quot;reason&quot;: &quot;matched person has no open deal&quot;, &quot;persons&quot;: persons}
+    if len(deals) == 1:
+        return {&quot;thread_id&quot;: thread_id, &quot;outcome&quot;: &quot;match&quot;, &quot;deal_id&quot;: deals[0][&quot;deal_id&quot;], &quot;basis&quot;: &quot;unambiguous&quot;, &quot;detail&quot;: f&quot;{deals[0][&#x27;person&#x27;]} -&gt; {deals[0][&#x27;title&#x27;]}&quot;}
+    # multiple deals
+    if not ambiguous_tiebreak:
+        return {&quot;thread_id&quot;: thread_id, &quot;outcome&quot;: &quot;ambiguous&quot;, &quot;candidate_deals&quot;: deals}
+    # tie-break: most recently updated open deal
+    chosen = sorted(deals, key=lambda d: (d.get(&quot;update_time&quot;) or &quot;&quot;), reverse=True)[0]
+    return {&quot;thread_id&quot;: thread_id, &quot;outcome&quot;: &quot;match&quot;, &quot;deal_id&quot;: chosen[&quot;deal_id&quot;], &quot;basis&quot;: &quot;tiebreak_most_recent&quot;, &quot;detail&quot;: f&quot;{chosen[&#x27;person&#x27;]} -&gt; {chosen[&#x27;title&#x27;]} (chosen from {len(deals)} open deals by most recent update)&quot;}
+
+
+class PipedriveBatchLinkMailThreadsInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    folder: Optional[str] = Field(default=&quot;sent&quot;, description=&quot;Folder to process: inbox, sent, drafts, or archive (one folder per batch)&quot;)
+    batch_size: Optional[int] = Field(default=100, description=&quot;How many unlinked threads to process in this call&quot;, ge=1, le=200)
+    start: Optional[int] = Field(default=0, description=&quot;Pagination start offset into the folder. Use the returned next_start to resume the next batch.&quot;)
+    ambiguous_tiebreak: Optional[bool] = Field(default=True, description=&quot;When a thread&#x27;s contact has more than one open deal, link to the most recently updated one. If false, such threads are reported as &#x27;ambiguous&#x27; and left unlinked.&quot;)
+    dry_run: Optional[bool] = Field(default=False, description=&quot;If true, resolve and report what each thread WOULD link to, but link nothing.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_batch_link_mail_threads&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_batch_link_mail_threads(params: PipedriveBatchLinkMailThreadsInput) -&gt; str:
+    &quot;&quot;&quot;Process a folder&#x27;s unlinked email threads in one batch: for each, auto-match via exact participant email -&gt; person -&gt; open deal, and link it. Unambiguous matches (one open deal) link directly; when a contact has multiple open deals, the most recently updated one is chosen if ambiguous_tiebreak is on, otherwise reported and skipped. Returns a per-thread report (linked / skipped / ambiguous), counts, and a next_start cursor to resume the next batch. Set dry_run=true to preview without linking. Links are reversible. Every real link is written to the audit log.&quot;&quot;&quot;
+    try:
+        folder = (params.folder or &quot;sent&quot;).lower()
+        if folder not in _MAIL_FOLDERS:
+            return f&quot;Error: folder must be one of {_MAIL_FOLDERS}.&quot;
+
+        # Pull a page of threads and keep only unlinked ones, up to batch_size
+        unlinked = []
+        start = params.start
+        scanned = 0
+        while len(unlinked) &lt; params.batch_size and scanned &lt; 2000:
+            page = min(200, 2000 - scanned)
+            data = await _get(&quot;mailbox/mailThreads&quot;, {&quot;folder&quot;: folder, &quot;start&quot;: start, &quot;limit&quot;: page}, version=&quot;v1&quot;)
+            batch = data.get(&quot;data&quot;, []) or []
+            if not batch:
+                break
+            scanned += len(batch)
+            for t in batch:
+                if not (t.get(&quot;deal_id&quot;) or t.get(&quot;lead_id&quot;)):
+                    unlinked.append({&quot;thread_id&quot;: t.get(&quot;id&quot;), &quot;subject&quot;: t.get(&quot;subject&quot;)})
+                    if len(unlinked) &gt;= params.batch_size:
+                        break
+            pag = data.get(&quot;additional_data&quot;, {}).get(&quot;pagination&quot;, {})
+            next_start = pag.get(&quot;next_start&quot;, start + page)
+            if not pag.get(&quot;more_items_in_collection&quot;):
+                start = next_start
+                break
+            start = next_start
+
+        # Resolve (and optionally link) each
+        linked, tiebroken, skipped, ambiguous = [], [], [], []
+        for th in unlinked:
+            res = await _match_thread_to_deal(th[&quot;thread_id&quot;], params.ambiguous_tiebreak)
+            res[&quot;subject&quot;] = th[&quot;subject&quot;]
+            if res[&quot;outcome&quot;] == &quot;match&quot;:
+                if not params.dry_run:
+                    await _put(f&quot;mailbox/mailThreads/{th[&#x27;thread_id&#x27;]}&quot;, {&quot;deal_id&quot;: res[&quot;deal_id&quot;]}, version=&quot;v1&quot;)
+                    _audit(&quot;link_mail_thread&quot;, &quot;deal&quot;, res[&quot;deal_id&quot;], th[&quot;thread_id&quot;], res.get(&quot;basis&quot;, &quot;&quot;))
+                (tiebroken if res.get(&quot;basis&quot;) == &quot;tiebreak_most_recent&quot; else linked).append(res)
+            elif res[&quot;outcome&quot;] == &quot;ambiguous&quot;:
+                ambiguous.append(res)
+            else:
+                skipped.append(res)
+
+        return _fmt({
+            &quot;dry_run&quot;: params.dry_run,
+            &quot;folder&quot;: folder,
+            &quot;processed&quot;: len(unlinked),
+            &quot;linked_unambiguous&quot;: len(linked),
+            &quot;linked_by_tiebreak&quot;: len(tiebroken),
+            &quot;skipped&quot;: len(skipped),
+            &quot;ambiguous_unlinked&quot;: len(ambiguous),
+            &quot;next_start&quot;: start,
+            &quot;resume_hint&quot;: f&quot;Call again with start={start} to process the next {params.batch_size}.&quot;,
+            &quot;details&quot;: {
+                &quot;linked_unambiguous&quot;: linked,
+                &quot;linked_by_tiebreak&quot;: tiebroken,
+                &quot;skipped&quot;: skipped,
+                &quot;ambiguous_unlinked&quot;: ambiguous,
+            },
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# CUSTOM FIELD MANAGEMENT (create new fields, edit name/description/options)
+# ===========================================================================
+# Create and edit the SCHEMA of custom fields on deals/persons/orgs, including
+# the field description (the &quot;Field description&quot; box in the Pipedrive UI).
+# Note: field_type cannot be changed after creation. Name, description, and
+# options (adding new ones) can be edited.
+
+_FIELD_ENDPOINT = {&quot;deal&quot;: &quot;dealFields&quot;, &quot;person&quot;: &quot;personFields&quot;, &quot;organization&quot;: &quot;organizationFields&quot;}
+
+_VALID_FIELD_TYPES = [
+    &quot;varchar&quot;, &quot;varchar_auto&quot;, &quot;text&quot;, &quot;double&quot;, &quot;monetary&quot;, &quot;date&quot;, &quot;daterange&quot;,
+    &quot;time&quot;, &quot;timerange&quot;, &quot;enum&quot;, &quot;set&quot;, &quot;user&quot;, &quot;org&quot;, &quot;people&quot;, &quot;phone&quot;,
+    &quot;address&quot;, &quot;visible_to&quot;,
+]
+
+
+class PipedriveCreateFieldInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    name: str = Field(..., description=&quot;Field name, e.g. &#x27;Deal Type&#x27;&quot;, min_length=1, max_length=255)
+    field_type: str = Field(..., description=&quot;Field type: varchar (text), text (large text), double (numeric), monetary, date, daterange, enum (single option/dropdown), set (multiple options), user, phone, address, etc. Use &#x27;enum&#x27; for a single-select dropdown like the screenshot.&quot;)
+    options: Optional[List[str]] = Field(default=None, description=&quot;For enum/set fields ONLY: list of option labels, e.g. [\&quot;New Sales\&quot;,\&quot;NRR\&quot;]. Required when field_type is enum or set.&quot;)
+    description: Optional[str] = Field(default=None, description=&quot;Field description shown in the Pipedrive UI &#x27;Field description&#x27; box.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_create_custom_field&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: False, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_create_custom_field(params: PipedriveCreateFieldInput) -&gt; str:
+    &quot;&quot;&quot;Create a new custom field on deals, persons, or organizations. Supports all field types including single-option dropdowns (enum) and multi-option (set), with an optional description. Example: a &#x27;Deal Type&#x27; dropdown with options New Sales and NRR. Returns the new field&#x27;s key (the 40-char hash used to read/write values).&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        endpoint = _FIELD_ENDPOINT.get(entity)
+        if not endpoint:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        ft = params.field_type.lower()
+        if ft not in _VALID_FIELD_TYPES:
+            return f&quot;Error: field_type &#x27;{params.field_type}&#x27; not recognized. Valid types: {&#x27;, &#x27;.join(_VALID_FIELD_TYPES)}.&quot;
+        if ft in (&quot;enum&quot;, &quot;set&quot;) and not params.options:
+            return f&quot;Error: field_type &#x27;{ft}&#x27; requires an options list (e.g. [\&quot;New Sales\&quot;,\&quot;NRR\&quot;]).&quot;
+
+        body: Dict[str, Any] = {&quot;name&quot;: params.name, &quot;field_type&quot;: ft}
+        if params.options and ft in (&quot;enum&quot;, &quot;set&quot;):
+            body[&quot;options&quot;] = [{&quot;label&quot;: o} for o in params.options]
+        if params.description:
+            body[&quot;description&quot;] = params.description
+
+        data = await _post(endpoint, body, version=&quot;v1&quot;)
+        d = data.get(&quot;data&quot;, {}) or {}
+        # refresh the cached field list so pipedrive_list_fields sees the new field
+        _FIELD_CACHE.pop(entity, None)
+        _audit(&quot;create_field&quot;, entity, d.get(&quot;id&quot;), &quot;&quot;, f&quot;name={params.name}; type={ft}&quot;)
+        return _fmt({
+            &quot;status&quot;: &quot;created&quot;,
+            &quot;entity&quot;: entity,
+            &quot;field_name&quot;: d.get(&quot;name&quot;),
+            &quot;field_key&quot;: d.get(&quot;key&quot;),
+            &quot;field_type&quot;: d.get(&quot;field_type&quot;),
+            &quot;options&quot;: [{&quot;id&quot;: o.get(&quot;id&quot;), &quot;label&quot;: o.get(&quot;label&quot;)} for o in (d.get(&quot;options&quot;) or [])],
+            &quot;logged&quot;: True,
+            &quot;note&quot;: &quot;Use field_key with pipedrive_set_custom_field or pipedrive_update_raw to write values.&quot;,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+class PipedriveUpdateFieldInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra=&quot;forbid&quot;)
+    entity_type: str = Field(..., description=&quot;deal, person, or organization&quot;)
+    field_key: str = Field(..., description=&quot;The 40-char field key (from pipedrive_list_fields) of the field to edit&quot;)
+    name: Optional[str] = Field(default=None, description=&quot;New field name&quot;)
+    description: Optional[str] = Field(default=None, description=&quot;New field description (the &#x27;Field description&#x27; box). This is what you set to add a description to an existing field.&quot;)
+    add_options: Optional[List[str]] = Field(default=None, description=&quot;For enum/set fields: NEW option labels to add. Cannot remove or rename existing options via this tool.&quot;)
+
+
+@mcp.tool(
+    name=&quot;pipedrive_update_custom_field&quot;,
+    annotations={&quot;readOnlyHint&quot;: False, &quot;destructiveHint&quot;: False, &quot;idempotentHint&quot;: True, &quot;openWorldHint&quot;: False},
+)
+async def pipedrive_update_custom_field(params: PipedriveUpdateFieldInput) -&gt; str:
+    &quot;&quot;&quot;Edit an existing custom field&#x27;s schema: change its name, set/update its description (the &#x27;Field description&#x27; box in the screenshot), or add new dropdown options. The field type cannot be changed after creation. Use this to add a description to a field that was created without one.&quot;&quot;&quot;
+    try:
+        entity = params.entity_type.lower()
+        endpoint = _FIELD_ENDPOINT.get(entity)
+        if not endpoint:
+            return &quot;Error: entity_type must be deal, person, or organization.&quot;
+        body: Dict[str, Any] = {}
+        if params.name:
+            body[&quot;name&quot;] = params.name
+        if params.description is not None:
+            body[&quot;description&quot;] = params.description
+        if params.add_options:
+            body[&quot;options&quot;] = [{&quot;label&quot;: o} for o in params.add_options]
+        if not body:
+            return &quot;Error: provide at least one of name, description, or add_options.&quot;
+
+        data = await _patch(f&quot;{endpoint}/{params.field_key}&quot;, body, version=&quot;v1&quot;)
+        d = data.get(&quot;data&quot;, {}) or {}
+        _FIELD_CACHE.pop(entity, None)
+        _audit(&quot;update_field&quot;, entity, params.field_key, &quot;&quot;, &quot;,&quot;.join(body.keys()))
+        return _fmt({
+            &quot;status&quot;: &quot;updated&quot;,
+            &quot;entity&quot;: entity,
+            &quot;field_key&quot;: params.field_key,
+            &quot;changed&quot;: list(body.keys()),
+            &quot;name&quot;: d.get(&quot;name&quot;),
+            &quot;description&quot;: d.get(&quot;description&quot;),
+            &quot;logged&quot;: True,
+        })
+    except Exception as e:
+        return _handle_error(e)
+
+
+# ===========================================================================
+# Entry point
+# ===========================================================================
+
+if __name__ == &quot;__main__&quot;:
+    if not API_TOKEN:
+        print(&quot;ERROR: Set PIPEDRIVE_API_TOKEN environment variable.&quot;)
+        print(&quot;  export PIPEDRIVE_API_TOKEN=&#x27;your-token-here&#x27;&quot;)
+        exit(1)
+    if not COMPANY_DOMAIN:
+        print(&quot;ERROR: Set PIPEDRIVE_DOMAIN environment variable.&quot;)
+        print(&quot;  export PIPEDRIVE_DOMAIN=&#x27;yourcompany&#x27;&quot;)
+        exit(1)
+    mcp.run()
+</pre>
+        </div>
+      </div>
+      <div class="post-foot">Want help pointing it at your own Pipedrive? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<div class="toast" id="toast">Copied</div>
+<script>function copyServer(b){const pre=b.closest('.codeblock').querySelector('pre');if(navigator.clipboard)navigator.clipboard.writeText(pre.innerText);const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);}</script>
+</body>
+</html>

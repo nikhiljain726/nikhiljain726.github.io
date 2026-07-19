@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nikhil Jain</title>
+<meta name="description" content="Nikhil Jain. Growth and GTM engineering at Osmos.ai. A public notebook of essays, prompts, and the skills I build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><style>.rotwrap{font-family:var(--serif);font-weight:500;letter-spacing:-.03em;line-height:1.06;font-size:clamp(2.4rem,6vw,3.6rem);margin:0 0 .35em}.rot{color:var(--signal);border-bottom:3px solid rgba(var(--signal-rgb),.28);display:inline-block;transition:opacity .28s ease,transform .28s ease}.rot.out{opacity:0;transform:translateY(-6px)}</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="writing.html">Writing</a>
+      <a href="skills.html">Skills</a>
+      <a href="prompts.html">Prompts</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a href="now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Nikhil Jain <span class="dot">&middot;</span> Pune, India</div>
+      <div class="rotwrap">I'm a <span class="rot" id="rot">operator</span>.</div>
+      <p class="sub">I build growth and GTM systems, and write down what I learn doing it. Right now, growth and GTM engineering at Osmos.ai, building the retail media infrastructure layer.</p>
+      <p class="purpose"><strong>This site is mostly a notebook.</strong> I write things down to think them through, then leave them public, because notes get sharper when someone can argue with them. You will find essays, prompts, and skills I have built that you are free to take and use.</p>
+    </div>
+  </section>
+  <hr class="rule">
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div class="eyebrow">Writing</div><a href="writing.html">All writing &rarr;</a></div>
+      <ul class="postlist">
+        <li><a href="posts/ai-model-bakeoff.html"><span class="t">Four AI models, one research task, and the merge that almost shipped wrong<span class="tp">Recall beats tidiness, and the merge across four runs was itself software with a bug.</span></span><span class="d">Jul 2026</span></a></li>
+        <li><a href="posts/gtm-engineering-origin.html"><span class="t">How GTM engineering became a job<span class="tp">The role is new, the work is not. Replacing the manual handoff with a system.</span></span><span class="d">Jul 2026</span></a></li>
+        <li><a href="posts/crm-needs-infrastructure.html"><span class="t">Your CRM needs infrastructure now<span class="tp">An agent is only as good as what it can touch. Why a CRM needs an MCP, not a read-only connector.</span></span><span class="d">Jul 2026</span></a></li>
+        <li><a href="posts/nbs-agent-pipedrive.html"><span class="t">The NBS agent that writes next actions into the CRM<span class="tp">A next-best-step agent that turns a 40-deal pipeline review into the three that need a human.</span></span><span class="d">Jun 2026</span></a></li>
+        <li><a href="posts/crm-cleanup.html"><span class="t">Cleaning up a CRM nobody wanted to touch<span class="tp">Dry-run merges, an audit log, and the unglamorous linking that makes a CRM trustworthy.</span></span><span class="d">Jun 2026</span></a></li>
+        <li><a href="posts/nrev-visitors-to-intent.html"><span class="t">Turning anonymous website visitors into intent signals<span class="tp">Anonymous traffic into a short, ranked, same-day list a rep can act on.</span></span><span class="d">Jun 2026</span></a></li>
+      </ul>
+    </div>
+  </section>
+  <hr class="rule">
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div class="eyebrow">Build with me</div><a href="skills.html">All skills &rarr;</a></div>
+      <ul class="postlist">
+        <li><a href="skills.html"><span class="t">Skills<span class="tp">Claude skills, automations, and playbooks, with the SKILL.md to copy.</span></span><span class="d">Skills</span></a></li>
+        <li><a href="prompts.html"><span class="t">The GTM prompt library<span class="tp">Copy-paste prompts for research, outbound, content, and CRM.</span></span><span class="d">Prompts</span></a></li>
+        <li><a href="library.html"><span class="t">Library<span class="tp">Videos and essays worth your attention, updated over time.</span></span><span class="d">Library</span></a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<script>
+const words=["operator","GTM engineer","growth marketer","first-principles thinker","former founder","systems builder"];
+const el=document.getElementById('rot');let i=0;
+const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduce){setInterval(()=>{el.classList.add('out');setTimeout(()=>{i=(i+1)%words.length;el.textContent=words[i];el.classList.remove('out');},280);},2200);}
+</script>
+</body>
+</html>

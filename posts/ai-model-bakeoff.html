@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four AI models, one research task, and the merge that almost shipped wrong · Nikhil Jain</title>
+<meta name="description" content="Profiling a few hundred companies for whether each runs an ads business, across four browsing models, and the merge that almost shipped wrong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>Four AI models, one research task, and the merge that almost shipped wrong</h1>
+      <div class="byline">AI &amp; agent workflows &nbsp;·&nbsp; July 2026 &nbsp;·&nbsp; 9 min read</div>
+
+      <div class="post-body">
+        <p>Short version: I set out to profile a few hundred companies for whether each runs an advertising business. I ran the job across four browsing-capable models, found that no single run was both complete and trustworthy, and ended up consolidating four disagreeing runs into one view. Then I audited my own merge and caught it stapling vendor data onto the wrong companies. Here is the whole thing, with the numbers, the models, and the parts I got wrong before I got them right.</p>
+
+        <h2>The task: retail media and ads-program research</h2>
+        <p>For each company on a list of 788, I needed one evidenced answer: does this company sell advertising? Not "does it buy ads," which nearly everyone does, but does it run its own ads business. A retail media network, sponsored product listings, an audience or data product it sells to brands. And if so, who supplies the technology behind it: the onsite ad server, the offsite demand tech, measurement, and so on.</p>
+        <p>This is real research, not a database lookup. You read the company's own advertiser pages, check filings, dig through trade press (often in the home-market language), and then judge whether what you found is a live ad product or just marketing that looks like one. Good work to hand a web-browsing agent. The output per company was structured: a status (Confirmed, Building, or None), the program name, the ad channels, two confidence scores, and a set of vendor fields, so it could land in a spreadsheet and later a CRM.</p>
+
+        <h2>The four contenders</h2>
+        <p>I ran the same prompt and schema through four browsing-capable options in a workflow tool (nRev, which points a prompt at a CSV, runs it per row, lets you pick the model, toggle web search, and enforce a JSON output schema). Any orchestration tool with those four things does the same job.</p>
+        <ul>
+          <li><strong>Parallel Web Core Research</strong> (5 credits per company). A research-tuned model built to browse and return sourced answers.</li>
+          <li><strong>GPT-5.4</strong> (8 credits) with the web-search toggle on (plus 3 credits). A general frontier model given browsing.</li>
+          <li><strong>Claude Opus 4.7 and Opus 4.8</strong> (8 and 10 credits) run through Claude Code, a coding agent, so the model could browse, loop over rows, and write output files itself.</li>
+        </ul>
+
+        <h2>Test on a sample before you spend</h2>
+        <p>I ran a bake-off on 25 companies first, checked against answers I could verify by hand. That one habit saved the project.</p>
+        <p>All four agreed on 18 of 25. Easy wins: large retailers with obvious, well-documented ad businesses. The seven disagreements were the point, and they clustered where research is hard. Companies outside the US. Companies whose ad business is new and barely announced. Companies whose business model keeps the program somewhere non-obvious. A fintech has no "/advertise" page; its ad product hides under offers or rewards. A super-app announces an in-app ads business in a press release months before any web page exists.</p>
+        <p>The cheaper research model had a specific, repeatable failure on these hard cases: it returned "None." When I read the sources, several of those "None" companies had real, live ad businesses. iHerb was named in public tech-news coverage as an early customer of Amazon's Retail Ad Service, a sponsored-products platform, months before I ran the test. The model had not found it and defaulted to "nothing here."</p>
+        <blockquote>A wrong "None" looks finished. It sits in the sheet like a completed row, nobody re-audits a company marked "no program," and that company drops out of every downstream decision without a trace.</blockquote>
+        <p>A visible error is annoying. An error that looks like a correct answer is the expensive kind.</p>
+
+        <h2>Scaling the test, and the problem it revealed</h2>
+        <p>Twenty-five rows is a hunch. So I ran the strongest option, Opus 4.8 in Claude Code, on a larger set and compared it head to head against Parallel Web Core on the same companies.</p>
+        <table>
+          <thead>
+            <tr><th>Metric (256 companies)</th><th>Parallel Web Core (5 cr)</th><th>Claude Opus 4.8 (10 cr)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Status agreement</td><td class="num">80%</td><td class="num">80%</td></tr>
+            <tr><td>Confirmed</td><td class="num">195</td><td class="num">226</td></tr>
+            <tr><td>Building</td><td class="num">23</td><td class="num">16</td></tr>
+            <tr><td>None</td><td class="num">38</td><td class="num">14</td></tr>
+            <tr><td>Finds a program where the other says "None"</td><td class="num">3 rows</td><td class="num">27 rows</td></tr>
+            <tr><td>Distinct vendors named</td><td class="num">374</td><td class="num">629 (+68%)</td></tr>
+            <tr><td>Avg named vendors per row</td><td class="num">1.46</td><td class="num">2.46</td></tr>
+          </tbody>
+        </table>
+        <p>The 27-versus-3 line settled the recall question. Core called a real program "None" 27 times where Opus found one; the reverse happened 3 times. Nine to one. I spot-checked the 27, and on the ones I verified Core was wrong: Reliance's JioAds commerce network, Nykaa's beauty ads network, and the iHerb case, among others. Core also produced nearly three times the "None" rate, most of it false.</p>
+        <p>But here is the problem that changed the whole plan. No single run was both complete and clean. The runs had been done at different times on different subsets: Core covered all 788, one Opus run covered 544, another 256, the GPT run only the 25-company sample. And where they overlapped, they disagreed on about one company in five. I did not have a winner I could run on everything and trust. I had four partial, disagreeing runs.</p>
+
+        <h2>Consolidating four runs into one view</h2>
+        <p>So the job became a merge, not a model pick. The rule could not be "newest wins" or "most expensive wins," because each run was right on some rows and wrong on others. It had to be evidence-weighted, and tuned for the person who would act on the row: a seller.</p>
+        <p>The selection rule I settled on: for each company, score every run's answer by evidence strength. A named program or a specific, sourced signal beats a bare "None." A row with a program name, a substantive evidence summary, and named vendors outranks a row that just says "None" with nothing behind it. Take the winning run's status, name, channels, confidence, and summary. Then, separately, union the vendor stack across every run that agreed the company had a program, so the final record carries the fullest supplier list anyone found.</p>
+        <p>A worked example. On one crypto exchange, Core said "None" (it "uses Google and Facebook to advertise its own services," which is correct, but that is buying ads, not selling them). One Opus run said "Building" with a specific signal: public discussion of monetising app real estate through sponsored placements, plus hiring and press pointing at an ads offering. For a seller, the Building answer is far more useful. It is a live reason to make contact, and it is evidenced. The bare "None" kills the account silently. The rule takes the evidenced Building.</p>
+        <p>The mirror case keeps it honest. Where every run agreed "None" with no signal, the row stays "None." The rule rewards evidence, not optimism.</p>
+
+        <h2>Auditing my own merge, and the bug I found</h2>
+        <p>Here is the part I almost shipped. My first merge unioned vendors from every run, and I checked it before trusting it. Good thing.</p>
+        <p>On a handful of companies, a run had concluded "None" but still listed vendor names in its own fields, an internal contradiction in that run's output. My blind union pulled those vendors into the final record anyway. On the worst row, one run said "None" while naming seven vendors, and my merge stapled all seven onto a company another run had marked as a program. That is exactly the silently-wrong data a seller would carry into a meeting.</p>
+        <p>The fix was a rule change: pull vendors only from runs whose status agreed the company had a program, never from a run that said "None." And if the final status is "None," the vendor fields must be empty, no exceptions. I reran the audit until zero "None" rows carried vendors and zero vendors traced back only to a "None" run.</p>
+        <p>The lesson generalises. A merge across disagreeing sources is itself a piece of software that needs testing. The status logic in my first version was sound, and I could have shipped on that alone and never noticed the vendor contamination underneath it. Checking the output against its own rules, rather than eyeballing that it "looked filled," is what caught it.</p>
+
+        <h2>A mistake I made mid-project, on the record</h2>
+        <p>At one point I accused one model of inventing two vendor names on a South American retailer. They looked fabricated, and no cheaper run had found them, so I was ready to hold it up as proof that frontier models hallucinate.</p>
+        <p>I checked first. Both were real: one a launch partner named in the company's own press release, the other an exclusive ad-sales partner named on its own site. The model had researched deeper than I had, and I nearly penalised it for being right. When a model surfaces something you did not expect, "it made that up" is a hypothesis, not a verdict. Verify before you dismiss. I came close to picking a worse result because I trusted my own prior over a source I had not read.</p>
+
+        <h2>The prompt did as much work as the model</h2>
+        <p>None of this works with a lazy prompt. A model told "find out if this company sells ads" will guess, and guessing is where hallucination starts. The prompt has to remove the room to guess. What moved results more than the model choice:</p>
+        <ul>
+          <li><strong>A tiered search procedure.</strong> Where to look, in order: the company's own advertiser pages first (strongest evidence), then filings, then trade press, then hiring signals. Stop as soon as you can call it. This kills the one-shallow-search-and-quit behavior.</li>
+          <li><strong>A business-type playbook.</strong> The biggest single fix for the false-"None" problem. I wrote out where the ad program hides by company type. Marketplace: the seller portal, not the consumer homepage. Fintech: offers and rewards. Pharmacy: often a specific data partner. The cheap model failed partly because it looked in the same place for every company.</li>
+          <li><strong>An emerging-program rule.</strong> Real programs get announced before they have a polished page, so a named, announced program counts as "Building," never "None," and the model should prefer "Building" whenever there is credible signal.</li>
+          <li><strong>False-positive guards.</strong> The mirror image. Buying ads is not selling ads. A shopper-marketing program run through an agency is not a retail media network on its own. Without these, the model over-calls.</li>
+          <li><strong>A no-fabrication rule with a source trail.</strong> Every populated field had to carry the URL it came from in a separate field, and no inferred value was allowed in a data cell. If the model was guessing, it said so in the summary rather than laundering the guess into a clean-looking cell.</li>
+          <li><strong>Enum discipline.</strong> Status could be one of three exact words. Let a model write free text into a column you plan to filter on, and you get "high," "High," and "fairly confident" in the same column, and the filter breaks.</li>
+        </ul>
+
+        <h2>From a clean sheet to an action list</h2>
+        <p>A consolidated sheet is not the deliverable. What a seller needs is a short list with a reason to reach out. So the last step was slicing the enriched data into groups that map to a sales motion, using only the data already in the sheet, no new research.</p>
+        <p>Two patterns did most of the work.</p>
+        <ul>
+          <li><strong>Displacement by incumbent vendor.</strong> I pulled every company running a specific competing ad-tech vendor (filtering the vendor fields for one or two named incumbents). That group is a rip-and-replace motion: they already sell ads, they already pay someone for the tech, and the pitch is switching. It is a completely different conversation from a greenfield prospect, and the enriched vendor fields make the group a one-line filter.</li>
+          <li><strong>Segment with a corporate-ownership exclusion.</strong> I built a food-delivery segment, then removed the companies owned by one large acquirer in that space, because those accounts are effectively one buying decision, not many. This is where public M&amp;A knowledge matters and where I slowed down: acquirer ownership shifts, brands get sold, and a stale exclusion list quietly puts a subsidiary back on your target list or drops a company that was divested. I verified current ownership before cutting anything, and I dated the exclusion, because it is true as of now, not forever.</li>
+        </ul>
+        <p>Both groups came straight out of the enriched fields. That is the payoff of the earlier discipline: because status and vendors were trustworthy and consistent, the segmentation was a filter, not another research project.</p>
+
+        <h2>The conclusion, and what I would tell someone starting this</h2>
+        <p>For this task, recall mattered more than tidiness, because a false "None" costs a whole company. On recall, the frontier model in the coding agent beat the research-tuned models clearly, and its one weakness, over-calling, was cheap to clean up. Cheapest-per-row was the most expensive choice once you priced in the companies it would have made me miss. And because no single run was clean, the real work was a defensible merge, plus the audit that caught the merge's own bug.</p>
+        <p>The rules that generalise past this project:</p>
+        <ol>
+          <li>Never trust the first run. Sample it against answers you can check by hand.</li>
+          <li>Pick the failure mode you can live with. For research-and-enrich work, a visible over-call beats an invisible miss, because you audit what looks done, not what looks empty.</li>
+          <li>Cheapest-per-unit is a trap when a wrong answer is expensive. Price the mistakes, not the tokens.</li>
+          <li>When you merge disagreeing sources, test the merge itself. It is code, and mine had a bug that looked like clean data.</li>
+          <li>When a model tells you something surprising, verify before you call it wrong.</li>
+          <li>The prompt carries as much weight as the model. Tell it where to look, constrain the output, and let it admit uncertainty.</li>
+        </ol>
+        <p>The models will keep changing, and next year's cheap one might beat today's expensive one. The method holds: build the test, run the sample, verify by hand, merge with a rule you can defend, audit the merge, and choose the error you can afford.</p>
+      </div>
+
+      <div class="post-foot">
+        Built something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

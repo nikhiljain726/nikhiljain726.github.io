@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turning anonymous website visitors into intent signals &middot; Nikhil Jain</title>
+<meta name="description" content="A workflow that turns anonymous traffic into a short, ranked, same-day list a rep can act on, built in nRev.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>Turning anonymous website visitors into intent signals</h1>
+      <div class="byline">AI & agent workflows &nbsp;&middot;&nbsp; Jun 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      <div class="post-body">
+
+        <p>Most of the people on your website never fill out a form. They read, they leave, and by default you never know they were there. That is a lot of intent going to waste.</p>
+        <p>The workflow I run turns that anonymous traffic into a short, ranked list a rep can act on the same day. It goes like this.</p>
+        <p>De-anonymize the visit down to a company, using the tools that resolve traffic to an organization. Filter hard to ICP fits, because most of the traffic is not for you, and a list full of noise gets ignored. Enrich the ones that fit, so the rep has context. Then score the visit as a signal: which pages, how many times, how recently. A pricing page twice this week is a different signal from one blog visit back in March.</p>
+        <blockquote>A signal nobody acts on the same day is just a log entry.</blockquote>
+        <p>I built this in nRev, pointing a prompt at the resolved-visitor list and enforcing a clean output schema, so every row lands with a company, a fit reason, and a signal strength. The last step is the one people skip, which is routing it. The warm ones become a task on the right rep's list while the intent is still fresh, and the rest drop into nurture automatically. There is no digest to read, because the work already moved to where someone will do it.</p>
+      </div>
+      <div class="post-foot">
+        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="mailto:nikhiljain726@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
