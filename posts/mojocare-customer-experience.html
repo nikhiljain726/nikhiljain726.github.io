@@ -49,18 +49,62 @@
       <a class="backlink" href="../writing.html">&larr; All writing</a>
       <h1>Building a stellar customer experience for a D2C brand</h1>
       <p class="dek">A journey teardown I wrote for Mojocare: how a consumer-health brand earns repeats and trust, mapped from first click to post-delivery.</p>
-      <div class="byline">D2C &amp; founder lessons &nbsp;&middot;&nbsp; Sep 2022 &nbsp;&middot;&nbsp; 3 min read</div>
+      <div class="byline">D2C &amp; founder lessons &nbsp;&middot;&nbsp; Sep 2022 &nbsp;&middot;&nbsp; 6 min read</div>
       <div class="post-body">
 
         <p>Repeat users beat new users, and getting there is not luck. It comes from listening to customers, teaching them about their own problem, and keeping them updated before they have to ask. I wrote up how a D2C brand like <a href="https://www.linkedin.com/company/mojocare/">Mojocare</a>, a digital-first personal-healthcare brand, could build that experience end to end.</p>
 
         <p>The plan maps the journey in three phases: before the first order, where the job is awareness, discovery, and consideration; after the order, where it is nurturing, order updates, and building trust; and after delivery, where feedback, cross-sell, loyalty, and reviews take over. It also covers how to actually implement it, the considerations that matter, and the tools that make it run. The specifics are written for Mojocare, but the shape works for almost any consumer-facing business with a little refinement.</p>
 
-        <p>The full plan is below. You can read it inline or download it.</p>
+        <p>Here is the full plan.</p>
 
-        <p class="pdfnote">Mojocare, experience and NPS, 4 pages</p>
-        <iframe class="pdfframe" src="../assets/mojocare-customer-experience.pdf" title="Mojocare customer experience plan (PDF)"></iframe>
-        <p><a href="../assets/mojocare-customer-experience.pdf" download>Download the PDF</a> &nbsp;&middot;&nbsp; <a href="../assets/mojocare-customer-experience.pdf" target="_blank" rel="noopener">Open in a new tab</a></p>
+        <h2>Before the first order: awareness, discovery, consideration</h2>
+        <p>Start by opening an easy, two-way channel with the customer. WhatsApp is the obvious one, quick to reply on, and people already live there.</p>
+        <ol class="nlist">
+          <li>When a lead fills a form on the site or anywhere else, send them easy-to-consume information on WhatsApp, automated through the WhatsApp Business API. Match it to the category they picked, the product brochure and plan details for that vertical, so by the time a salesperson calls, the customer already knows the brand and the offer.</li>
+          <li>Let them find answers on their own with a WhatsApp chatbot for quick FAQs.</li>
+          <li>Once they have opted in on the Mojocare WhatsApp number, invite them to a free one-week care plan for the category they came in on. The care plan is byte-sized education, short videos, images, and text, once a day for seven days, with no direct selling. Stretch the window if the category takes longer to convert.</li>
+        </ol>
+
+        <h2>After the order: nurturing, updates, trust</h2>
+        <ol class="nlist">
+          <li>On order placement, send the confirmation on WhatsApp and tell them they can reply to the same number any time. Knowing the brand is one message away is what cements trust.</li>
+          <li>Between order and delivery is when anxiety peaks. Ease it with automated shipping updates and a live order-tracking link.</li>
+          <li>On delivery, send a short "how to use" demo video and invite questions. It signals you actually care how they get on with the product.</li>
+        </ol>
+
+        <h2>After delivery: feedback, cross-sell, loyalty, reviews</h2>
+        <ol class="nlist">
+          <li>Ask for feedback and listen for what they actually expected.</li>
+          <li>If the experience was good, recommend the next logical product, automated as a WhatsApp sequence. Approach it as solving their next problem, not selling your next SKU.</li>
+          <li>If they engage with the recommendation, then ask for the sale. WhatsApp conversational flows handle this cleanly.</li>
+          <li>Thank them for a repeat purchase and ask for referrals, with a ready-to-forward message and a referral program to plug into.</li>
+          <li>Then repeat the whole loop on every order.</li>
+        </ol>
+
+        <h2>How to actually implement it</h2>
+        <ol class="nlist">
+          <li>Understand the current systems and how data flows today.</li>
+          <li>Pick a WhatsApp marketing tool, or check whether the one you already have can do the job.</li>
+          <li>Design the project properly: assign owners (product managers and marketers), pull in content, design, and developers, set timelines, and define success metrics up front.</li>
+        </ol>
+
+        <h2>Things to watch</h2>
+        <ol class="nlist">
+          <li>Tie every data point back to a central CRM.</li>
+          <li>Give the sales team activity logs for context. In the ideal case there is no sales touch needed after the first purchase, and that is worth aiming for.</li>
+          <li>If you are configuring a new WhatsApp tool, insist on a drag-and-drop chatbot builder. Developer hours create delays, and marketers should be able to build the flows themselves.</li>
+          <li>Keep the segment data from discovery through purchase, so you can push it back to each channel for data-driven campaigns.</li>
+        </ol>
+
+        <h2>The stack</h2>
+        <p>Bias toward clean data and proper integrations across every tool and the CRM. Roughly: Clevertap or WebEngage (or similar) for marketing automation, a WhatsApp marketing tool alongside it, LeadSquared for sales, and Freshdesk or similar for support.</p>
+
+        <h2>Closing thought</h2>
+        <p>Customers buy from a brand that is easy to talk to and that teaches them about their own problem. User-acquisition spend has basically become the cost of buying data, and WhatsApp is one of the few ways to keep that same user engaged, with open rates north of 90 percent against email's 5 to 10, and without depending on pixel data for remarketing.</p>
+        <blockquote>Own the first-party relationship. Educate, nurture, update, support, and retain on WhatsApp, and the trust and loyalty follow.</blockquote>
+
+        <p>Prefer it as a document? <a href="../assets/mojocare-customer-experience.pdf" download>Download the full plan (PDF)</a>, or <a href="../assets/mojocare-customer-experience.pdf" target="_blank" rel="noopener">open it in a new tab</a>.</p>
       </div>
 
       <div class="post-foot">
@@ -85,6 +129,21 @@
     </p>
   </div>
 </footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(entries,obs){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+  },{threshold:0.15}) : null;
+  document.addEventListener('DOMContentLoaded', function(){
+    if(reduce || !io) return;
+    var body=document.querySelector('.post-body');
+    if(!body) return;
+    body.querySelectorAll('h2, blockquote, ol.nlist').forEach(function(el){ el.classList.add('reveal'); io.observe(el); });
+  });
+})();
+</script>
 
 </body>
 </html>
