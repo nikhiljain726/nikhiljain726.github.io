@@ -307,3 +307,7 @@ a{transition:border-color .2s ease,color .2s ease}
 .q-group{font-family:var(--serif);font-weight:500;font-size:1.15rem;color:var(--ink);margin:34px 0 2px;letter-spacing:-.01em}
 .quote-card.dev blockquote{font-family:"Noto Serif Devanagari", var(--serif);line-height:1.5}
 .quote-card.dev.long blockquote{line-height:1.55}
+
+/* Embedded PDF viewer */
+.pdfframe{width:100%;height:82vh;min-height:520px;border:1px solid var(--line);border-radius:12px;background:var(--tint);margin:8px 0 12px}
+.pdfnote{font-family:var(--mono);font-size:.74rem;letter-spacing:.03em;color:var(--ink-soft);margin:0 0 4px}
