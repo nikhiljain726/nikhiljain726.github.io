@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cleaning up a CRM nobody wanted to touch &middot; Nikhil Jain</title>
-<meta name="description" content="Duplicate finder, dry-run merges, an audit log, and the unglamorous mail-thread linking that makes a CRM trustworthy again.">
+<meta name="description" content="The first real cleanup of a 99K-contact Pipedrive in five years: dry-run merges, an audit log, ICP fields, and daily workflows that keep it clean.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,12 +12,12 @@
 <meta property="og:site_name" content="Nikhil Jain">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cleaning up a CRM nobody wanted to touch · Nikhil Jain">
-<meta property="og:description" content="Duplicate finder, dry-run merges, an audit log, and the unglamorous mail-thread linking that makes a CRM trustworthy again.">
+<meta property="og:description" content="The first real cleanup of a 99K-contact Pipedrive in five years: dry-run merges, an audit log, ICP fields, and daily workflows that keep it clean.">
 <meta property="og:url" content="https://nikhiljain726.github.io/posts/crm-cleanup.html">
 <meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Cleaning up a CRM nobody wanted to touch · Nikhil Jain">
-<meta name="twitter:description" content="Duplicate finder, dry-run merges, an audit log, and the unglamorous mail-thread linking that makes a CRM trustworthy again.">
+<meta name="twitter:description" content="The first real cleanup of a 99K-contact Pipedrive in five years: dry-run merges, an audit log, ICP fields, and daily workflows that keep it clean.">
 <meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
@@ -42,15 +42,96 @@
     <div class="wrap">
       <a class="backlink" href="../writing.html">&larr; All writing</a>
       <h1>Cleaning up a CRM nobody wanted to touch</h1>
-      <div class="byline">GTM & growth engineering &nbsp;&middot;&nbsp; Jun 2026 &nbsp;&middot;&nbsp; 4 min read</div>
+      <p class="dek">A <span class="countup" data-to="114000">114,000</span>-record Pipedrive, five years of drift, and the safety rig that made it safe to fix.</p>
+      <div class="byline">GTM & growth engineering &nbsp;&middot;&nbsp; Jul 2026 &nbsp;&middot;&nbsp; 9 min read</div>
       <div class="post-body">
 
-        <p>Every CRM I have inherited was a mess, and this one was no exception. Duplicate organizations, the same person entered three times, deals stapled to the wrong account, email threads floating unlinked. Nobody wanted to touch it, because one wrong bulk edit can do real damage.</p>
-        <p>So I did not start with a bulk edit. I started with a way to see the mess and undo my own moves.</p>
-        <p>First, a duplicate finder that groups records by Pipedrive's own matching rules and suggests which record to keep, the richest one, with the most deals and activity behind it. Then merges that run one pair at a time, each with a dry run, so I could preview what would survive and what would get deleted before anything happened.</p>
-        <blockquote>A cleanup you cannot audit is not a cleanup. It is a second mess waiting to happen.</blockquote>
-        <p>Every merge, delete, and owner change writes a row to a local log: what changed, when, and which record won. If something looked wrong the next morning, I could read back exactly what the routine did, and Pipedrive keeps deletes recoverable for about a month on top of that.</p>
-        <p>The unglamorous parts mattered most. Linking old email threads to the right deal by matching the participant's email to a person. Emptying vendor fields on records marked as having no program, so a stale value would not quietly mislead a seller. None of it is clever. All of it is the difference between a CRM the team trusts and a dashboard they argue with. The tooling behind this is <a href="crm-needs-infrastructure.html">the MCP server I built for Pipedrive</a>.</p>
+        <p>When I inherited it, the CRM had about <span class="countup" data-to="99000">99,000</span> people and <span class="countup" data-to="15000">15,000</span> companies, built over four or five years of Pipedrive with no RevOps behind it. I was the first person doing GTM engineering at Osmos, so this was the first real cleanup the instance had ever had. Everyone had used it their own way. Reps entered accounts however they liked, imports piled up, enrichment tools created records that did not match the ones already there, and nobody owned the result.</p>
+
+        <p>A CRM that size is dangerous to touch. One careless bulk edit across 99,000 records and you have made things worse in a way you cannot easily walk back. So I did not start with a bulk edit. I started with two things: a way to see the mess, and a way to undo my own moves.</p>
+
+        <blockquote>A cleanup you cannot audit is not a cleanup. It is a second mess with a timestamp.</blockquote>
+
+        <figure class="flow" aria-label="The cleanup pipeline, four steps and a daily loop">
+          <div class="flow-row">
+            <div class="flow-step"><span class="n">STEP 1</span><b>Export</b><span class="l">Pull people, orgs, and deals out to files</span></div>
+            <div class="flow-arrow" aria-hidden="true">&rarr;</div>
+            <div class="flow-step"><span class="n">STEP 2</span><b>Analyze with AI</b><span class="l">Flag duplicates by email and domain, mark rotten records</span></div>
+            <div class="flow-arrow" aria-hidden="true">&rarr;</div>
+            <div class="flow-step"><span class="n">STEP 3</span><b>Review</b><span class="l">Check the plan, dry-run the risky merges</span></div>
+            <div class="flow-arrow" aria-hidden="true">&rarr;</div>
+            <div class="flow-step"><span class="n">STEP 4</span><b>Act in batches</b><span class="l">Import files for bulk, API for the surgical bits, all logged</span></div>
+          </div>
+          <div class="flow-loop">Daily, on the last 24 hours: enrich &rarr; dedupe &rarr; link email to the deal<br>Weekly and monthly: audit health, flag zombie deals, re-score ICP</div>
+        </figure>
+
+        <h2>Pipedrive's own merge tool was part of the problem</h2>
+        <p>The first thing I learned is that Pipedrive's built-in merge suggestions are close to useless at scale. They only flag records with the same name. So "Acme" and "Acme" get caught, while "Acme Inc", "Acme India Pvt Ltd", and a record keyed to acme.com sit there as three separate companies it never connects. Real duplicates almost never share an exact name. That is the reason they became duplicates in the first place. The feature feels like it was built years ago and never revisited.</p>
+
+        <p>So I built my own finder. It matches people by email and companies by web domain, which is where the actual overlap lives, and when it finds a group it keeps the richest record as the survivor, the one with the most deals and activity behind it, and folds the rest into that. To picture it: someone shows up twice, once as jane@acme.com with three deals attached and once as a bare "Jane (Acme)" with none. Name matching sees two different people. Email matching collapses them into the record that actually has history, and the empty one stops inflating the count.</p>
+
+        <h2>Why I did not run it all through the API</h2>
+        <p>My first instinct was to script the whole thing against the Pipedrive API and let it run. At 114,000 records that falls apart fast. You hit the rate limits within minutes, and even when you do not, pushing every merge and field fix through the API one call at a time takes days of babysitting.</p>
+        <p>So I flipped it. Export the data out of Pipedrive, analyze it with AI to build the actual plan, which records are duplicates, which are rotten, and what each merge should keep, then act in batches through import files with a review step before every load. The API stayed useful for the surgical work, the dry-run merges and the email-thread linking, but the heavy lifting happened offline where I could see everything at once and nothing was rate-limited.</p>
+
+        <h2>The safety model came first</h2>
+        <p>Before merging anything, I built the guardrails:</p>
+        <ol class="nlist">
+          <li>A dry run on every merge, so I could see which record would survive and what would be deleted before it happened.</li>
+          <li>A review step before every import batch and every destructive API call. No blind bulk edits on 99,000 records.</li>
+          <li>An audit log that writes a row for every merge, delete, and owner change: timestamp, action, entity, the id kept, the id removed, and a note.</li>
+        </ol>
+        <p>If something looked wrong the next morning, I could read the log back and reverse it. Pipedrive keeps deleted records recoverable for about a month on top of that, so nothing was ever gone in one step. That looks like a lot of scaffolding for a cleanup. It is the reason I could move fast. The instance had sat untouched for years because touching it was scary, and the fear was reasonable. Once I could preview and undo, the fear went away.</p>
+
+        <h2>I worked it in three passes</h2>
+        <p>The first pass was fields, not records. Standardizing data at the person, organization, and deal level: fixing inconsistent values, emptying stale fields that would quietly mislead a seller, making the same idea mean the same thing everywhere. Slower and less satisfying than deleting duplicates, and the part that mattered most. You cannot dedupe on fields you do not trust.</p>
+
+        <p>The field list itself had bloated. There were around 100 custom fields across deals, organizations, and people, plenty of them duplicates or dead weight nobody filled in. I cut it to about 75 and added the ones that actually drive work now: ads program research, ICP and persona, and account intelligence. Every field in the deal view got a description, so a rep knows what it means without asking, and the definitions live in one glossary instead of in a few people's heads. I also backed up every field before removing anything, so if a deletion broke someone's workflow, putting it back was one message, not a crisis.</p>
+
+        <p>The second pass was people. Field cleanup surfaces disagreements, so I spent real time with sales. Which accounts were live, which two "companies" were the same one under different spellings, who owned what. A cleanup done without the reps is one they quietly work around. Done with them, it becomes the version of the CRM they actually use.</p>
+
+        <p>The third pass was records. With clean fields and sales aligned, I ran the merges and deletes across duplicate people and organizations, rotten and stale records, junk and test entries, and deals attached to the wrong account. Roughly <span class="countup" data-to="10000">10,000</span> records got merged or removed, about one in every eleven, and every one went through the dry run and into the log.</p>
+
+        <h2>The mistake I made, so you do not have to</h2>
+        <p>Early on, one of my own enrichment runs created a fresh duplicate instead of updating the record I meant to touch. The import did not carry the id of the person it belonged to, so Pipedrive made a new one. I was quietly adding to the pile I had just cleared.</p>
+
+        <blockquote>Always pass the person or organization id when you import or enrich. Match on id and you update the right record. Match on name alone and you recreate the mess you are trying to clear.</blockquote>
+
+        <h2>The unglamorous part: linking email to deals</h2>
+        <p>A lot of email threads were floating, attached to no deal. Pipedrive on a lower tier does not handle this well, so I built it: match the participant's email to a person, then link the thread to the right deal, in batches. It is the kind of thing a pricier tool gives you and a cheaper one makes you engineer yourself. None of it is clever. All of it is the difference between a CRM the team trusts and a dashboard they argue with.</p>
+
+        <h2>Then I made it hard to get dirty again</h2>
+        <p>A one-time cleanup you do not maintain is a slower version of the same mess. The second half of the work was structure. I added ICP fields that force a decision on every record: is this person ICP, yes or no; is this company ICP, yes or no; and what is the account, prospect, customer, or partner. That turns a pile of contacts into something you can segment and act on.</p>
+
+        <p>Then I put workflows on top of the clean base so it stays that way. Every day, on records created in the last 24 hours, enrichment fills them in so new data arrives complete instead of blank, dedupe catches new collisions before they spread, and email threads get linked to deals automatically, the thing Pipedrive really should do itself. On a slower cadence, more checks run. Stale deals get flagged as zombies, so a quiet pipeline stops inflating the forecast. Records get re-scored against ICP as the definition of a good account shifts, so a contact that looked like a low priority last quarter can resurface as a strong one. And a health audit runs weekly and monthly to catch decay before it reaches the pipeline. The cleanup was the one-time cost. The workflows keep the bill from coming back.</p>
+
+        <h2>What changed</h2>
+        <ol class="nlist">
+          <li>Reporting tied out, so pipeline and forecast became numbers people trusted instead of numbers they argued about.</li>
+          <li>Reps stopped stepping on each other's accounts, because it was finally clear who owned what.</li>
+          <li>Outreach got cleaner, with no more emailing the same company twice under two records.</li>
+          <li>The automation I care about, like <a href="nbs-agent-pipedrive.html">the agent that writes next actions into the CRM</a>, could run safely, because a workflow on a dirty base just spreads the garbage faster.</li>
+        </ol>
+
+        <h2>What it changes for a seller</h2>
+        <p>The team-level wins are real, but the difference shows up most in a rep's day. In a dirty CRM, a seller spends the first part of the morning working out what is even true. Is this the right contact, did someone already email this account, why are there two versions of the same company, is this deal actually alive. That is friction before a single sales conversation happens, and it quietly trains people to trust their own notes over the system.</p>
+        <p>In a clean one, the record is the source of truth. A rep opens an account and sees the real history, one company, the right contacts, the emails already attached, an ICP score that says how much this deserves their time. They stop chasing dead contacts, stop apologizing for a duplicate outreach, and stop rebuilding the same context every week. The pipeline review becomes a conversation about which deals to push, not an argument about whose number is right. Most of that is just time handed back, and the time lands on selling instead of janitorial work.</p>
+
+        <h2>What I would tell myself starting over</h2>
+        <p>The dry run is not optional. It caught merges that would have kept the emptier record and thrown away deal history, and I would not touch a CRM this size without it. The field work and the sales conversations were harder and more useful than the merging, even though the merging is the part that looks like progress. And the cost of a dirty CRM stays invisible right until it is clean, which is exactly why it sits there for years. I should have started sooner.</p>
+
+        <h2>The short version, if you are doing this yourself</h2>
+        <ol class="nlist">
+          <li>Build the undo before the cleanup: dry-run previews and a log you can read back.</li>
+          <li>Ignore the CRM's name-only merge suggestions. Match on email and domain.</li>
+          <li>Do not grind the whole thing through the API. Export, analyze with AI, and act through import files in reviewed batches. Save the API for surgical fixes.</li>
+          <li>Clean fields first, then records. You cannot dedupe on data you do not trust.</li>
+          <li>Do it with sales in the room, not to them.</li>
+          <li>Always pass the id on import or enrichment, or you will make new duplicates.</li>
+          <li>Add recurring workflows so the base stays clean: daily enrich and dedupe, plus periodic health audits, zombie-deal flags, and ICP re-scoring.</li>
+        </ol>
+
+        <p>The tooling behind all of this is <a href="crm-needs-infrastructure.html">the MCP server I built for Pipedrive</a>, now <a href="https://github.com/nikhiljain726/pipedrive-mcp">open source</a>.</p>
       </div>
       <div class="post-foot">
         Building something like this, or think I got a call wrong? <a href="https://www.linkedin.com/in/nikhiljain726/">Message me on LinkedIn</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
@@ -74,6 +155,51 @@
     </p>
   </div>
 </footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fmt(n){return n.toLocaleString('en-US');}
+  function countUp(el){
+    var to = parseInt(el.getAttribute('data-to'),10);
+    if(!to){return;}
+    if(reduce){el.textContent=fmt(to);return;}
+    var start=null, dur=1100;
+    el.textContent='0';
+    function step(ts){
+      if(!start){start=ts;}
+      var p=Math.min((ts-start)/dur,1);
+      var eased=1-Math.pow(1-p,3);
+      el.textContent=fmt(Math.round(to*eased));
+      if(p<1){requestAnimationFrame(step);}
+    }
+    requestAnimationFrame(step);
+  }
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function(entries,obs){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var t=e.target;
+        if(t.classList.contains('countup')){ countUp(t); }
+        else { t.classList.add('in'); }
+        obs.unobserve(t);
+      }
+    });
+  },{threshold:0.25}) : null;
+  document.addEventListener('DOMContentLoaded', function(){
+    var body=document.querySelector('.post-body');
+    if(!body){return;}
+    if(!reduce && io){
+      body.querySelectorAll('h2, blockquote, ol.nlist').forEach(function(el){ el.classList.add('reveal'); io.observe(el); });
+      var flow=body.querySelector('figure.flow');
+      if(flow){ flow.classList.add('flow-anim'); io.observe(flow); }
+    }
+    body.querySelectorAll('.countup').forEach(function(el){
+      if(!reduce && io){ io.observe(el); }
+      else { countUp(el); }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>

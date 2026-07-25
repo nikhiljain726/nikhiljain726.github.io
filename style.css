@@ -236,3 +236,48 @@ a{transition:border-color .2s ease,color .2s ease}
   .about-head{gap:16px}
   .portrait{width:104px;height:104px}
 }
+
+/* Flow diagram + numbered list (post bodies) */
+.flow{margin:28px 0}
+.flow-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.flow-step{flex:1 1 150px;min-width:140px;background:var(--tint);border:1px solid var(--line);
+  border-radius:10px;padding:13px 14px}
+.flow-step .n{font-family:var(--mono);font-size:.66rem;font-weight:600;color:var(--signal);letter-spacing:.1em}
+.flow-step b{display:block;font-family:var(--serif);font-weight:500;font-size:1.02rem;margin:.2em 0 .25em;color:var(--ink)}
+.flow-step .l{display:block;font-size:.85rem;line-height:1.42;color:var(--ink-soft)}
+.flow-arrow{display:flex;align-items:center;color:var(--signal);font-size:1.15rem;font-weight:700}
+.flow-loop{margin-top:12px;background:rgba(var(--signal-rgb),.06);
+  border:1px dashed rgba(var(--signal-rgb),.4);border-radius:10px;padding:12px 15px;
+  font-family:var(--mono);font-size:.84rem;letter-spacing:.01em;color:var(--ink)}
+@media (max-width:620px){
+  .flow-row{flex-direction:column}
+  .flow-arrow{transform:rotate(90deg);justify-content:center;height:16px}
+}
+.nlist{list-style:none;counter-reset:n;padding-left:0;margin:0 0 1.1em}
+.nlist li{counter-increment:n;position:relative;padding-left:2.1em;margin:.5em 0;line-height:1.6}
+.nlist li::before{content:counter(n) ")";position:absolute;left:0;top:0;
+  font-family:var(--mono);font-weight:600;color:var(--signal)}
+
+/* Post dek (standfirst under H1) */
+.post .dek{font-family:var(--serif);font-weight:400;font-size:1.22rem;line-height:1.4;
+  color:var(--ink-soft);max-width:60ch;margin:.15em 0 .5em}
+
+/* Post scroll-reveal + diagram animation (JS-gated, reduced-motion safe) */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+.flow.flow-anim .flow-step{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.flow.flow-anim .flow-arrow{opacity:0;transition:opacity .45s ease}
+.flow.flow-anim.in .flow-step,.flow.flow-anim.in .flow-arrow{opacity:1;transform:none}
+.flow.flow-anim.in .flow-row>*:nth-child(1){transition-delay:0s}
+.flow.flow-anim.in .flow-row>*:nth-child(2){transition-delay:.12s}
+.flow.flow-anim.in .flow-row>*:nth-child(3){transition-delay:.22s}
+.flow.flow-anim.in .flow-row>*:nth-child(4){transition-delay:.34s}
+.flow.flow-anim.in .flow-row>*:nth-child(5){transition-delay:.44s}
+.flow.flow-anim.in .flow-row>*:nth-child(6){transition-delay:.56s}
+.flow.flow-anim.in .flow-row>*:nth-child(7){transition-delay:.66s}
+.flow.flow-anim.in .flow-loop{animation:loopPulse 2.6s ease-in-out .9s infinite}
+@keyframes loopPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--signal-rgb),0)}50%{box-shadow:0 0 0 4px rgba(var(--signal-rgb),.09)}}
+@media (prefers-reduced-motion:reduce){
+  .reveal,.flow.flow-anim .flow-step,.flow.flow-anim .flow-arrow{opacity:1!important;transform:none!important;transition:none!important}
+  .flow.flow-anim.in .flow-loop{animation:none!important}
+}
