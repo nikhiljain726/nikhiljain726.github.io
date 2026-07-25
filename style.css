@@ -225,3 +225,14 @@ a{transition:border-color .2s ease,color .2s ease}
   .hero > .wrap > *,.section,.post,.post h1,.post .byline,.post-body,
   .postlist li,.skills li,.timeline li,.note-entry{opacity:1 !important}
 }
+
+/* About portrait */
+.about-head{display:flex;align-items:center;gap:22px;margin-bottom:6px}
+.about-head .eyebrow{margin:0}
+.portrait{width:132px;height:132px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--paper,#FBFAF6);box-shadow:0 0 0 1px var(--line),0 6px 20px rgba(20,16,12,.14);
+  flex:0 0 auto;background:var(--line)}
+@media (max-width:560px){
+  .about-head{gap:16px}
+  .portrait{width:104px;height:104px}
+}
