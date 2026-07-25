@@ -1,0 +1,51 @@
+# Nikhil Jain
+
+> Growth and GTM engineering at Osmos.ai, and a former D2C founder. This site documents what I build in public: essays on GTM engineering, AI and agent workflows, D2C, and performance marketing; reusable AI skills you can open in Claude, ChatGPT, or Perplexity; a prompt library; quotes; and an open-source Pipedrive MCP server. Written in a plain, first-person voice with no marketing fluff. Contact via LinkedIn (https://www.linkedin.com/in/nikhiljain726/) or Topmate (https://topmate.io/nikhiljain726).
+
+## Start here
+- [About Nikhil Jain](https://nikhiljain726.github.io/about.html): background, work history, and how I work.
+- [Writing index](https://nikhiljain726.github.io/writing.html): all essays, filterable by topic.
+
+## Writing
+- [What 50 crore in ad spend taught me about optimization](https://nikhiljain726.github.io/posts/50-crore-ad-spend.html)
+- [Four AI models, one research task, and the merge that almost shipped wrong](https://nikhiljain726.github.io/posts/ai-model-bakeoff.html)
+- [The Art Galore journey, from zero to 3 crore to shutdown](https://nikhiljain726.github.io/posts/art-galore-journey.html)
+- [Is COD good for end users? The hidden math of cash on delivery](https://nikhiljain726.github.io/posts/cod-economics.html)
+- [Cleaning up a CRM nobody wanted to touch](https://nikhiljain726.github.io/posts/crm-cleanup.html)
+- [Your CRM needs infrastructure now](https://nikhiljain726.github.io/posts/crm-needs-infrastructure.html)
+- [Bootstrapping a D2C brand to 3 crore in year one](https://nikhiljain726.github.io/posts/d2c-to-3-crore.html)
+- [Fifteen minutes of planning, up front](https://nikhiljain726.github.io/posts/fifteen-minute-planning.html)
+- [The correction is an opening for founders with real economics](https://nikhiljain726.github.io/posts/founders-fundamentals.html)
+- [How GTM engineering became a job](https://nikhiljain726.github.io/posts/gtm-engineering-origin.html)
+- [How to hire for a GTM team](https://nikhiljain726.github.io/posts/hiring-gtm-team.html)
+- [Cutting our paid dependency with LinkedIn automation](https://nikhiljain726.github.io/posts/linkedin-automation.html)
+- [The marketing scorecard I plan the year around](https://nikhiljain726.github.io/posts/marketing-scorecard.html)
+- [Marketing is simple: who, what, where](https://nikhiljain726.github.io/posts/marketing-who-what-where.html)
+- [Medkart, the road ahead: a growth teardown](https://nikhiljain726.github.io/posts/medkart-growth-plan.html)
+- [A performance marketing plan for Meesho, worked end to end](https://nikhiljain726.github.io/posts/meesho-performance-plan.html)
+- [Our Meta structure: 80 percent winners, 20 percent chaos](https://nikhiljain726.github.io/posts/meta-creative-engine.html)
+- [Building a stellar customer experience for a D2C brand](https://nikhiljain726.github.io/posts/mojocare-customer-experience.html)
+- [The NBS agent that writes next actions into the CRM](https://nikhiljain726.github.io/posts/nbs-agent-pipedrive.html)
+- [Finding your competitors and who they're chasing](https://nikhiljain726.github.io/posts/nrev-competitor-chasing.html)
+- [Org research at scale, and recurring tasks with Claude Code](https://nikhiljain726.github.io/posts/nrev-org-research.html)
+- [Turning anonymous website visitors into intent signals](https://nikhiljain726.github.io/posts/nrev-visitors-to-intent.html)
+- [I built a 53-tool Pipedrive MCP server (and I cannot write code)](https://nikhiljain726.github.io/posts/pipedrive-mcp-server.html)
+- [In D2C, the product is the foundation](https://nikhiljain726.github.io/posts/product-is-the-foundation.html)
+- [Building velocity in a GTM team](https://nikhiljain726.github.io/posts/team-velocity.html)
+- [On trying things early](https://nikhiljain726.github.io/posts/trying-things-early.html)
+- [Notes](https://nikhiljain726.github.io/notes.html): shorter reflections.
+
+## Skills
+- [Skills index](https://nikhiljain726.github.io/skills.html): reusable AI skills, each with a Personalize flow and open-in Claude / ChatGPT / Perplexity.
+- [Account brief from a URL](https://nikhiljain726.github.io/skills/account-brief.html)
+- [Ads-program research](https://nikhiljain726.github.io/skills/ads-program-research.html)
+- [ICP qualifier and scorer](https://nikhiljain726.github.io/skills/icp-qualifier.html)
+
+## More
+- [Prompt library](https://nikhiljain726.github.io/prompts.html)
+- [Quotes](https://nikhiljain726.github.io/quotes.html)
+- [Library: recommended videos and essays](https://nikhiljain726.github.io/library.html)
+- [Now](https://nikhiljain726.github.io/now.html)
+
+## Projects
+- [Pipedrive MCP server](https://github.com/nikhiljain726/pipedrive-mcp): open-source, 53 tools, dry-run previews and an audit log.

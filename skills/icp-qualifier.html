@@ -37,6 +37,11 @@
 <meta name="twitter:description" content="A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.">
 <meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nikhiljain726.github.io/skills/icp-qualifier.html">
+<meta name="author" content="Nikhil Jain">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#FBFAF6">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "ICP qualifier and scorer", "description": "A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.", "url": "https://nikhiljain726.github.io/skills/icp-qualifier.html", "mainEntityOfPage": "https://nikhiljain726.github.io/skills/icp-qualifier.html", "image": "https://nikhiljain726.github.io/assets/og-image.png", "inLanguage": "en", "author": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}, "publisher": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}}</script>
 </head>
 <body>
 
@@ -61,7 +66,39 @@
       <a class="backlink" href="../skills.html">&larr; All skills</a>
       <h1>ICP qualifier and scorer</h1>
       <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Use to sort and score accounts against your ICP</div>
-      <button class="oc-btn" onclick="openInClaude()">Open in Claude &#8599;</button>
+      <div class="personalize" id="pz">
+        <div class="pz-title">Make it yours</div>
+        <p class="pz-sub">Answer three quick things, then open it tailored to you. Works in Claude, ChatGPT, or Perplexity.</p>
+        <div class="pz-q"><span>Your role</span>
+          <div class="pz-opts" data-k="role">
+            <button type="button" class="pz-opt on" data-v="a founder">Founder</button>
+            <button type="button" class="pz-opt" data-v="a sales / AE person">Sales</button>
+            <button type="button" class="pz-opt" data-v="a marketing / growth person">Marketing</button>
+            <button type="button" class="pz-opt" data-v="in RevOps / ops">RevOps</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>You work on</span>
+          <div class="pz-opts" data-k="company">
+            <button type="button" class="pz-opt on" data-v="a B2B SaaS company">B2B SaaS</button>
+            <button type="button" class="pz-opt" data-v="a D2C / ecommerce brand">D2C</button>
+            <button type="button" class="pz-opt" data-v="a retailer or marketplace">Retail</button>
+            <button type="button" class="pz-opt" data-v="an agency">Agency</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>Output style</span>
+          <div class="pz-opts" data-k="style">
+            <button type="button" class="pz-opt on" data-v="concise bullets">Concise</button>
+            <button type="button" class="pz-opt" data-v="detailed prose">Detailed</button>
+            <button type="button" class="pz-opt" data-v="a table">Table</button>
+          </div>
+        </div>
+        <div class="pz-actions">
+          <button type="button" class="tool-btn claude" onclick="openTool('claude')">Open in Claude &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('chatgpt')">ChatGPT &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('perplexity')">Perplexity &#8599;</button>
+          <button type="button" class="tool-btn ghost" onclick="copyPersonalized()">Copy personalized</button>
+        </div>
+      </div>
       <div class="snum">01 / The problem it solves</div>
       <div class="sdesc"><p>Most pipelines are full of accounts that were never going to close, and reps burn weeks finding that out one call at a time. The fix is to score fit before anyone dials, and to be honest about it. The hard part is not the scoring, it is refusing to reward an account that has a fatal disqualifier just because it looks impressive on paper.</p></div>
       <div class="snum">02 / What it does</div>
@@ -126,7 +163,14 @@ An ICP definition, and one record or a list of records.
 function skillMd(){const pre=document.querySelector('.codeblock pre');return pre?pre.innerText:'';}
 function toast(m){const t=document.getElementById('toast');t.textContent=m||'Copied';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);}
 function copySkill(){if(navigator.clipboard)navigator.clipboard.writeText(skillMd());toast('Copied');}
-function openInClaude(){const md=skillMd();const p="I want to use this as a Claude skill. If you have the skill-creator skill, use it to install this so I can reuse it, then run it for me. Here is the SKILL.md:\n\n"+md;window.open("https://claude.ai/new?q="+encodeURIComponent(p),"_blank");}
+function pzGet(k){var el=document.querySelector('.pz-opts[data-k="'+k+'"] .pz-opt.on');return el?el.getAttribute('data-v'):'';}
+document.addEventListener('click',function(e){var b=e.target.closest('.pz-opt');if(!b)return;var opts=b.parentNode.querySelectorAll('.pz-opt');for(var i=0;i<opts.length;i++){opts[i].classList.toggle('on',opts[i]===b);}});
+function pzContext(){return "I am "+pzGet('role')+" at "+pzGet('company')+". Please give me the output as "+pzGet('style')+".";}
+function buildPrompt(tool){var md=skillMd();var ctx=pzContext();if(tool==='claude'){return "I want to use this as a reusable Claude skill. If you have the skill-creator skill, install it so I can reuse it, then run it for me. Tailor it to my context: "+ctx+"\n\nHere is the SKILL.md:\n\n"+md;}return "Use the instructions below as a reusable operating prompt, tailored to my context: "+ctx+" Acknowledge in one line, then ask me for the input it needs.\n\n"+md;}
+function toolUrl(tool,q){var e=encodeURIComponent(q);if(tool==='chatgpt')return "https://chatgpt.com/?q="+e;if(tool==='perplexity')return "https://www.perplexity.ai/search?q="+e;return "https://claude.ai/new?q="+e;}
+function openTool(tool){window.open(toolUrl(tool,buildPrompt(tool)),"_blank");}
+function copyPersonalized(){if(navigator.clipboard)navigator.clipboard.writeText(buildPrompt('claude'));toast('Personalized skill copied');}
+function openInClaude(){openTool('claude');}
 </script>
 </body>
 </html>
