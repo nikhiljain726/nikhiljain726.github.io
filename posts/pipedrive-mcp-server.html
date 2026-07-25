@@ -64,6 +64,53 @@
       <div class="byline">AI &amp; agent workflows &nbsp;&middot;&nbsp; July 2026 &nbsp;&middot;&nbsp; 9 min read</div>
       <div class="post-body">
 
+        <div class="startbox" id="start">
+          <h2>Start using it</h2>
+          <p class="prereq">You need three things: Python 3.10 or newer, your Pipedrive API token (in Pipedrive, under Settings, Personal preferences, API), and your domain (the part before <code>.pipedrive.com</code> in your account URL). Grab <a href="https://github.com/nikhiljain726/pipedrive-mcp">server.py from GitHub</a>, then point your tool at it. Pick where you work:</p>
+          <div class="envs">
+            <div class="env">
+              <h4>Cowork / Claude Desktop</h4>
+              <ol>
+                <li>Download <code>server.py</code> from the repo into a folder you can find.</li>
+                <li>Open your Claude Desktop config (<code>claude_desktop_config.json</code>) and add:</li>
+              </ol>
+              <pre>{
+  "mcpServers": {
+    "pipedrive": {
+      "command": "python",
+      "args": ["/absolute/path/to/server.py"],
+      "env": {
+        "PIPEDRIVE_API_TOKEN": "your-token",
+        "PIPEDRIVE_DOMAIN": "yourcompany"
+      }
+    }
+  }
+}</pre>
+              <ol start="3"><li>Restart the app. The Pipedrive tools show up in the chat.</li></ol>
+            </div>
+            <div class="env">
+              <h4>Claude Code</h4>
+              <ol><li>From your project, add it in one command:</li></ol>
+              <pre>claude mcp add pipedrive \
+  --env PIPEDRIVE_API_TOKEN=your-token \
+  --env PIPEDRIVE_DOMAIN=yourcompany \
+  -- python /absolute/path/to/server.py</pre>
+              <ol start="2"><li>Or drop the repo's <code>examples/mcp.json</code> into your project root as <code>.mcp.json</code>.</li></ol>
+            </div>
+            <div class="env">
+              <h4>Codex</h4>
+              <ol><li>Add the server to your Codex config (<code>~/.codex/config.toml</code>):</li></ol>
+              <pre>[mcp_servers.pipedrive]
+command = "python"
+args = ["/absolute/path/to/server.py"]
+env = { PIPEDRIVE_API_TOKEN = "your-token", PIPEDRIVE_DOMAIN = "yourcompany" }</pre>
+              <ol start="2"><li>Restart Codex and the tools load.</li></ol>
+            </div>
+          </div>
+          <p class="prereq">Keep your token private. It has full CRM access, so never commit it. The full readme and the whole server are <a href="https://github.com/nikhiljain726/pipedrive-mcp">on GitHub</a>.</p>
+          <a class="gh" href="https://github.com/nikhiljain726/pipedrive-mcp">Get it on GitHub &#8599;</a>
+        </div>
+
         <p>I run growth at a retail media company. I am not an engineer. A few weeks ago I asked Claude a simple question: if I have my Pipedrive API key, can I build a connector that reads and writes my CRM from a chat window? The answer turned out to be yes, and the thing I ended up with is now 53 tools deep and running our actual sales pipeline. I am putting the whole server up for anyone to use. This is the story of how it got built, because the how is more useful than the code.</p>
         <p>The first surprise was how little I needed to know. An MCP server is just a small program that hands a set of tools to Claude. Each tool wraps one thing the Pipedrive API can do: search a deal, create a contact, add a note. Claude does the wrapping. I described what I wanted, Claude wrote the Python, and I copied files where I was told to copy them. My one contribution on day one was noticing my Mac had an old version of Python and installing a new one.</p>
         <p>It worked on the first real test. I asked it to list my pipelines and it read back all six, live, from Pipedrive. That moment matters more than it sounds. The gap between this might work and this is reading my real CRM is the gap most people never cross, and it took about fifteen minutes.</p>
