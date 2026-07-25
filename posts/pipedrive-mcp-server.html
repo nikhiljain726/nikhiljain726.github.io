@@ -22,6 +22,17 @@
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I built a 53-tool Pipedrive MCP server (and I cannot write code) · Nikhil Jain">
+<meta property="og:description" content="A non-engineer's guide to a 53-tool Pipedrive MCP server: what it does, all 53 tools, the full server.py to copy, and how to run it on a Mac. Open source.">
+<meta property="og:url" content="https://nikhiljain726.github.io/posts/pipedrive-mcp-server.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I built a 53-tool Pipedrive MCP server (and I cannot write code) · Nikhil Jain">
+<meta name="twitter:description" content="A non-engineer's guide to a 53-tool Pipedrive MCP server: what it does, all 53 tools, the full server.py to copy, and how to run it on a Mac. Open source.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
 
@@ -147,10 +158,10 @@
 
         <h2>What I actually learned</h2>
         <p>You do not need to know how to code to build software anymore. You need to know what you want, be willing to test it against reality, and be honest about what can go wrong. I supplied the domain knowledge, the CRM, the actual problems, and the judgment about what was too risky to automate. The code was the easy part, which is a sentence I could not have written a month ago.</p>
-        <p>The server is open source. Take it, point it at your own Pipedrive, add the tools your own walls demand. If you are not an engineer, that is not a disqualification. It might even be the point.</p>
+        <p>The server is open source, on GitHub at <a href="https://github.com/nikhiljain726/pipedrive-mcp">github.com/nikhiljain726/pipedrive-mcp</a>. Take it, point it at your own Pipedrive, add the tools your own walls demand. If you are not an engineer, that is not a disqualification. It might even be the point.</p>
 
         <h2>The whole server</h2>
-        <p>Here is the complete file. Copy it, save it as server.py, and follow the Mac steps above.</p>
+        <p>The full repo, with the setup files and a Dockerfile, is on GitHub at <a href="https://github.com/nikhiljain726/pipedrive-mcp">github.com/nikhiljain726/pipedrive-mcp</a>. Or just copy the single file below and follow the Mac steps above.</p>
         <div class="codeblock">
           <div class="cbhead"><span class="fn">server.py &middot; 53 tools</span><button class="cpy" onclick="copyServer(this)">Copy</button></div>
           <pre>&quot;&quot;&quot;
@@ -2659,7 +2670,7 @@ if __name__ == &quot;__main__&quot;:
 </pre>
         </div>
       </div>
-      <div class="post-foot">Want help pointing it at your own Pipedrive? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
+      <div class="post-foot">Want help pointing it at your own Pipedrive? <a href="https://www.linkedin.com/in/nikhiljain726/">Message me on LinkedIn</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
     </div>
   </article>
 </main>
@@ -2669,7 +2680,6 @@ if __name__ == &quot;__main__&quot;:
     <div class="top">
       <span class="name">&copy; 2026 Nikhil Jain</span>
       <span class="links">
-        <a href="mailto:nikhiljain726@gmail.com">Email</a>
         <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
         <a href="https://topmate.io/nikhiljain726">Topmate</a>
       </span>

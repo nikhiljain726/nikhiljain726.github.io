@@ -9,6 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Your CRM needs infrastructure now · Nikhil Jain">
+<meta property="og:description" content="An AI agent is only as good as what it can touch. For a CRM in the age of AI, that means an MCP server, not a read-only connector.">
+<meta property="og:url" content="https://nikhiljain726.github.io/posts/crm-needs-infrastructure.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your CRM needs infrastructure now · Nikhil Jain">
+<meta name="twitter:description" content="An AI agent is only as good as what it can touch. For a CRM in the age of AI, that means an MCP server, not a read-only connector.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
 
@@ -39,10 +50,10 @@
         <p>For a CRM, that way is an MCP server. It exposes the CRM to any AI client as a set of tools it can call: read a deal, score a contact, merge duplicates, write one field across a hundred records.</p>
         <blockquote>In the age of AI, the CRM is not the product. Access to it is.</blockquote>
         <p>The connectors that ship by default tend to be read-only and thin. They let an agent look, not act. The real work lives in the writes and the cleanup, and those need guardrails: a dry run before anything destructive, and a log of every change so you can see and undo what happened.</p>
-        <p>So I built my own for Pipedrive, with 36 tools and those guardrails baked in. Not because building it was fun, though it was, but because without it the agent is a very smart intern who is not allowed to use the keyboard. I wrote up how it works in <a href="crm-cleanup.html">the CRM cleanup</a>, and the code is open for anyone who wants it.</p>
+        <p>So I built my own for Pipedrive, with 36 tools and those guardrails baked in. Not because building it was fun, though it was, but because without it the agent is a very smart intern who is not allowed to use the keyboard. I wrote up how it works in <a href="crm-cleanup.html">the CRM cleanup</a>, and the code is <a href="https://github.com/nikhiljain726/pipedrive-mcp">open on GitHub</a>.</p>
       </div>
       <div class="post-foot">
-        Building something like this, or think I got a call wrong? <a href="mailto:nikhiljain726@gmail.com">Email me</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+        Building something like this, or think I got a call wrong? <a href="https://www.linkedin.com/in/nikhiljain726/">Message me on LinkedIn</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
       </div>
     </div>
   </article>
@@ -53,7 +64,6 @@
     <div class="top">
       <span class="name">&copy; 2026 Nikhil Jain</span>
       <span class="links">
-        <a href="mailto:nikhiljain726@gmail.com">Email</a>
         <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
         <a href="https://topmate.io/nikhiljain726">Topmate</a>
       </span>
