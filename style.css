@@ -281,3 +281,29 @@ a{transition:border-color .2s ease,color .2s ease}
   .reveal,.flow.flow-anim .flow-step,.flow.flow-anim .flow-arrow{opacity:1!important;transform:none!important;transition:none!important}
   .flow.flow-anim.in .flow-loop{animation:none!important}
 }
+
+/* Quotes page */
+.q-controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:22px}
+.q-search{font-family:var(--mono);font-size:.82rem;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);min-width:220px}
+.q-filter{display:flex;flex-wrap:wrap;gap:8px}
+.q-filter button{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink-soft);cursor:pointer}
+.q-filter button.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.q-count{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-top:14px}
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:26px;margin-top:18px}
+.quote-item{display:flex;flex-direction:column;gap:11px}
+.quote-card{aspect-ratio:1/1;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:11% 10%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.quote-card .mark{width:34px;height:5px;background:var(--signal);border-radius:3px;flex:0 0 auto}
+.quote-card blockquote{font-family:var(--serif);font-weight:500;color:var(--ink);font-size:1.5rem;line-height:1.24;letter-spacing:-.01em;margin:0;border:0;padding:0}
+.quote-card.long blockquote{font-size:1.16rem;line-height:1.32}
+.quote-card .sig{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.71rem;letter-spacing:.03em;color:var(--ink-soft)}
+.quote-card .sig .who{color:var(--ink);font-weight:600}
+.quote-card .sig .dot{width:6px;height:6px;border-radius:50%;background:var(--signal);flex:0 0 auto}
+.quote-actions{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase}
+.quote-actions button{font:inherit;text-transform:inherit;letter-spacing:inherit;color:var(--signal);background:none;border:0;padding:0;cursor:pointer}
+.quote-actions button:hover{text-decoration:underline}
+.quote-actions a{color:var(--ink-soft)}
+
+/* Quotes: group headings + borrowed/Devanagari */
+.q-group{font-family:var(--serif);font-weight:500;font-size:1.15rem;color:var(--ink);margin:34px 0 2px;letter-spacing:-.01em}
+.quote-card.dev blockquote{font-family:"Noto Serif Devanagari", var(--serif);line-height:1.5}
+.quote-card.dev.long blockquote{line-height:1.55}

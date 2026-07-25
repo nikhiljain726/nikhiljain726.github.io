@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quotes &middot; Nikhil Jain</title>
+<meta name="description" content="Shareable lines: things I have written, and lines from thinkers I keep returning to. Download any card as an image.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Quotes &middot; Nikhil Jain">
+<meta property="og:description" content="Shareable lines: things I have written, and lines from thinkers I keep returning to.">
+<meta property="og:url" content="https://nikhiljain726.github.io/quotes.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quotes &middot; Nikhil Jain">
+<meta name="twitter:description" content="Shareable lines: things I have written, and lines from thinkers I keep returning to.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <a href="writing.html">Writing</a>
+      <a href="skills.html">Skills</a>
+      <a href="prompts.html">Prompts</a>
+      <a href="library.html">Library</a>
+      <a href="quotes.html" class="active">Quotes</a>
+      <a href="about.html">About</a>
+      <a href="now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:56px">
+    <div class="wrap">
+      <div class="eyebrow">Quotes</div>
+      <h2 style="font-size:clamp(1.9rem,4vw,2.6rem);margin:.2em 0 .3em">Lines worth keeping</h2>
+      <p class="lead muted measure">Two kinds of lines. Ones I have written, and ones from thinkers I keep returning to. Download any card as an image or copy the text. My own lines carry my name; borrowed ones carry theirs.</p>
+
+      <div class="q-controls">
+        <input id="qsearch" class="q-search" type="search" placeholder="Search quotes" aria-label="Search quotes">
+        <div class="q-filter" id="qfilter">
+          <button class="active" data-t="all">All</button>
+          <button data-t="gtm">GTM</button>
+          <button data-t="perf">Performance</button>
+          <button data-t="ai">AI</button>
+          <button data-t="d2c">D2C</button>
+          <button data-t="mindset">Mindset</button>
+          <button data-t="wisdom">Wisdom</button>
+        </div>
+      </div>
+      <div class="q-count" id="qcount"></div>
+
+      <h3 class="q-group" id="grp-mine">My lines</h3>
+      <div class="quote-grid" id="qgrid-mine">
+        <div class="quote-item" data-topic="gtm" data-text="A cleanup you cannot audit is not a cleanup. It is a second mess with a timestamp." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm0">
+            <span class="mark"></span>
+            <blockquote>A cleanup you cannot audit is not a cleanup. It is a second mess with a timestamp.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm0','nikhil-jain-a-cleanup-you-cannot-audit-is-not-a-cleanup')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/crm-cleanup.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="d2c" data-text="Selling faster than you can make is not growth. It is a backlog with a refund attached." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm1">
+            <span class="mark"></span>
+            <blockquote>Selling faster than you can make is not growth. It is a backlog with a refund attached.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm1','nikhil-jain-selling-faster-than-you-can-make-is-not-grow')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/d2c-to-3-crore.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="perf" data-text="Optimization is mostly a data problem wearing a media costume." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm2">
+            <span class="mark"></span>
+            <blockquote>Optimization is mostly a data problem wearing a media costume.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm2','nikhil-jain-optimization-is-mostly-a-data-problem-wearin')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/50-crore-ad-spend.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="gtm" data-text="Paid growth has a monthly invoice and a ceiling you keep paying to lift. Owned channels compound." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card long" id="qm3">
+            <span class="mark"></span>
+            <blockquote>Paid growth has a monthly invoice and a ceiling you keep paying to lift. Owned channels compound.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm3','nikhil-jain-paid-growth-has-a-monthly-invoice-and-a-ceil')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/linkedin-automation.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="ai" data-text="In the age of AI, the CRM is not the product. Access to it is." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm4">
+            <span class="mark"></span>
+            <blockquote>In the age of AI, the CRM is not the product. Access to it is.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm4','nikhil-jain-in-the-age-of-ai-the-crm-is-not-the-product')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/crm-needs-infrastructure.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="gtm" data-text="GTM engineering is mostly refusing to do by hand what a system can do reliably." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm5">
+            <span class="mark"></span>
+            <blockquote>GTM engineering is mostly refusing to do by hand what a system can do reliably.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm5','nikhil-jain-gtm-engineering-is-mostly-refusing-to-do-by')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/gtm-engineering-origin.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="mindset" data-text="Hire for reliability and resourcefulness. The tools can be taught in a week." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm6">
+            <span class="mark"></span>
+            <blockquote>Hire for reliability and resourcefulness. The tools can be taught in a week.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm6','nikhil-jain-hire-for-reliability-and-resourcefulness-th')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/hiring-gtm-team.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="perf" data-text="It is not about having data. It is about having the right data." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm7">
+            <span class="mark"></span>
+            <blockquote>It is not about having data. It is about having the right data.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm7','nikhil-jain-it-is-not-about-having-data-it-is-about-hav')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/marketing-scorecard.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="perf" data-text="It is no longer who you target. It is what you show them." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm8">
+            <span class="mark"></span>
+            <blockquote>It is no longer who you target. It is what you show them.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm8','nikhil-jain-it-is-no-longer-who-you-target-it-is-what-y')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/meta-creative-engine.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="ai" data-text="The point is not advice in a chat window. It is a task in the rep&#x27;s list, with a reason attached." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card long" id="qm9">
+            <span class="mark"></span>
+            <blockquote>The point is not advice in a chat window. It is a task in the rep&#x27;s list, with a reason attached.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm9','nikhil-jain-the-point-is-not-advice-in-a-chat-window-it')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/nbs-agent-pipedrive.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="ai" data-text="A competitor&#x27;s attention is a map of the market&#x27;s intent. Read it." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm10">
+            <span class="mark"></span>
+            <blockquote>A competitor&#x27;s attention is a map of the market&#x27;s intent. Read it.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm10','nikhil-jain-a-competitor-s-attention-is-a-map-of-the-mar')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/nrev-competitor-chasing.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="ai" data-text="At scale, the prompt does more work than the model. Tell it where to look, and never let it guess." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card long" id="qm11">
+            <span class="mark"></span>
+            <blockquote>At scale, the prompt does more work than the model. Tell it where to look, and never let it guess.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm11','nikhil-jain-at-scale-the-prompt-does-more-work-than-the')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/nrev-org-research.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="ai" data-text="A signal nobody acts on the same day is just a log entry." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm12">
+            <span class="mark"></span>
+            <blockquote>A signal nobody acts on the same day is just a log entry.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm12','nikhil-jain-a-signal-nobody-acts-on-the-same-day-is-just')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/nrev-visitors-to-intent.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="d2c" data-text="No growth hack covers a mediocre product experience. Not for long." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm13">
+            <span class="mark"></span>
+            <blockquote>No growth hack covers a mediocre product experience. Not for long.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm13','nikhil-jain-no-growth-hack-covers-a-mediocre-product-exp')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/product-is-the-foundation.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="mindset" data-text="Speed comes from cutting the waits, not from asking people to hurry." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card" id="qm14">
+            <span class="mark"></span>
+            <blockquote>Speed comes from cutting the waits, not from asking people to hurry.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm14','nikhil-jain-speed-comes-from-cutting-the-waits-not-from')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/team-velocity.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="d2c" data-text="The seller sold 5 products but paid to ship 15. That is the real cost of cash on delivery, and the customer pays for it." data-credit="Nikhil Jain, nikhiljain726.github.io">
+          <div class="quote-card long" id="qm15">
+            <span class="mark"></span>
+            <blockquote>The seller sold 5 products but paid to ship 15. That is the real cost of cash on delivery, and the customer pays for it.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Nikhil Jain</span><span>nikhiljain726.github.io</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qm15','nikhil-jain-the-seller-sold-5-products-but-paid-to-ship')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+            <a href="posts/cod-economics.html">Read the essay &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="q-group" id="grp-borrowed">Lines I keep returning to</h3>
+      <div class="quote-grid" id="qgrid-borrowed">
+        <div class="quote-item" data-topic="wisdom" data-text="मुझे यह पता है कि मुझे पता नहीं है।" data-credit="Socrates, after Plato, Apology">
+          <div class="quote-card dev" id="qb0">
+            <span class="mark"></span>
+            <blockquote>मुझे यह पता है कि मुझे पता नहीं है।</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Socrates</span><span>after Plato, Apology</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb0','socrates')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="The unexamined life is not worth living." data-credit="Socrates, Plato, Apology">
+          <div class="quote-card" id="qb1">
+            <span class="mark"></span>
+            <blockquote>The unexamined life is not worth living.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Socrates</span><span>Plato, Apology</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb1','socrates-the-unexamined-life-is-not-worth-li')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="I think, therefore I am." data-credit="René Descartes, Discourse on the Method">
+          <div class="quote-card" id="qb2">
+            <span class="mark"></span>
+            <blockquote>I think, therefore I am.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">René Descartes</span><span>Discourse on the Method</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb2','rene-descartes-i-think-therefore-i-am')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="We suffer more often in imagination than in reality." data-credit="Seneca, Letters to Lucilius">
+          <div class="quote-card" id="qb3">
+            <span class="mark"></span>
+            <blockquote>We suffer more often in imagination than in reality.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Seneca</span><span>Letters to Lucilius</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb3','seneca-we-suffer-more-often-in-imagination-t')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="You have power over your mind, not outside events. Realize this, and you will find strength." data-credit="Marcus Aurelius, Meditations">
+          <div class="quote-card long" id="qb4">
+            <span class="mark"></span>
+            <blockquote>You have power over your mind, not outside events. Realize this, and you will find strength.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Marcus Aurelius</span><span>Meditations</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb4','marcus-aurelius-you-have-power-over-your-min')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="No man ever steps in the same river twice." data-credit="Heraclitus">
+          <div class="quote-card" id="qb5">
+            <span class="mark"></span>
+            <blockquote>No man ever steps in the same river twice.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Heraclitus</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb5','heraclitus-no-man-ever-steps-in-the-same-riv')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="He who has a why to live can bear almost any how." data-credit="Friedrich Nietzsche, Twilight of the Idols">
+          <div class="quote-card" id="qb6">
+            <span class="mark"></span>
+            <blockquote>He who has a why to live can bear almost any how.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Friedrich Nietzsche</span><span>Twilight of the Idols</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb6','friedrich-nietzsche-he-who-has-a-why-to-live')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="Life can only be understood backwards; but it must be lived forwards." data-credit="Søren Kierkegaard, Journals">
+          <div class="quote-card" id="qb7">
+            <span class="mark"></span>
+            <blockquote>Life can only be understood backwards; but it must be lived forwards.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Søren Kierkegaard</span><span>Journals</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb7','soren-kierkegaard-life-can-only-be-understoo')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+        <div class="quote-item" data-topic="wisdom" data-text="The limits of my language mean the limits of my world." data-credit="Ludwig Wittgenstein, Tractatus Logico-Philosophicus">
+          <div class="quote-card" id="qb8">
+            <span class="mark"></span>
+            <blockquote>The limits of my language mean the limits of my world.</blockquote>
+            <div class="sig"><span class="dot"></span><span class="who">Ludwig Wittgenstein</span><span>Tractatus Logico-Philosophicus</span></div>
+          </div>
+          <div class="quote-actions">
+            <button type="button" onclick="dlCard('qb8','ludwig-wittgenstein-the-limits-of-my-languag')">Download</button>
+            <button type="button" onclick="copyQ(this)">Copy text</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a line here is worth sharing, take it.
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+(function(){
+  var items=Array.prototype.slice.call(document.querySelectorAll('.quote-item'));
+  var search=document.getElementById('qsearch');
+  var filter=document.getElementById('qfilter');
+  var count=document.getElementById('qcount');
+  var grpMine=document.getElementById('grp-mine');
+  var grpBor=document.getElementById('grp-borrowed');
+  var topic='all';
+  function visibleIn(sel){return document.querySelectorAll(sel+' .quote-item:not([style*="display: none"])').length;}
+  function apply(){
+    var q=(search.value||'').toLowerCase().trim();
+    var n=0;
+    items.forEach(function(it){
+      var okT = topic==='all' || it.getAttribute('data-topic')===topic;
+      var okQ = !q || (it.getAttribute('data-text')||'').toLowerCase().indexOf(q)>-1;
+      var show = okT && okQ;
+      it.style.display = show ? '' : 'none';
+      if(show) n++;
+    });
+    grpMine.style.display = visibleIn('#qgrid-mine')>0 ? '' : 'none';
+    grpBor.style.display = visibleIn('#qgrid-borrowed')>0 ? '' : 'none';
+    count.textContent = n + (n===1?' quote':' quotes');
+  }
+  search.addEventListener('input', apply);
+  filter.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    topic=b.getAttribute('data-t');
+    filter.querySelectorAll('button').forEach(function(x){x.classList.toggle('active', x===b);});
+    apply();
+  });
+  apply();
+})();
+
+async function dlCard(id, name){
+  var card=document.getElementById(id);
+  try { if(document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
+  var scale = 1080 / card.offsetWidth;
+  var canvas = await html2canvas(card, {scale: scale, backgroundColor: '#FBFAF6', logging:false});
+  var a=document.createElement('a');
+  a.download = name + '.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+function copyQ(btn){
+  var item=btn.closest('.quote-item');
+  var credit=item.getAttribute('data-credit')||'';
+  var text=item.getAttribute('data-text') + (credit ? '  -- ' + credit : '');
+  navigator.clipboard.writeText(text).then(function(){
+    var old=btn.textContent; btn.textContent='Copied'; setTimeout(function(){btn.textContent=old;},1400);
+  });
+}
+</script>
+
+</body>
+</html>
