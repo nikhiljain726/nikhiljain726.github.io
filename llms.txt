@@ -7,7 +7,8 @@
 - [Writing index](https://nikhiljain726.github.io/writing.html): all essays, filterable by topic.
 
 ## Expertise
-- [GTM engineering and growth for B2B](https://nikhiljain726.github.io/expertise-gtm.html)
+- [GTM engineering and growth for B2B](https://nikhiljain726.github.io/expertise.html (hub)
+- https://nikhiljain726.github.io/expertise-gtm.html)
 - [Growth and performance marketing](https://nikhiljain726.github.io/expertise-growth.html)
 
 ## Writing
