@@ -391,3 +391,13 @@ a{transition:border-color .2s ease,color .2s ease}
 .startbox pre{background:#141417;color:#e6e3da;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:.75rem;line-height:1.55;overflow-x:auto;white-space:pre-wrap;margin:8px 0 0}
 .startbox .gh{display:inline-block;margin-top:14px;font-family:var(--sans);font-weight:600;font-size:.9rem;padding:10px 16px;border-radius:9px;background:var(--signal);color:#fff;text-decoration:none}
 .startbox .gh:hover{filter:brightness(.96)}
+
+/* Worked-at wordmark bar */
+.logobar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.logobar span{font-family:var(--serif);font-weight:500;font-size:1.02rem;letter-spacing:-.01em;color:var(--ink-soft);background:var(--tint);border:1px solid var(--line);border-radius:9px;padding:9px 14px;transition:color .2s ease,border-color .2s ease}
+.logobar span:hover{color:var(--ink);border-color:var(--signal)}
+/* Journey path (homepage variant) */
+.journey{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.journey .j{background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-family:var(--mono);font-size:.78rem;letter-spacing:.02em;color:var(--ink)}
+.journey .j.accent{background:var(--signal);color:#fff;border-color:var(--signal)}
+.journey .ja{color:var(--signal);font-weight:700}
