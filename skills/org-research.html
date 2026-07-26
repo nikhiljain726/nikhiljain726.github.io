@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Org research at scale &middot; Nikhil Jain</title>
+<meta name="description" content="A Claude skill that researches a company or list to a fixed schema, with a source per field and an honest blank when a fact is missing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"><style>
+  .snum{font-family:var(--mono);font-size:.78rem;color:var(--signal);letter-spacing:.06em;text-transform:uppercase;margin:36px 0 4px}
+  .sdesc{max-width:var(--measure);font-size:1.06rem;line-height:1.72}
+  .sdesc p{margin:0 0 1em}.sdesc ul{margin:0 0 1em;padding-left:1.2em}.sdesc li{margin:.35em 0}
+  .sdesc blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:2px solid var(--signal);font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.35}
+  .codeblock{background:#141417;border-radius:14px;overflow:hidden;margin:14px 0 6px;max-width:var(--measure)}
+  .codeblock .cbhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #2a2a30}
+  .codeblock .fn{font-family:var(--mono);font-size:.74rem;color:#b7b3a7;letter-spacing:.04em}
+  .codeblock .btns{display:flex;gap:8px}
+  .codeblock button{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;border-radius:7px;padding:6px 10px;cursor:pointer}
+  .codeblock .cpy{color:#f3efe6;border:1px solid #3a3a42;background:none}
+  .codeblock .oc{color:#141417;border:0;background:#f3efe6}
+  .codeblock pre{margin:0;padding:18px;font-family:var(--mono);font-size:.8rem;line-height:1.65;white-space:pre-wrap;color:#e6e3da;overflow-x:auto}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nikhiljain726.github.io/skills/org-research.html">
+<meta name="author" content="Nikhil Jain">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#FBFAF6">
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Org research at scale &middot; Nikhil Jain">
+<meta property="og:description" content="A Claude skill that researches a company or list to a fixed schema, with a source per field and an honest blank when a fact is missing.">
+<meta property="og:url" content="https://nikhiljain726.github.io/skills/org-research.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Org research at scale &middot; Nikhil Jain">
+<meta name="twitter:description" content="A Claude skill that researches a company or list to a fixed schema, with a source per field and an honest blank when a fact is missing.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Org research at scale","description":"A Claude skill that researches a company or list to a fixed schema, with a source per field and an honest blank when a fact is missing.","url":"https://nikhiljain726.github.io/skills/org-research.html","mainEntityOfPage":"https://nikhiljain726.github.io/skills/org-research.html","image":"https://nikhiljain726.github.io/assets/og-image.png","inLanguage":"en","author":{"@type":"Person","name":"Nikhil Jain","url":"https://nikhiljain726.github.io/","jobTitle":"Growth & GTM Engineering","worksFor":{"@type":"Organization","name":"Osmos.ai"},"sameAs":["https://www.linkedin.com/in/nikhiljain726/","https://topmate.io/nikhiljain726","https://github.com/nikhiljain726"]}}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <span class="has-sub"><a href="../expertise.html">Expertise <span class="caret" aria-hidden="true">&#9662;</span></a><span class="subnav"><a href="../expertise.html">Overview</a><a href="../expertise-gtm.html">GTM &amp; growth for B2B</a><a href="../expertise-growth.html">Growth &amp; performance marketing</a></span></span>
+      <a href="../writing.html">Writing</a>
+      <a href="../skills.html" class="active">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../quotes.html">Quotes</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../skills.html">&larr; All skills</a>
+      <h1>Org research at scale</h1>
+      <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Research a list of companies without the hallucinations</div>
+      <div class="personalize" id="pz">
+        <div class="pz-title">Make it yours</div>
+        <p class="pz-sub">Answer three quick things, then open it tailored to you. Works in Claude, ChatGPT, or Perplexity.</p>
+        <div class="pz-q"><span>Your role</span>
+          <div class="pz-opts" data-k="role">
+            <button type="button" class="pz-opt on" data-v="a founder">Founder</button>
+            <button type="button" class="pz-opt" data-v="a sales / AE person">Sales</button>
+            <button type="button" class="pz-opt" data-v="a marketing / growth person">Marketing</button>
+            <button type="button" class="pz-opt" data-v="in RevOps / ops">RevOps</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>You work on</span>
+          <div class="pz-opts" data-k="company">
+            <button type="button" class="pz-opt on" data-v="a B2B SaaS company">B2B SaaS</button>
+            <button type="button" class="pz-opt" data-v="a D2C / ecommerce brand">D2C</button>
+            <button type="button" class="pz-opt" data-v="a retailer or marketplace">Retail</button>
+            <button type="button" class="pz-opt" data-v="an agency">Agency</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>Output style</span>
+          <div class="pz-opts" data-k="style">
+            <button type="button" class="pz-opt on" data-v="concise bullets">Concise</button>
+            <button type="button" class="pz-opt" data-v="detailed prose">Detailed</button>
+            <button type="button" class="pz-opt" data-v="a table">Table</button>
+          </div>
+        </div>
+        <div class="pz-actions">
+          <button type="button" class="tool-btn claude" onclick="openTool('claude')">Open in Claude &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('chatgpt')">ChatGPT &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('perplexity')">Perplexity &#8599;</button>
+          <button type="button" class="tool-btn ghost" onclick="copyPersonalized()">Copy personalized</button>
+        </div>
+      </div>
+      <div class="snum">01 / The problem it solves</div>
+      <div class="sdesc"><p>Batch company research breaks on one thing: a single hallucinated number. Fill a table of two hundred companies and a few confident guesses poison the whole set, because a wrong value looks exactly as clean as a right one.</p></div>
+      <div class="snum">02 / What it does</div>
+      <div class="sdesc"><p>It fills a fixed schema about a company from sources it can cite, attaches a URL to every field, and writes not found wherever it cannot source a fact. Point it at a list and it keeps the whole table honest and loadable.</p></div>
+      <div class="snum">03 / The rule that makes it trustworthy</div>
+      <div class="sdesc"><p>One source per claim. No source, no value. It never averages or interpolates a number, and it prefers an honest blank to a clean-looking guess, because the blank is safe downstream and the guess is not.</p></div>
+      <div class="snum">04 / How to use it</div>
+      <div class="sdesc"><p>Give it a company URL or a list and the exact schema of fields you need. Run it through any orchestration tool for a batch, and keep the schema field names fixed so the output loads straight into a table.</p></div>
+      <div class="snum">05 / The SKILL.md</div>
+      <div class="sdesc"><p>Save this as SKILL.md inside a folder named after the skill, or paste the body into a Claude Project's custom instructions. Or just click Open in Claude and it will set it up for you.</p></div>
+      <div class="codeblock">
+        <div class="cbhead"><span class="fn">SKILL.md</span><div class="btns"><button class="oc" onclick="openInClaude()">Open in Claude</button><button class="cpy" onclick="copySkill()">Copy</button></div></div>
+        <pre>---
+name: org-research
+description: Use to research one company or a list to a fixed schema, with a source URL for every field and an explicit blank when a fact cannot be found. Built for batch enrichment where a single hallucinated number poisons the whole table.
+---
+
+# Company research to a schema
+
+You fill a fixed schema about a company from evidence you can source. In a batch, one guessed value is worse than a blank, because it looks clean and misleads everything downstream. Prefer not found to a guess.
+
+## Input
+A company name or URL, and the schema of fields to fill.
+
+## How to work
+1. Read the company's own pages first, then filings and reputable press.
+2. Fill each field only from a source you can cite. Attach the URL.
+3. If a field cannot be sourced, write not found. Never interpolate.
+
+## Output
+JSON matching the schema. Every field is either a sourced value with a url, or not found.
+
+## Rules
+- One source per claim. No source, no value.
+- Do not average or guess numbers. Ranges are fine if sourced.
+- Keep field names exact so the output loads into a table cleanly.
+- Note the date, since firmographics go stale.
+</pre>
+      </div>
+      <div class="snum">06 / Tips</div>
+      <div class="sdesc"><ul><li>Keep field names exact so the output drops into your table without cleanup.</li><li>Ask it to date each record. Firmographics go stale fast.</li><li>Spot-check the not-found fields. That honesty is the feature, not a gap.</li></ul></div>
+      <div class="post-foot" style="margin-top:30px">The story behind it: <a href="../posts/nrev-org-research.html">read the write-up</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<div class="toast" id="toast">Copied</div>
+<script>
+function skillMd(){const pre=document.querySelector('.codeblock pre');return pre?pre.innerText:'';}
+function toast(m){const t=document.getElementById('toast');t.textContent=m||'Copied';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);}
+function copySkill(){if(navigator.clipboard)navigator.clipboard.writeText(skillMd());toast('Copied');}
+function pzGet(k){var el=document.querySelector('.pz-opts[data-k="'+k+'"] .pz-opt.on');return el?el.getAttribute('data-v'):'';}
+document.addEventListener('click',function(e){var b=e.target.closest('.pz-opt');if(!b)return;var opts=b.parentNode.querySelectorAll('.pz-opt');for(var i=0;i<opts.length;i++){opts[i].classList.toggle('on',opts[i]===b);}});
+function pzContext(){return "I am "+pzGet('role')+" at "+pzGet('company')+". Please give me the output as "+pzGet('style')+".";}
+function buildPrompt(tool){var md=skillMd();var ctx=pzContext();if(tool==='claude'){return "I want to use this as a reusable Claude skill. If you have the skill-creator skill, install it so I can reuse it, then run it for me. Tailor it to my context: "+ctx+"\n\nHere is the SKILL.md:\n\n"+md;}return "Use the instructions below as a reusable operating prompt, tailored to my context: "+ctx+" Acknowledge in one line, then ask me for the input it needs.\n\n"+md;}
+function toolUrl(tool,q){var e=encodeURIComponent(q);if(tool==='chatgpt')return "https://chatgpt.com/?q="+e;if(tool==='perplexity')return "https://www.perplexity.ai/search?q="+e;return "https://claude.ai/new?q="+e;}
+function openTool(tool){window.open(toolUrl(tool,buildPrompt(tool)),"_blank");}
+function copyPersonalized(){if(navigator.clipboard)navigator.clipboard.writeText(buildPrompt('claude'));toast('Personalized skill copied');}
+function openInClaude(){openTool('claude');}
+</script>
+</body>
+</html>

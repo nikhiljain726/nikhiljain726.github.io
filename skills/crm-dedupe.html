@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM cleanup and dedupe &middot; Nikhil Jain</title>
+<meta name="description" content="A Claude skill that finds duplicate records, picks the survivor with a reason, and proposes safe dry-run merges with an audit log.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"><style>
+  .snum{font-family:var(--mono);font-size:.78rem;color:var(--signal);letter-spacing:.06em;text-transform:uppercase;margin:36px 0 4px}
+  .sdesc{max-width:var(--measure);font-size:1.06rem;line-height:1.72}
+  .sdesc p{margin:0 0 1em}.sdesc ul{margin:0 0 1em;padding-left:1.2em}.sdesc li{margin:.35em 0}
+  .sdesc blockquote{margin:1.2em 0;padding:2px 0 2px 18px;border-left:2px solid var(--signal);font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.35}
+  .codeblock{background:#141417;border-radius:14px;overflow:hidden;margin:14px 0 6px;max-width:var(--measure)}
+  .codeblock .cbhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #2a2a30}
+  .codeblock .fn{font-family:var(--mono);font-size:.74rem;color:#b7b3a7;letter-spacing:.04em}
+  .codeblock .btns{display:flex;gap:8px}
+  .codeblock button{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;border-radius:7px;padding:6px 10px;cursor:pointer}
+  .codeblock .cpy{color:#f3efe6;border:1px solid #3a3a42;background:none}
+  .codeblock .oc{color:#141417;border:0;background:#f3efe6}
+  .codeblock pre{margin:0;padding:18px;font-family:var(--mono);font-size:.8rem;line-height:1.65;white-space:pre-wrap;color:#e6e3da;overflow-x:auto}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.78rem;padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nikhiljain726.github.io/skills/crm-dedupe.html">
+<meta name="author" content="Nikhil Jain">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#FBFAF6">
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CRM cleanup and dedupe &middot; Nikhil Jain">
+<meta property="og:description" content="A Claude skill that finds duplicate records, picks the survivor with a reason, and proposes safe dry-run merges with an audit log.">
+<meta property="og:url" content="https://nikhiljain726.github.io/skills/crm-dedupe.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CRM cleanup and dedupe &middot; Nikhil Jain">
+<meta name="twitter:description" content="A Claude skill that finds duplicate records, picks the survivor with a reason, and proposes safe dry-run merges with an audit log.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"CRM cleanup and dedupe","description":"A Claude skill that finds duplicate records, picks the survivor with a reason, and proposes safe dry-run merges with an audit log.","url":"https://nikhiljain726.github.io/skills/crm-dedupe.html","mainEntityOfPage":"https://nikhiljain726.github.io/skills/crm-dedupe.html","image":"https://nikhiljain726.github.io/assets/og-image.png","inLanguage":"en","author":{"@type":"Person","name":"Nikhil Jain","url":"https://nikhiljain726.github.io/","jobTitle":"Growth & GTM Engineering","worksFor":{"@type":"Organization","name":"Osmos.ai"},"sameAs":["https://www.linkedin.com/in/nikhiljain726/","https://topmate.io/nikhiljain726","https://github.com/nikhiljain726"]}}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <span class="has-sub"><a href="../expertise.html">Expertise <span class="caret" aria-hidden="true">&#9662;</span></a><span class="subnav"><a href="../expertise.html">Overview</a><a href="../expertise-gtm.html">GTM &amp; growth for B2B</a><a href="../expertise-growth.html">Growth &amp; performance marketing</a></span></span>
+      <a href="../writing.html">Writing</a>
+      <a href="../skills.html" class="active">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../quotes.html">Quotes</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../skills.html">&larr; All skills</a>
+      <h1>CRM cleanup and dedupe</h1>
+      <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Dedupe a messy CRM without wrecking it</div>
+      <div class="personalize" id="pz">
+        <div class="pz-title">Make it yours</div>
+        <p class="pz-sub">Answer three quick things, then open it tailored to you. Works in Claude, ChatGPT, or Perplexity.</p>
+        <div class="pz-q"><span>Your role</span>
+          <div class="pz-opts" data-k="role">
+            <button type="button" class="pz-opt on" data-v="a founder">Founder</button>
+            <button type="button" class="pz-opt" data-v="a sales / AE person">Sales</button>
+            <button type="button" class="pz-opt" data-v="a marketing / growth person">Marketing</button>
+            <button type="button" class="pz-opt" data-v="in RevOps / ops">RevOps</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>You work on</span>
+          <div class="pz-opts" data-k="company">
+            <button type="button" class="pz-opt on" data-v="a B2B SaaS company">B2B SaaS</button>
+            <button type="button" class="pz-opt" data-v="a D2C / ecommerce brand">D2C</button>
+            <button type="button" class="pz-opt" data-v="a retailer or marketplace">Retail</button>
+            <button type="button" class="pz-opt" data-v="an agency">Agency</button>
+          </div>
+        </div>
+        <div class="pz-q"><span>Output style</span>
+          <div class="pz-opts" data-k="style">
+            <button type="button" class="pz-opt on" data-v="concise bullets">Concise</button>
+            <button type="button" class="pz-opt" data-v="detailed prose">Detailed</button>
+            <button type="button" class="pz-opt" data-v="a table">Table</button>
+          </div>
+        </div>
+        <div class="pz-actions">
+          <button type="button" class="tool-btn claude" onclick="openTool('claude')">Open in Claude &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('chatgpt')">ChatGPT &#8599;</button>
+          <button type="button" class="tool-btn" onclick="openTool('perplexity')">Perplexity &#8599;</button>
+          <button type="button" class="tool-btn ghost" onclick="copyPersonalized()">Copy personalized</button>
+        </div>
+      </div>
+      <div class="snum">01 / The problem it solves</div>
+      <div class="sdesc"><p>A CRM fills with the same company twice, a person under three emails, and test records nobody deleted. Reporting drifts, reps talk over each other, and a careless bulk merge only makes it worse, because a wrong merge is hard to undo.</p></div>
+      <div class="snum">02 / What it does</div>
+      <div class="sdesc"><p>It finds true duplicates by identity, picks the record to keep with a reason, and proposes a field-by-field merge that keeps the best value and preserves every linked activity. Nothing merges without a dry-run preview and your approval.</p></div>
+      <div class="snum">03 / The rule that keeps it safe</div>
+      <div class="sdesc"><p>It matches on stable identity first, domain and email, never on name alone, and when identity is ambiguous it leaves the pair for review rather than guessing. Every action gets an audit line, so you can see what merged into what and why.</p></div>
+      <div class="snum">04 / How to use it</div>
+      <div class="sdesc"><p>Give it an export or live access to your organizations and people. It returns a survivor-and-merge plan per duplicate set plus a junk list to delete. Review the dry-run, approve, then let it write.</p></div>
+      <div class="snum">05 / The SKILL.md</div>
+      <div class="sdesc"><p>Save this as SKILL.md inside a folder named after the skill, or paste the body into a Claude Project's custom instructions. Or just click Open in Claude and it will set it up for you.</p></div>
+      <div class="codeblock">
+        <div class="cbhead"><span class="fn">SKILL.md</span><div class="btns"><button class="oc" onclick="openInClaude()">Open in Claude</button><button class="cpy" onclick="copySkill()">Copy</button></div></div>
+        <pre>---
+name: crm-dedupe
+description: Use to find and merge duplicate organizations and people in a CRM safely. Matches on identity, picks the record to keep with a reason, proposes a field-by-field merge, and never merges without a dry-run preview and an approval step. Also flags junk and test records.
+---
+
+# CRM cleanup and dedupe
+
+You clean a messy CRM by finding true duplicates and proposing safe merges. The expensive mistake is a wrong merge, which is hard to undo, so you always preview and never act without approval.
+
+## Input
+An export or live access to organizations and people: names, domains, emails, phones, owners, created dates, open deals.
+
+## How to work
+1. Match on stable identity first: domain and email, then a normalized name plus a second signal. Do not merge on name alone.
+2. For each duplicate set, pick the survivor, the record with the most complete data and live deals, and say why.
+3. Propose the merge field by field, keeping the best value for each field and preserving all linked activity.
+4. Flag obvious junk and test records separately, for a human to delete.
+
+## Output, per set
+{ survivor_id, merge_ids, field_plan, reason, risk }
+
+## Rules
+- Never merge two records that both have open deals without flagging it for a human.
+- Every merge is a dry-run first. Show what changes before anything is written.
+- Keep an audit line for each action: what merged, into what, and why.
+- When identity is ambiguous, do not merge. Leave it for review.
+</pre>
+      </div>
+      <div class="snum">06 / Tips</div>
+      <div class="sdesc"><ul><li>Start with a small pilot batch and check the survivor choices before running at scale.</li><li>Never auto-merge two records that both have open deals. Flag those for a human.</li><li>Keep the audit log. It is what lets you undo a bad call.</li></ul></div>
+      <div class="post-foot" style="margin-top:30px">The story behind it: <a href="../posts/crm-cleanup.html">read the write-up</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon"><span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.</p>
+  </div>
+</footer>
+<div class="toast" id="toast">Copied</div>
+<script>
+function skillMd(){const pre=document.querySelector('.codeblock pre');return pre?pre.innerText:'';}
+function toast(m){const t=document.getElementById('toast');t.textContent=m||'Copied';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1300);}
+function copySkill(){if(navigator.clipboard)navigator.clipboard.writeText(skillMd());toast('Copied');}
+function pzGet(k){var el=document.querySelector('.pz-opts[data-k="'+k+'"] .pz-opt.on');return el?el.getAttribute('data-v'):'';}
+document.addEventListener('click',function(e){var b=e.target.closest('.pz-opt');if(!b)return;var opts=b.parentNode.querySelectorAll('.pz-opt');for(var i=0;i<opts.length;i++){opts[i].classList.toggle('on',opts[i]===b);}});
+function pzContext(){return "I am "+pzGet('role')+" at "+pzGet('company')+". Please give me the output as "+pzGet('style')+".";}
+function buildPrompt(tool){var md=skillMd();var ctx=pzContext();if(tool==='claude'){return "I want to use this as a reusable Claude skill. If you have the skill-creator skill, install it so I can reuse it, then run it for me. Tailor it to my context: "+ctx+"\n\nHere is the SKILL.md:\n\n"+md;}return "Use the instructions below as a reusable operating prompt, tailored to my context: "+ctx+" Acknowledge in one line, then ask me for the input it needs.\n\n"+md;}
+function toolUrl(tool,q){var e=encodeURIComponent(q);if(tool==='chatgpt')return "https://chatgpt.com/?q="+e;if(tool==='perplexity')return "https://www.perplexity.ai/search?q="+e;return "https://claude.ai/new?q="+e;}
+function openTool(tool){window.open(toolUrl(tool,buildPrompt(tool)),"_blank");}
+function copyPersonalized(){if(navigator.clipboard)navigator.clipboard.writeText(buildPrompt('claude'));toast('Personalized skill copied');}
+function openInClaude(){openTool('claude');}
+</script>
+</body>
+</html>
