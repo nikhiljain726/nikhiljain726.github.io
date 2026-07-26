@@ -411,3 +411,9 @@ a{transition:border-color .2s ease,color .2s ease}
 .lm-logo:hover{filter:none;opacity:1}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.lm-track{animation:none;flex-wrap:wrap;width:auto}}
+
+/* In-post images */
+.post-body figure.img{margin:22px 0;max-width:var(--measure)}
+.post-body figure.img img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+.post-body figure.img.portrait{max-width:440px}
+.post-body figure.img figcaption{font-family:var(--mono);font-size:.72rem;letter-spacing:.03em;color:var(--ink-soft);margin-top:8px}
