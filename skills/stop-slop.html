@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ICP qualifier and scorer &middot; Nikhil Jain</title>
-<meta name="description" content="A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.">
+<title>Stop-slop, an AI-writing cleaner &middot; Nikhil Jain</title>
+<meta name="description" content="A Claude skill that strips the tells of AI writing out of any draft, so it reads like a person wrote it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -28,20 +28,20 @@
 </style>
 <meta property="og:site_name" content="Nikhil Jain">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ICP qualifier and scorer · Nikhil Jain">
-<meta property="og:description" content="A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.">
-<meta property="og:url" content="https://nikhiljain726.github.io/skills/icp-qualifier.html">
+<meta property="og:title" content="Stop-slop, an AI-writing cleaner · Nikhil Jain">
+<meta property="og:description" content="A Claude skill that strips the tells of AI writing out of any draft, so it reads like a person wrote it.">
+<meta property="og:url" content="https://nikhiljain726.github.io/skills/stop-slop.html">
 <meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ICP qualifier and scorer · Nikhil Jain">
-<meta name="twitter:description" content="A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.">
+<meta name="twitter:title" content="Stop-slop, an AI-writing cleaner · Nikhil Jain">
+<meta name="twitter:description" content="A Claude skill that strips the tells of AI writing out of any draft, so it reads like a person wrote it.">
 <meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="canonical" href="https://nikhiljain726.github.io/skills/icp-qualifier.html">
+<link rel="canonical" href="https://nikhiljain726.github.io/skills/stop-slop.html">
 <meta name="author" content="Nikhil Jain">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#FBFAF6">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "ICP qualifier and scorer", "description": "A Claude skill that buckets and scores accounts against your ICP, disqualifiers first, with a reason and the biggest risk.", "url": "https://nikhiljain726.github.io/skills/icp-qualifier.html", "mainEntityOfPage": "https://nikhiljain726.github.io/skills/icp-qualifier.html", "image": "https://nikhiljain726.github.io/assets/og-image.png", "inLanguage": "en", "author": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}, "publisher": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Stop-slop, an AI-writing cleaner", "description": "A Claude skill that strips the tells of AI writing out of any draft, so it reads like a person wrote it.", "url": "https://nikhiljain726.github.io/skills/stop-slop.html", "mainEntityOfPage": "https://nikhiljain726.github.io/skills/stop-slop.html", "image": "https://nikhiljain726.github.io/assets/og-image.png", "inLanguage": "en", "author": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}, "publisher": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}}</script>
 </head>
 <body>
 
@@ -65,32 +65,30 @@
   <article class="post">
     <div class="wrap">
       <a class="backlink" href="../skills.html">&larr; All skills</a>
-      <h1>ICP qualifier and scorer</h1>
-      <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Use to sort and score accounts against your ICP</div>
+      <h1>Stop-slop, an AI-writing cleaner</h1>
+      <div class="byline">Claude / agent skill &nbsp;&middot;&nbsp; Run it on any draft before you hit send</div>
       <div class="personalize" id="pz">
         <div class="pz-title">Make it yours</div>
         <p class="pz-sub">Answer three quick things, then open it tailored to you. Works in Claude, ChatGPT, or Perplexity.</p>
-        <div class="pz-q"><span>Your role</span>
-          <div class="pz-opts" data-k="role">
-            <button type="button" class="pz-opt on" data-v="a founder">Founder</button>
-            <button type="button" class="pz-opt" data-v="a sales / AE person">Sales</button>
-            <button type="button" class="pz-opt" data-v="a marketing / growth person">Marketing</button>
-            <button type="button" class="pz-opt" data-v="in RevOps / ops">RevOps</button>
+        <div class="pz-q"><span>You are cleaning</span>
+          <div class="pz-opts" data-k="doc">
+            <button type="button" class="pz-opt on" data-v="an email">Email</button>
+            <button type="button" class="pz-opt" data-v="a LinkedIn post">LinkedIn post</button>
+            <button type="button" class="pz-opt" data-v="a doc or report">Doc</button>
+            <button type="button" class="pz-opt" data-v="landing-page copy">Landing copy</button>
           </div>
         </div>
-        <div class="pz-q"><span>You work on</span>
-          <div class="pz-opts" data-k="company">
-            <button type="button" class="pz-opt on" data-v="a B2B SaaS company">B2B SaaS</button>
-            <button type="button" class="pz-opt" data-v="a D2C / ecommerce brand">D2C</button>
-            <button type="button" class="pz-opt" data-v="a retailer or marketplace">Retail</button>
-            <button type="button" class="pz-opt" data-v="an agency">Agency</button>
+        <div class="pz-q"><span>Keep the voice</span>
+          <div class="pz-opts" data-k="voice">
+            <button type="button" class="pz-opt on" data-v="plain and direct">Plain</button>
+            <button type="button" class="pz-opt" data-v="warm">Warm</button>
+            <button type="button" class="pz-opt" data-v="punchy">Punchy</button>
           </div>
         </div>
-        <div class="pz-q"><span>Output style</span>
-          <div class="pz-opts" data-k="style">
-            <button type="button" class="pz-opt on" data-v="concise bullets">Concise</button>
-            <button type="button" class="pz-opt" data-v="detailed prose">Detailed</button>
-            <button type="button" class="pz-opt" data-v="a table">Table</button>
+        <div class="pz-q"><span>Length</span>
+          <div class="pz-opts" data-k="length">
+            <button type="button" class="pz-opt on" data-v="tighten it hard">Tighten hard</button>
+            <button type="button" class="pz-opt" data-v="keep the length, fix the tells">Keep length</button>
           </div>
         </div>
         <div class="pz-actions">
@@ -101,46 +99,49 @@
         </div>
       </div>
       <div class="snum">01 / The problem it solves</div>
-      <div class="sdesc"><p>Most pipelines are full of accounts that were never going to close, and reps burn weeks finding that out one call at a time. The fix is to score fit before anyone dials, and to be honest about it. The hard part is not the scoring, it is refusing to reward an account that has a fatal disqualifier just because it looks impressive on paper.</p></div>
+      <div class="sdesc"><p>Text written or polished by a model has a smell. Certain words, a flat even rhythm, three-item lists that pad instead of inform, and the &quot;not just X, but Y&quot; move that sounds deep and says nothing. Readers clock it in a sentence, and once they do they trust the rest less. A word filter alone does not fix it, because the worst tells are structural.</p></div>
       <div class="snum">02 / What it does</div>
-      <div class="sdesc"><p>Give it your ICP definition and a record, or a whole pasted list. For each one it returns a bucket (Customer, Prospect, Partner, or Disqualify), a 0-100 score, the single reason it scored that way, and the biggest risk. It runs on one domain or a batch, and the output drops straight into Clay, Apollo, or a sheet without rework.</p></div>
-      <div class="snum">03 / Why disqualifiers come first</div>
-      <div class="sdesc"><p>It checks hard disqualifiers before anything else. If one fires, the account is Disqualify and the scoring stops, and the skill tells you which disqualifier fired. That order is deliberate. A 90 on an account you can never sell to is a more expensive mistake than a 40 on one you can, because the 90 pulls a rep's time toward a dead end.</p><blockquote>A high score with a fatal disqualifier is worse than an honest low score.</blockquote></div>
+      <div class="sdesc"><p>Paste in any draft and it returns a version that reads like a person wrote it. It strips the banned words and phrases, kills the structural tells a filter misses, varies the sentence length, and cuts the em-dashes back to something a human would actually type. It keeps your facts and your meaning. It only changes the writing.</p></div>
+      <div class="snum">03 / The principle that keeps it honest</div>
+      <div class="sdesc"><p>Cut, do not add. If a sentence survives with fewer words, the shorter one wins. The skill never invents a fact, never changes a claim, and never inflates what happened. If a draft is already clean, it says so and leaves it alone rather than rewriting for the sake of it.</p><blockquote>Shorter and plainer almost always wins. The goal is not fancier writing, it is writing that sounds like you.</blockquote></div>
       <div class="snum">04 / How to use it</div>
-      <div class="sdesc"><p>Save the block as SKILL.md, or paste the body into your enrichment tool's prompt step. Give it your ICP and the records. Or click Open in Claude above to install it in one step.</p></div>
+      <div class="sdesc"><p>Save the block below as SKILL.md in a folder called stop-slop, or paste the body into a Claude Project's custom instructions. Then paste any draft and ask it to clean it. Or click Open in Claude above and it will set the skill up for you and run it on your text.</p></div>
       <div class="snum">05 / The SKILL.md</div>
       <div class="sdesc"><p>Save this as SKILL.md inside a folder named after the skill, or paste the body into a Claude Project's custom instructions. Or just click Open in Claude and it will set it up for you.</p></div>
       <div class="codeblock">
         <div class="cbhead"><span class="fn">SKILL.md</span><div class="btns"><button class="oc" onclick="openInClaude()">Open in Claude</button><button class="cpy" onclick="copySkill()">Copy</button></div></div>
         <pre>---
-name: icp-qualifier
-description: Classify and score a company or contact against an ICP. Buckets into Customer, Prospect, Partner, or Disqualify, and returns a 0-100 score with the one reason it scored that way and the biggest risk. Works on a single record or a pasted list. Portable into Clay, Apollo, or a spreadsheet.
+name: stop-slop
+description: Use on any piece of writing to strip the tells of AI-generated text and make it read like a person wrote it. Removes banned words and phrases, forced rule-of-three, negative parallelism, significance inflation, and empty -ing tails, and fixes em-dash overuse. Works on emails, posts, docs, landing copy, and chat replies.
 ---
 
-# ICP qualifier
+# Stop-slop
 
-You score how well a company or contact fits an ICP, so a rep knows who to touch first and why. Be blunt about disqualifiers. A high score with a fatal disqualifier is worse than an honest low score.
+You rewrite text so it reads like a specific human wrote it, not a model. Keep the author&#x27;s meaning and every fact. Change only the writing. Shorter and plainer almost always wins.
 
-## Input
-An ICP definition, and one record or a list of records.
+## What to strip
+- Banned words: leverage, utilize, delve, robust, seamless, elevate, unlock, tapestry, testament, realm, landscape, foster, crucial, pivotal.
+- Banned phrases: in today&#x27;s fast-paced world, at the end of the day, it&#x27;s worth noting, the key takeaway, in conclusion.
+- Negative parallelism: the it is not just X, it is Y move. Cut it, or state Y plainly.
+- Forced rule-of-three: three-item lists that pad rather than inform. Keep the ones that carry real weight.
+- Significance inflation: game changer, fundamental shift, revolutionary. Say what actually happened instead.
+- Empty -ing tails: highlighting the importance of, underscoring, showcasing. Delete them.
+- Em-dash overuse: replace most with a period or a comma.
 
 ## How to work
-1. Check the hard disqualifiers first. If any is present, bucket as Disqualify and stop.
-2. Otherwise bucket as Customer, Prospect, or Partner.
-3. Score 0-100 on the traits that actually predict a win, not the wishlist.
-
-## Output, per record
-{ bucket, score_0_100, reason, biggest_risk }
+1. Read the draft once for meaning. Preserve every fact and the author&#x27;s intent.
+2. Cut, do not add. If a sentence survives with fewer words, use the shorter one.
+3. Vary sentence length so the rhythm is not flat and even.
+4. Return only the rewrite, then a two-line note on what you changed and why.
 
 ## Rules
-- Disqualifiers override the score. Say which one fired.
-- The reason is one line, concrete, and specific to the record.
-- No fabrication. If a needed fact is missing, say what you would need to confirm the score.
-- Keep buckets to the four exact words so the output filters cleanly.
+- Never invent facts or change the author&#x27;s claims.
+- Keep the register the author asked for: plain, warm, or punchy.
+- If the draft is already clean, say so and leave it mostly alone.
 </pre>
       </div>
       <div class="snum">06 / Tips</div>
-      <div class="sdesc"><ul><li>Push it to name the disqualifiers explicitly. That list is more useful than the wishlist.</li><li>Feed it ten past wins and ten losses first, so its idea of fit is grounded in your real outcomes.</li><li>Re-run quarterly. Your ICP drifts as the product and market move.</li></ul></div>
+      <div class="sdesc"><ul><li>Give it your own writing sample and ask it to match that voice, not a generic one.</li><li>Ask it to list the tells it found, so you start catching them yourself.</li><li>For short copy, tell it to keep the length and only fix the tells, so it does not over-trim.</li></ul></div>
       <div class="post-foot" style="margin-top:30px">Using this, or improving it? <a href="https://www.linkedin.com/in/nikhiljain726/">Message me on LinkedIn</a>. &nbsp; <a href="../skills.html">More skills &rarr;</a></div>
     </div>
   </article>
@@ -166,8 +167,8 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m||'Cop
 function copySkill(){if(navigator.clipboard)navigator.clipboard.writeText(skillMd());toast('Copied');}
 function pzGet(k){var el=document.querySelector('.pz-opts[data-k="'+k+'"] .pz-opt.on');return el?el.getAttribute('data-v'):'';}
 document.addEventListener('click',function(e){var b=e.target.closest('.pz-opt');if(!b)return;var opts=b.parentNode.querySelectorAll('.pz-opt');for(var i=0;i<opts.length;i++){opts[i].classList.toggle('on',opts[i]===b);}});
-function pzContext(){return "I am "+pzGet('role')+" at "+pzGet('company')+". Please give me the output as "+pzGet('style')+".";}
-function buildPrompt(tool){var md=skillMd();var ctx=pzContext();if(tool==='claude'){return "I want to use this as a reusable Claude skill. If you have the skill-creator skill, install it so I can reuse it, then run it for me. Tailor it to my context: "+ctx+"\n\nHere is the SKILL.md:\n\n"+md;}return "Use the instructions below as a reusable operating prompt, tailored to my context: "+ctx+" Acknowledge in one line, then ask me for the input it needs.\n\n"+md;}
+function pzContext(){return "I am cleaning up "+pzGet('doc')+". Keep the voice "+pzGet('voice')+", and "+pzGet('length')+".";}
+function buildPrompt(tool){var md=skillMd();var ctx=pzContext();if(tool==='claude'){return "I want to use this as a reusable Claude skill. If you have the skill-creator skill, install it so I can reuse it, then run it on my draft. My context: "+ctx+"\n\nHere is the SKILL.md:\n\n"+md;}return "Use the instructions below as a reusable operating prompt. My context: "+ctx+" Acknowledge in one line, then ask me to paste the draft.\n\n"+md;}
 function toolUrl(tool,q){var e=encodeURIComponent(q);if(tool==='chatgpt')return "https://chatgpt.com/?q="+e;if(tool==='perplexity')return "https://www.perplexity.ai/search?q="+e;return "https://claude.ai/new?q="+e;}
 function openTool(tool){window.open(toolUrl(tool,buildPrompt(tool)),"_blank");}
 function copyPersonalized(){if(navigator.clipboard)navigator.clipboard.writeText(buildPrompt('claude'));toast('Personalized skill copied');}
