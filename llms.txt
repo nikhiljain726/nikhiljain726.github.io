@@ -6,6 +6,10 @@
 - [About Nikhil Jain](https://nikhiljain726.github.io/about.html): background, work history, and how I work.
 - [Writing index](https://nikhiljain726.github.io/writing.html): all essays, filterable by topic.
 
+## Expertise
+- [GTM engineering and growth for B2B](https://nikhiljain726.github.io/expertise-gtm.html)
+- [Growth and performance marketing](https://nikhiljain726.github.io/expertise-growth.html)
+
 ## Writing
 - [What 50 crore in ad spend taught me about optimization](https://nikhiljain726.github.io/posts/50-crore-ad-spend.html)
 - [Four AI models, one research task, and the merge that almost shipped wrong](https://nikhiljain726.github.io/posts/ai-model-bakeoff.html)
