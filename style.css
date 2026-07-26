@@ -431,3 +431,17 @@ a.lm-item:hover{border-color:var(--signal);color:var(--signal)}
 @media(max-width:640px){.logowall{grid-template-columns:repeat(2,1fr)}}
 
 .label .ag,.lead .ag{color:var(--ink);font-weight:600}
+
+/* about timeline metric pills */
+.timeline .metrics{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+.timeline .metrics li{font:500 .8rem/1.1 "IBM Plex Mono",ui-monospace,monospace;color:var(--ink-soft);background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap}
+.timeline .metrics li b{color:var(--signal);font-weight:700}
+
+/* expertise nav dropdown */
+.nav .has-sub{position:relative;display:inline-flex;align-items:center;padding-bottom:12px;margin-bottom:-12px}
+.nav .has-sub>a .caret{font-size:.7em;margin-left:3px;opacity:.55}
+.nav .subnav{position:absolute;top:100%;left:0;min-width:250px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px rgba(20,16,12,.12);padding:6px;display:none;flex-direction:column;z-index:80}
+.nav .has-sub:hover .subnav,.nav .has-sub:focus-within .subnav{display:flex}
+.nav .subnav a{display:block;padding:9px 12px;border-radius:8px;text-transform:none;letter-spacing:0;font-size:.9rem;white-space:nowrap;color:var(--ink-soft)}
+.nav .subnav a:hover{background:var(--tint);color:var(--signal)}
+@media(max-width:640px){.nav .subnav{position:static;display:flex;box-shadow:none;border:none;padding:2px 0 4px 12px;min-width:0}.nav .has-sub{display:block;padding-bottom:0;margin-bottom:0}.nav .has-sub>a .caret{display:none}}
