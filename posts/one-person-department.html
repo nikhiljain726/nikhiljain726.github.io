@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>High-impact individual contributors: how AI is reshaping work &middot; Nikhil Jain</title>
+<meta name="description" content="The management ladder was the only way up. AI just built a second staircase, the High-impact IC. On the shift, the data under it, and the systems that make one person a department.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+/* HI-C article visuals */
+.hic-fig{margin:32px 0;padding:22px 22px 18px;border:1px solid var(--line);border-radius:16px;background:#fff;max-width:var(--measure);overflow:hidden}
+.hic-fig .cap,.hic-meme .cap{font-family:var(--mono);font-size:.72rem;line-height:1.5;letter-spacing:.02em;color:var(--ink-soft);margin-top:14px}
+.hic-fig .cap b{color:var(--ink);font-weight:600}
+.hic-title{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:16px}
+.hic-orgs{display:grid;grid-template-columns:1fr auto 1.1fr;gap:16px;align-items:center}
+.hic-stack{display:flex;flex-direction:column;gap:7px;position:relative;padding-left:18px}
+.hic-box{border:1px solid var(--line);background:var(--tint);border-radius:9px;padding:9px 10px;font:600 .78rem/1.1 var(--sans);color:var(--ink-soft);text-align:center}
+.hic-box.hi{background:rgba(var(--signal-rgb),.1);border-color:rgba(var(--signal-rgb),.5);color:var(--ink)}
+.hic-rail{position:absolute;left:5px;top:6px;bottom:6px;width:3px;border-radius:3px;background:var(--line)}
+.hic-dot{position:absolute;left:0;width:11px;height:11px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 4px rgba(var(--signal-rgb),.18);top:calc(100% - 16px)}
+.hic-anim .hic-dot{animation:hicUp 4.4s ease-in-out infinite}
+@keyframes hicUp{0%{top:calc(100% - 16px)}45%{top:4px}55%{top:4px}100%{top:calc(100% - 16px)}}
+.hic-mid{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--ink-soft);text-align:center}
+.hic-single{display:flex;flex-direction:column;gap:8px}
+.hic-line{position:relative;height:22px}
+.hic-line .track{position:absolute;top:10px;left:0;right:0;height:2px;background:var(--line);border-radius:2px}
+.hic-line .zip{position:absolute;top:6px;left:0;width:11px;height:11px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 4px rgba(var(--signal-rgb),.18)}
+.hic-anim .hic-line .zip{animation:hicZip 2.6s ease-in-out infinite}
+@keyframes hicZip{0%{left:0}60%{left:calc(100% - 11px)}100%{left:calc(100% - 11px)}}
+.hic-bars{display:flex;gap:30px;align-items:flex-end;height:186px;padding:0 6px}
+.hic-bar{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;flex:1;height:100%}
+.hic-bar .col{width:66px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--signal),rgba(var(--signal-rgb),.72));transform-origin:bottom}
+.hic-bar .col.team{background:linear-gradient(180deg,var(--ink-soft),var(--line))}
+.hic-barsfig.hic-prep .col{transform:scaleY(0)}
+.hic-barsfig.hic-prep.hic-on .col{transform:scaleY(1);transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.hic-bar .lab{font:500 .78rem/1.3 var(--sans);color:var(--ink-soft);margin-top:12px;text-align:center;max-width:150px}
+.hic-bar .val{font-family:var(--serif);font-size:1.55rem;color:var(--signal);margin-bottom:8px}
+.hic-bar .val.mut{color:var(--ink-soft)}
+.hic-flow{display:flex;flex-direction:column;gap:20px}
+.hic-rowlab{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.hic-relay{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding-bottom:18px}
+.hic-node{border:1px solid var(--line);background:var(--tint);border-radius:8px;padding:6px 9px;font:600 .72rem/1 var(--sans);color:var(--ink-soft);white-space:nowrap}
+.hic-node.you{background:rgba(var(--signal-rgb),.1);border-color:rgba(var(--signal-rgb),.5);color:var(--ink)}
+.hic-arr{color:var(--line)}
+.hic-track{position:absolute;left:0;right:0;bottom:3px;height:2px;background:var(--line);border-radius:2px}
+.hic-hop{position:absolute;top:-5px;left:0;width:10px;height:10px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 4px rgba(var(--signal-rgb),.16)}
+.hic-anim .hic-hop.slow{animation:hicHop 5s steps(6) infinite}
+.hic-anim .hic-hop.fast{animation:hicHop 1.9s ease-in-out infinite}
+@keyframes hicHop{0%{left:0}72%{left:calc(100% - 10px)}100%{left:calc(100% - 10px)}}
+.hic-stackflow{display:grid;grid-template-columns:1fr auto 1.25fr auto 1fr;gap:10px;align-items:center}
+.hic-col{display:flex;flex-direction:column;gap:6px}
+.hic-pill{border:1px solid var(--line);background:var(--tint);border-radius:8px;padding:8px 9px;font:600 .74rem/1.15 var(--sans);color:var(--ink-soft);text-align:center}
+.hic-pill.you{background:rgba(var(--signal-rgb),.1);border-color:rgba(var(--signal-rgb),.5);color:var(--ink)}
+.hic-hub{border:1px solid rgba(var(--signal-rgb),.5);background:rgba(var(--signal-rgb),.07);border-radius:12px;padding:12px 10px;text-align:center}
+.hic-hub .h{font:700 .82rem/1.2 var(--sans);color:var(--ink);margin-bottom:8px}
+.hic-chip{display:inline-block;font-family:var(--mono);font-size:.6rem;letter-spacing:.03em;color:var(--signal);background:#fff;border:1px solid var(--line);border-radius:5px;padding:3px 6px;margin:2px}
+.hic-anim .hic-hub{animation:hicGlow 3.6s ease-in-out infinite}
+@keyframes hicGlow{0%,100%{box-shadow:0 0 0 rgba(var(--signal-rgb),0)}50%{box-shadow:0 0 22px rgba(var(--signal-rgb),.22)}}
+.hic-conn{color:var(--signal);font-family:var(--mono);text-align:center}
+.hic-anim .hic-conn{animation:hicFlow 2.2s ease-in-out infinite}
+@keyframes hicFlow{0%,100%{opacity:.35;transform:translateX(0)}50%{opacity:1;transform:translateX(3px)}}
+.hic-meme{border:1px dashed var(--line);border-radius:16px;background:var(--tint);padding:18px 20px;margin:32px 0;max-width:var(--measure)}
+.hic-meme .mt{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px}
+.hic-brainrow{display:flex;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--line)}
+.hic-brainrow:first-of-type{border-top:0}
+.hic-brain{width:34px;height:34px;border-radius:50%;flex:none;background:radial-gradient(circle at 50% 45%,rgba(var(--signal-rgb),.35),rgba(var(--signal-rgb),.05) 70%)}
+.hic-brainrow.b2 .hic-brain{background:radial-gradient(circle at 50% 45%,rgba(var(--signal-rgb),.5),rgba(var(--signal-rgb),.08) 70%)}
+.hic-brainrow.b3 .hic-brain{background:radial-gradient(circle at 50% 45%,rgba(var(--signal-rgb),.7),rgba(var(--signal-rgb),.12) 72%)}
+.hic-brainrow.b4 .hic-brain{background:radial-gradient(circle at 50% 42%,#fff,var(--signal) 58%,rgba(var(--signal-rgb),.2) 80%)}
+.hic-anim .hic-brain{animation:hicPulse 3s ease-in-out infinite}
+.hic-anim .hic-brainrow.b2 .hic-brain{animation-delay:.3s}
+.hic-anim .hic-brainrow.b3 .hic-brain{animation-delay:.6s}
+.hic-anim .hic-brainrow.b4 .hic-brain{animation-delay:.9s}
+@keyframes hicPulse{0%,100%{transform:scale(1);box-shadow:0 0 8px rgba(var(--signal-rgb),.15)}50%{transform:scale(1.14);box-shadow:0 0 20px rgba(var(--signal-rgb),.4)}}
+.hic-brainrow .txt{font:500 .95rem/1.4 var(--sans);color:var(--ink)}
+.hic-brainrow.b4 .txt{font-weight:700}
+.hic-two{display:flex;gap:14px;justify-content:center;position:relative;padding-bottom:14px}
+.hic-btn{flex:1;max-width:230px;border:2px solid var(--ink);border-radius:12px;background:#fff;padding:16px 12px;text-align:center;font:700 .92rem/1.2 var(--sans);color:var(--ink)}
+.hic-btn.b{border-color:var(--signal);color:var(--signal)}
+.hic-cursor{position:absolute;bottom:0;left:32%;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:13px solid var(--ink)}
+.hic-anim .hic-cursor{animation:hicSweat 3.6s ease-in-out infinite}
+@keyframes hicSweat{0%,100%{left:30%}50%{left:66%}}
+@media(max-width:600px){.hic-orgs,.hic-stackflow{grid-template-columns:1fr}.hic-mid{margin:4px 0}.hic-conn{display:none}.hic-bars{gap:18px}.hic-bar .col{width:52px}}
+@media(prefers-reduced-motion:reduce){.hic-barsfig.hic-prep .col{transform:scaleY(1)}}
+</style>
+<meta property="og:site_name" content="Nikhil Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="High-impact individual contributors: how AI is reshaping work &middot; Nikhil Jain">
+<meta property="og:description" content="The management ladder was the only way up. AI just built a second staircase, the High-impact IC. On the shift, the data under it, and the systems that make one person a department.">
+<meta property="og:url" content="https://nikhiljain726.github.io/posts/one-person-department.html">
+<meta property="og:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="High-impact individual contributors: how AI is reshaping work">
+<meta name="twitter:description" content="The management ladder was the only way up. AI built a second staircase, the High-impact IC.">
+<meta name="twitter:image" content="https://nikhiljain726.github.io/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nikhiljain726.github.io/posts/one-person-department.html">
+<meta name="author" content="Nikhil Jain">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#FBFAF6">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "High-impact individual contributors: how AI is reshaping work", "description": "The management ladder was the only way up. AI just built a second staircase, the High-impact IC. On the shift, the data under it, and the systems that make one person a department.", "url": "https://nikhiljain726.github.io/posts/one-person-department.html", "mainEntityOfPage": "https://nikhiljain726.github.io/posts/one-person-department.html", "image": "https://nikhiljain726.github.io/assets/og-image.png", "inLanguage": "en", "author": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}, "publisher": {"@type": "Person", "name": "Nikhil Jain", "url": "https://nikhiljain726.github.io/", "jobTitle": "Growth & GTM Engineering", "worksFor": {"@type": "Organization", "name": "Osmos.ai"}, "sameAs": ["https://www.linkedin.com/in/nikhiljain726/", "https://topmate.io/nikhiljain726", "https://github.com/nikhiljain726"]}}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Nikhil <span class="s">Jain</span></a>
+    <nav class="nav">
+      <span class="has-sub"><a href="../expertise.html">Expertise <span class="caret" aria-hidden="true">&#9662;</span></a><span class="subnav"><a href="../expertise.html">Overview</a><a href="../expertise-gtm.html">GTM &amp; growth for B2B</a><a href="../expertise-growth.html">Growth &amp; performance marketing</a></span></span>
+      <a href="../writing.html" class="active">Writing</a>
+      <a href="../skills.html">Skills</a>
+      <a href="../prompts.html">Prompts</a>
+      <a href="../library.html">Library</a>
+      <a href="../quotes.html">Quotes</a>
+      <a href="../about.html">About</a>
+      <a href="../now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="post">
+    <div class="wrap">
+      <a class="backlink" href="../writing.html">&larr; All writing</a>
+      <h1>High-impact individual contributors: how AI is reshaping work</h1>
+      <p class="dek">The management ladder was the only way up. AI just built a second staircase. On the HI-C, the data under it, and the systems that make one person a department.</p>
+      <div class="byline">Future of work &nbsp;&middot;&nbsp; Aug 2026 &nbsp;&middot;&nbsp; 8 min read</div>
+      <div class="post-body">
+
+        <p>Someone put a name to a thing I have been doing for a while. Elena Verna calls it the High-impact Individual Contributor, the HI-C: a senior person with no direct reports who takes a project from an idea to a number that actually moves, on their own. She shipped an enterprise pricing page in a few hours that used to need a PM, a designer, and engineers and a week of calendar time. <a href="https://www.forbes.com/sites/josipamajic/2026/05/18/ai-turns-solo-workers-into-departments-and-vcs-are-paying-attention/">Forbes picked it up</a> under a blunter headline, AI turns solo workers into departments, and the <a href="https://www.iftf.org/insights/army-of-one-the-rise-of-the-hi-c/">Institute for the Future</a> filed the same shift under army of one. Different words, one idea.</p>
+
+        <h2>The ladder we were sold</h2>
+        <p>For most of my career the deal was simple. Impact meant headcount. The way to matter more was to manage more people, and the org chart altitude was the score. Verna tells a story about a Netflix recruiter whose first question was how many reports she had, and when the answer was three, the call was basically over. Not output, not the problem solved, not the budget. Just how many people sat under you.</p>
+        <p>The quiet damage in that system is that it promotes people out of the thing they are good at. Someone with real craft gets pulled off the craft to coordinate other people doing it, and is then told that going back into the work is micromanaging. We take our best builders and hand them a calendar. That made sense when building was slow and someone had to sit in the middle to review, approve, and pass information up and down. It makes a lot less sense now.</p>
+
+        <figure class="hic-fig">
+          <div class="hic-title">The two staircases</div>
+          <div class="hic-orgs">
+            <div class="hic-stack">
+              <span class="hic-rail"></span><span class="hic-dot"></span>
+              <div class="hic-box">C-suite</div>
+              <div class="hic-box">VP</div>
+              <div class="hic-box">Director</div>
+              <div class="hic-box">Manager</div>
+              <div class="hic-box">You, the IC</div>
+            </div>
+            <div class="hic-mid">vs</div>
+            <div class="hic-single">
+              <div class="hic-box hi">You, the HI-C</div>
+              <div class="hic-line"><span class="track"></span><span class="zip"></span></div>
+              <div class="hic-box">Outcome: revenue up, cost down</div>
+            </div>
+          </div>
+          <div class="cap"><b>The old way:</b> impact meant climbing, and information rode all the way up the ladder and back down. <b>The HI-C:</b> one person owns the line from idea to outcome.</div>
+        </figure>
+
+        <div class="hic-meme">
+          <div class="mt">The 2026 enlightenment ladder</div>
+          <div class="hic-brainrow b1"><span class="hic-brain"></span><span class="txt">Climb to manager, to have impact through other people.</span></div>
+          <div class="hic-brainrow b2"><span class="hic-brain"></span><span class="txt">Climb to director, to have impact through other managers.</span></div>
+          <div class="hic-brainrow b3"><span class="hic-brain"></span><span class="txt">Climb to VP, so the org chart says you matter.</span></div>
+          <div class="hic-brainrow b4"><span class="hic-brain"></span><span class="txt">Stay an IC, wire up AI, and ship the whole thing yourself.</span></div>
+        </div>
+
+        <h2>Why this is not just a LinkedIn phase</h2>
+        <p>The easy move is to roll your eyes at another future-of-work label. But the numbers under this one are specific. In a 2026 METR survey, technical workers put the value AI added to their work at roughly double a year earlier. Research out of Stanford and Wharton found AI explains a large share of the variation in what one person produces, from a fifth to well over half, and almost none of the variation at the team level. Read that twice. AI makes an individual much better and a group only a little.</p>
+
+        <figure class="hic-fig hic-barsfig">
+          <div class="hic-title">AI amplifies the individual, barely the team</div>
+          <div class="hic-bars">
+            <div class="hic-bar"><span class="val">20-60%</span><span class="col" style="height:58%"></span><span class="lab">of an individual's output variance, explained by AI</span></div>
+            <div class="hic-bar"><span class="val mut">2-4%</span><span class="col team" style="height:7%"></span><span class="lab">extra variance once you move to the team level</span></div>
+          </div>
+          <div class="cap">Figures from Stanford and Wharton work on human-AI collaboration, via <a href="https://www.forbes.com/sites/josipamajic/2026/05/18/ai-turns-solo-workers-into-departments-and-vcs-are-paying-attention/">Forbes</a>. The gap is the whole argument: put the leverage on a person, not a layer.</div>
+        </figure>
+
+        <p>At the same time Gallup has manager engagement falling, to the point that the people doing the work are now often more engaged than the people coordinating it. The org chart we inherited was built for a world where building was slow, so we paid layers of people to review, approve, and carry information around. When trying something is cheaper than the meeting to debate it, those layers stop being safety and start being drag.</p>
+
+        <blockquote>AI does not make the group smarter. It makes the individual fast enough that the coordination layer becomes the bottleneck.</blockquote>
+
+        <h2>Escaping the coordination loop</h2>
+        <p>Here is the shape of the old system. An idea starts with an IC, travels up to a manager, then a director, then a VP for a decision, then back down again before anything gets built. Every hop is a wait. As a company grows, the rows stack until a lot of the org is coordinating other people's coordination. When you can build and test a thing in an afternoon, most of that relay is pure latency. The cost of a wrong guess dropped, so the case for a chain of people whose job is to de-risk the guess dropped with it.</p>
+
+        <figure class="hic-fig">
+          <div class="hic-title">Build slow, and everything routes up and back</div>
+          <div class="hic-flow">
+            <div>
+              <div class="hic-rowlab">The old loop</div>
+              <div class="hic-relay">
+                <span class="hic-node">IC</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">Manager</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">Director</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">VP</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">Director</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">Manager</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node">IC builds</span>
+                <span class="hic-track"><span class="hic-hop slow"></span></span>
+              </div>
+            </div>
+            <div>
+              <div class="hic-rowlab">The HI-C loop</div>
+              <div class="hic-relay">
+                <span class="hic-node you">You + AI</span><span class="hic-arr">&rarr;</span>
+                <span class="hic-node you">Shipped and measured</span>
+                <span class="hic-track"><span class="hic-hop fast"></span></span>
+              </div>
+            </div>
+          </div>
+          <div class="cap">Same work, two path lengths. The dot on top stops at every gate. The one below just goes.</div>
+        </figure>
+
+        <h2>Average is the unlock, not genius</h2>
+        <p>The thing that makes this work now is not that AI is brilliant. Verna borrows a phrase from Ravi Mehta and calls it average intelligence, and that is exactly right. AI is automatically competent, at a median professional level, across design, copy, code, and analysis. Not great, not differentiated, just reliably average. That sounds like faint praise until you notice what it does for a senior person. If you are already good at one craft, average-but-instant help on the four functions next to it is enough to get a real thing into the world without staffing a team first. You build, you pressure-test, you validate, and only then do you pull in a true expert once there is momentum worth the pull.</p>
+
+        <h2>I have been living the small version of this</h2>
+        <p>My whole pitch, GTM engineering, is the HI-C idea aimed at go-to-market. I do not run a RevOps team, an SDR pod, and a data desk. I build the systems that do their repeatable parts, then I run the loop end to end. The open-source CRM server I shipped gives any AI client full read and write access to the pipeline. A next-best-step agent reads each deal and writes the action, with a reason, straight into the CRM as a task. Another watches resolved website visits and routes the warm ones to a rep the same day. Company research runs to a fixed schema with a source on every field. None of that is a team. It is one operator plus tooling doing work that used to take five.</p>
+
+        <figure class="hic-fig">
+          <div class="hic-title">One operator, a department's worth of output</div>
+          <div class="hic-stackflow">
+            <div class="hic-col">
+              <div class="hic-pill">LinkedIn signals</div>
+              <div class="hic-pill">The CRM</div>
+              <div class="hic-pill">Market and competitors</div>
+            </div>
+            <div class="hic-conn">&rarr;</div>
+            <div class="hic-hub">
+              <div class="h">One operator + systems</div>
+              <span class="hic-chip">CRM MCP</span><span class="hic-chip">NBS agent</span><span class="hic-chip">Visitor to intent</span><span class="hic-chip">Research at scale</span>
+            </div>
+            <div class="hic-conn">&rarr;</div>
+            <div class="hic-col">
+              <div class="hic-pill you">Action in the CRM, same day</div>
+            </div>
+          </div>
+          <div class="cap">My version of the HI-C. The signals reach one person who can act, because the repeatable parts run as systems, not as a team to coordinate.</div>
+        </figure>
+
+        <p>My line for it has not changed: GTM engineering is mostly refusing to do by hand what a system can do reliably. Which is why, when the choice shows up, it is not really a choice.</p>
+
+        <div class="hic-meme">
+          <div class="mt">GTM engineering, every single time</div>
+          <div class="hic-two">
+            <div class="hic-btn">Hire another headcount</div>
+            <div class="hic-btn b">Build a system that does it</div>
+            <span class="hic-cursor"></span>
+          </div>
+          <div class="cap" style="text-align:center">One of these has a monthly invoice. The other compounds.</div>
+        </div>
+
+        <h2>The part the headlines skip</h2>
+        <p>What people are actually arguing about is worth repeating honestly, because it is not all upside. On one side, a lot of operators are relieved. The management track was the only way up, and plenty of good builders took it and lost the craft that got them there. Verna's own readers say the quiet part out loud, that the VP title has stopped being the flex. On the other side, two real objections keep coming up. The first is human. You can automate the org chart down to one person, but you cannot automate that person's need for a second opinion, a sounding board, and someone to catch the thing they cannot see. Going solo carries a cost that never shows up in a productivity chart. The second is structural. This is thriving at small, AI-native companies precisely because the bureaucracy has not grown yet. Drop the same model into a large enterprise with compliance, hand-offs, and genuine cross-team coordination, and it strains. Even Forbes, making the bullish case, lands on that caveat.</p>
+
+        <h2>What actually unlocks it: information access</h2>
+        <p>Strip it down and the lever is not the model. Average intelligence is enough to staff the functions next to your craft. The real unlock is information access. A senior IC working with a junior's context cannot operate at a director's scope, no matter how sharp the tooling is. The companies where this works trust their people with the whole picture. The ones where it stalls have a middle layer whose value is controlling what everyone else is allowed to see, and that control is exactly what a HI-C role removes. It is the same thing I hit on the GTM side. The system only works when the signals, from the CRM, from LinkedIn, from the market, reach the person who can act, without a week of relay in between. Verna's tell for whether your org can handle this is a good one: hand a high-potential junior a full-stack project and watch where they get stuck. Wherever they hit a wall of context they are not allowed to have, that is your bottleneck.</p>
+        <p>The other half is comp. IC used to mean less money by definition, so nobody chose it. Break that link, pay for the outcome instead of the headcount, and suddenly recruiting a former VP into an IC seat is a real strategy rather than a demotion. When one person can carry department-level impact, the budget should follow the impact, which means it flows to the people doing the work.</p>
+
+        <p>So I am not treating the HI-C as a prediction. It is a fair description of the job I already do, and a bet I have been making with my own time. Get very good at one craft, wire up the average-but-good-enough functions around it, and own the outcome instead of the headcount. The title was never the point. The number that moves is.</p>
+      </div>
+
+      <div class="post-foot">
+        Sources and further reading: Elena Verna, <a href="https://www.elenaverna.com/p/ic-work-is-the-new-career-flex">IC work is the new career flex</a>; Forbes, <a href="https://www.forbes.com/sites/josipamajic/2026/05/18/ai-turns-solo-workers-into-departments-and-vcs-are-paying-attention/">AI turns solo workers into departments</a>; Institute for the Future, <a href="https://www.iftf.org/insights/army-of-one-the-rise-of-the-hi-c/">Army of one</a>. &nbsp; <a href="../writing.html">More writing &rarr;</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <span class="name">&copy; 2026 Nikhil Jain</span>
+      <span class="links">
+        <a href="https://www.linkedin.com/in/nikhiljain726/">LinkedIn</a>
+        <a href="https://topmate.io/nikhiljain726">Topmate</a>
+      </span>
+    </div>
+    <p class="colophon">
+      <span class="why">Why this site exists</span>
+      A place to document what I am learning as I build, in public. If a note here saves you an afternoon, or gives you something to push back on, it did its job.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!rm){
+    document.querySelectorAll('.hic-fig,.hic-meme').forEach(function(f){ f.classList.add('hic-anim'); });
+    document.querySelectorAll('.hic-barsfig').forEach(function(b){ b.classList.add('hic-prep'); });
+  }
+  var bars = document.querySelectorAll('.hic-barsfig');
+  if('IntersectionObserver' in window && !rm){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('hic-on'); io.unobserve(e.target); } }); }, {threshold:.35});
+    bars.forEach(function(b){ io.observe(b); });
+  } else {
+    bars.forEach(function(b){ b.classList.add('hic-on'); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -445,3 +445,11 @@ a.lm-item:hover{border-color:var(--signal);color:var(--signal)}
 .nav .subnav a{display:block;padding:9px 12px;border-radius:8px;text-transform:none;letter-spacing:0;font-size:.9rem;white-space:nowrap;color:var(--ink-soft)}
 .nav .subnav a:hover{background:var(--tint);color:var(--signal)}
 @media(max-width:640px){.nav .subnav{position:static;display:flex;box-shadow:none;border:none;padding:2px 0 4px 12px;min-width:0}.nav .has-sub{display:block;padding-bottom:0;margin-bottom:0}.nav .has-sub>a .caret{display:none}}
+
+/* homepage featured essay band */
+.feature{display:block;border:1px solid var(--line);border-radius:16px;background:var(--tint);padding:26px 28px;text-decoration:none;color:inherit;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;max-width:760px}
+.feature:hover{border-color:rgba(var(--signal-rgb),.5);transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,16,12,.07)}
+.feature .feature-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--signal);margin-bottom:8px}
+.feature .feature-h{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.9rem);font-weight:600;letter-spacing:-.01em;line-height:1.15;margin:0 0 .4em;color:var(--ink)}
+.feature .feature-d{color:var(--ink-soft);font-size:1rem;line-height:1.6;margin:0 0 14px;max-width:60ch}
+.feature .feature-cta{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal)}
