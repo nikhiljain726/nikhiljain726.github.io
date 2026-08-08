@@ -95,9 +95,28 @@
 
         <p>The field list itself had bloated. There were around 100 custom fields across deals, organizations, and people, plenty of them duplicates or dead weight nobody filled in. I cut it to about 75 and added the ones that actually drive work now: ads program research, ICP and persona, and account intelligence. Every field in the deal view got a description, so a rep knows what it means without asking, and the definitions live in one glossary instead of in a few people's heads. I also backed up every field before removing anything, so if a deletion broke someone's workflow, putting it back was one message, not a crisis.</p>
 
+        <figure class="fx">
+          <div class="fx-t">custom fields, before and after</div>
+          <div class="fx-bars">
+            <div class="fx-bar"><span class="v mut">~100</span><span class="c mut" style="height:100%"></span><span class="l">bloated, many dead</span></div>
+            <div class="fx-bar"><span class="v">~75</span><span class="c" style="height:75%"></span><span class="l">kept, each defined</span></div>
+          </div>
+          <div class="fx-cap">cut the dead weight, then added the fields that actually drive work.</div>
+        </figure>
+
         <p>The second pass was people. Field cleanup surfaces disagreements, so I spent real time with sales. Which accounts were live, which two "companies" were the same one under different spellings, who owned what. A cleanup done without the reps is one they quietly work around. Done with them, it becomes the version of the CRM they actually use.</p>
 
         <p>The third pass was records. With clean fields and sales aligned, I ran the merges and deletes across duplicate people and organizations, rotten and stale records, junk and test entries, and deals attached to the wrong account. Roughly <span class="countup" data-to="10000">10,000</span> records got merged or removed, about one in every eleven, and every one went through the dry run and into the log.</p>
+
+        <figure class="fx">
+          <div class="fx-t">three passes, in order</div>
+          <div class="fx-steps">
+            <div class="st"><span class="n" style="--d:0s">1</span><span class="sx">fields: standardize, cut ~100 down to ~75</span></div>
+            <div class="st"><span class="n" style="--d:.5s">2</span><span class="sx">people: align with sales on who is real</span></div>
+            <div class="st"><span class="n" style="--d:1s">3</span><span class="sx">records: merge and delete, about 10,000 gone</span></div>
+          </div>
+          <div class="fx-cap">clean fields first, then people, then records.</div>
+        </figure>
 
         <h2>The mistake I made, so you do not have to</h2>
         <p>Early on, one of my own enrichment runs created a fresh duplicate instead of updating the record I meant to touch. The import did not carry the id of the person it belonged to, so Pipedrive made a new one. I was quietly adding to the pile I had just cleared.</p>

@@ -57,6 +57,11 @@
         <p>For a CRM, that way is an MCP server. It exposes the CRM to any AI client as a set of tools it can call: read a deal, score a contact, merge duplicates, write one field across a hundred records.</p>
         <blockquote>In the age of AI, the CRM is not the product. Access to it is.</blockquote>
         <p>The connectors that ship by default tend to be read-only and thin. They let an agent look, not act. The real work lives in the writes and the cleanup, and those need guardrails: a dry run before anything destructive, and a log of every change so you can see and undo what happened.</p>
+        <figure class="fx">
+          <div class="fx-t">connector vs mcp server</div>
+          <div class="fx-vs"><div class="card"><div class="k">read-only connector</div><div>look, not act, suggest and wait for a human to click</div></div><div class="mid">vs</div><div class="card win"><div class="k">mcp server, 36 tools</div><div>read a deal, score a contact, merge duplicates, write one field across a hundred records</div></div></div>
+          <div class="fx-cap">the difference between an agent that looks and one that runs your pipeline.</div>
+        </figure>
         <p>So I built my own for Pipedrive, with 36 tools and those guardrails baked in. Not because building it was fun, though it was, but because without it the agent is a very smart intern who is not allowed to use the keyboard. I wrote up how it works in <a href="crm-cleanup.html">the CRM cleanup</a>, and the code is <a href="https://github.com/nikhiljain726/pipedrive-mcp">open on GitHub</a>.</p>
       </div>
       <div class="post-foot">

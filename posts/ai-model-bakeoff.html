@@ -90,6 +90,14 @@
           </tbody>
         </table>
         <p>The 27-versus-3 line settled the recall question. Core called a real program "None" 27 times where Opus found one; the reverse happened 3 times. Nine to one. I spot-checked the 27, and on the ones I verified Core was wrong: Reliance's JioAds commerce network, Nykaa's beauty ads network, and the iHerb case, among others. Core also produced nearly three times the "None" rate, most of it false.</p>
+        <figure class="fx">
+          <div class="fx-t">finds a program the other run missed</div>
+          <div class="fx-bars">
+            <div class="fx-bar"><span class="v">27 rows</span><span class="c" style="height:100%"></span><span class="l">opus 4.8</span></div>
+            <div class="fx-bar"><span class="v mut">3 rows</span><span class="c mut" style="height:11%"></span><span class="l">parallel web core</span></div>
+          </div>
+          <div class="fx-cap">opus caught a live program where core said "none" 27 times, the reverse only 3.</div>
+        </figure>
         <p>But here is the problem that changed the whole plan. No single run was both complete and clean. The runs had been done at different times on different subsets: Core covered all 788, one Opus run covered 544, another 256, the GPT run only the 25-company sample. And where they overlapped, they disagreed on about one company in five. I did not have a winner I could run on everything and trust. I had four partial, disagreeing runs.</p>
 
         <h2>Consolidating four runs into one view</h2>
@@ -97,6 +105,11 @@
         <p>The selection rule I settled on: for each company, score every run's answer by evidence strength. A named program or a specific, sourced signal beats a bare "None." A row with a program name, a substantive evidence summary, and named vendors outranks a row that just says "None" with nothing behind it. Take the winning run's status, name, channels, confidence, and summary. Then, separately, union the vendor stack across every run that agreed the company had a program, so the final record carries the fullest supplier list anyone found.</p>
         <p>A worked example. On one crypto exchange, Core said "None" (it "uses Google and Facebook to advertise its own services," which is correct, but that is buying ads, not selling them). One Opus run said "Building" with a specific signal: public discussion of monetising app real estate through sponsored placements, plus hiring and press pointing at an ads offering. For a seller, the Building answer is far more useful. It is a live reason to make contact, and it is evidenced. The bare "None" kills the account silently. The rule takes the evidenced Building.</p>
         <p>The mirror case keeps it honest. Where every run agreed "None" with no signal, the row stays "None." The rule rewards evidence, not optimism.</p>
+        <figure class="fx">
+          <div class="fx-t">what the merge rule prefers</div>
+          <div class="fx-vs"><div class="card"><div class="k">a bare "none"</div><div>looks finished, kills the account silently, nothing behind it</div></div><div class="mid">vs</div><div class="card win"><div class="k">an evidenced "building"</div><div>a sourced signal and a live reason to reach out</div></div></div>
+          <div class="fx-cap">the rule takes the evidenced answer, not the tidy blank.</div>
+        </figure>
 
         <h2>Auditing my own merge, and the bug I found</h2>
         <p>Here is the part I almost shipped. My first merge unioned vendors from every run, and I checked it before trusting it. Good thing.</p>

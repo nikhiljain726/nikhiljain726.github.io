@@ -138,6 +138,7 @@ env = { PIPEDRIVE_API_TOKEN = "your-token", PIPEDRIVE_DOMAIN = "yourcompany" }</
 
         <h2>What most connectors give you, and what this one does</h2>
         <p>Most general MCP connectors for a CRM expose a handful of read-only tools. You can look, not act. That is fine for answering a question and useless for running a pipeline. This server has 53 tools, and most of them write: create, update, merge, dedupe, bulk-edit, reassign, link email, tag products, manage custom fields, and read back an audit log of everything it changed. The whole point was to close the gap between a chat window and the work.</p>
+        <figure class="fx"><div class="fx-t">Closing the gap</div><div class="fx-flowrow"><div class="fx-stage"><div class="fx-band">You</div><div class="fx-node">A chat window</div></div><div class="fx-conn"></div><div class="fx-stage"><div class="fx-band">Server</div><div class="fx-core">53 tools, most of them write</div></div><div class="fx-conn"></div><div class="fx-stage"><div class="fx-band">Result</div><div class="fx-node hi">A live sales pipeline</div></div></div><div class="fx-cap">Create, update, merge, dedupe, and reassign from the chat, with dry-run previews and an audit log.</div></figure>
 
         <h2>The 53 tools, one by one</h2>
         <p>Every tool wraps one job the Pipedrive API can do. Reads are safe. The writes and merges are the ones with dry-run previews and an audit trail.</p>
