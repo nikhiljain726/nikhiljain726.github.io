@@ -537,3 +537,34 @@ a.lm-item:hover{border-color:var(--signal);color:var(--signal)}
 .fx-vs .mid{font-family:var(--serif);font-style:italic;color:var(--ink-soft);text-align:center}
 @media(max-width:600px){.fx-flowrow{flex-direction:column;align-items:stretch}.fx-conn{display:none}.fx-stage{min-width:0}.fx-vs{grid-template-columns:1fr}.fx-vs .mid{margin:2px 0}}
 @media(prefers-reduced-motion:reduce){.fx *{animation:none!important}.fx-bar .c{transform:scaleY(1)}.fx-meter .fill{transform:scaleX(1)}}
+
+/* advanced how-I-work system diagram */
+.sysx-wrap{margin-top:24px;max-width:920px}
+.sysx{width:100%;height:auto;display:block}
+.sysx text{font-family:var(--sans)}
+.sysx .band{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;fill:var(--ink-soft)}
+.sysx .nlabel{font-size:13px;font-weight:600;fill:var(--ink-soft)}
+.sysx .nlabel.hi{fill:var(--ink)}
+.sysx .sub{font-size:10.5px;fill:var(--ink-soft)}
+.sysx .hubtitle{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;fill:var(--signal)}
+.sysx .stglabel{font-size:12px;font-weight:600;fill:var(--ink-soft)}
+.sysx .flabel{font-family:var(--mono);font-size:10px;letter-spacing:1px;fill:var(--ink-soft)}
+.sysx .nodebox{fill:var(--tint);stroke:var(--line);stroke-width:1.2}
+.sysx .nodebox.act{fill:rgba(var(--signal-rgb),.07);stroke:rgba(var(--signal-rgb),.4)}
+.sysx .hub{fill:#fff;stroke:rgba(var(--signal-rgb),.5);stroke-width:1.4}
+.sysx .stg{fill:var(--tint);stroke:var(--line);stroke-width:1}
+.sysx .wire{fill:none;stroke:var(--line);stroke-width:2}
+.sysx .feed{fill:none;stroke:rgba(var(--signal-rgb),.45);stroke-width:1.5;stroke-dasharray:5 6}
+.sysx .ring{transform-box:fill-box;transform-origin:center;animation:sysxSpin 14s linear infinite}
+.sysx .ring2{transform-box:fill-box;transform-origin:center;animation:sysxSpin 9s linear infinite reverse}
+.sysx .hubaura{animation:sysxAura 3s ease-in-out infinite}
+.sysx .stg{animation:sysxStage 4s ease-in-out infinite}
+.sysx .nodebox.act{animation:sysxAct 4s ease-in-out infinite}
+.sysx .feed{animation:sysxDash 1s linear infinite}
+@keyframes sysxSpin{to{transform:rotate(360deg)}}
+@keyframes sysxAura{0%,100%{opacity:.28}50%{opacity:.85}}
+@keyframes sysxStage{0%,100%{fill:var(--tint);stroke:var(--line)}12%{fill:rgba(var(--signal-rgb),.2);stroke:rgba(var(--signal-rgb),.65)}28%{fill:var(--tint);stroke:var(--line)}}
+@keyframes sysxAct{0%,100%{stroke:rgba(var(--signal-rgb),.38)}18%{stroke:rgba(var(--signal-rgb),.95)}38%{stroke:rgba(var(--signal-rgb),.38)}}
+@keyframes sysxDash{to{stroke-dashoffset:-22}}
+@media(max-width:600px){.sysx-wrap{overflow-x:auto}.sysx{min-width:560px}}
+@media(prefers-reduced-motion:reduce){.sysx .particles{display:none}.sysx .ring,.sysx .ring2,.sysx .hubaura,.sysx .stg,.sysx .nodebox.act,.sysx .feed{animation:none}}
