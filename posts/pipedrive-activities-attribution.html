@@ -34,6 +34,9 @@
   .mt .when{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
   .mt .type{display:inline-block;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal);background:rgba(var(--signal-rgb),.09);border:1px solid rgba(var(--signal-rgb),.3);border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:middle}
   .mt .what{font-size:.98rem;color:var(--ink);margin-top:3px;line-height:1.5}
+  .tldr{border:1px solid var(--line);background:var(--tint);border-radius:12px;padding:16px 18px;margin:0 0 24px;max-width:var(--measure)}
+  .tldr .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:6px}
+  .tldr p{margin:0;font-size:1rem;line-height:1.62;color:var(--ink)}
   @media(prefers-reduced-motion:reduce){.arch .marker-anim{display:none}.mt .line{animation:none;transform:scaleY(1)}.mt .row .d{animation:none}}
 </style>
 <meta property="og:site_name" content="Nikhil Jain">
@@ -79,6 +82,8 @@
       <p class="dek">Custom fields overwrite the last touch and keep no timeline. Activities are timestamped, ownered, and unlimited. Here is how I turn every interaction into one.</p>
       <div class="byline">GTM &amp; growth engineering &nbsp;&middot;&nbsp; Aug 2026 &nbsp;&middot;&nbsp; 6 min read</div>
       <div class="post-body">
+
+        <div class="tldr"><div class="k">TL;DR</div><p>A source custom field in Pipedrive holds one value, so the last automation to write wins and the earlier touch is lost. Fields keep no timeline; activities do. Activities are timestamped, ownered, linked to a person, organization, or deal, and unlimited on paid plans. So I log every meaningful interaction as an activity, with a custom activity type per touch, and the record grows a readable multitouch history. Keep a single source field for headline reporting, let the activity stream carry the journey, and automate the logging so it actually happens.</p></div>
 
         <p>Here is a story that plays out in every CRM I have touched. Marketing runs the website, the landing pages, the lead forms, and a steady outbound motion. A deal comes in, lands in Pipedrive tagged with a source, say Inbound, and gets assigned to a seller. The seller opens it and says: wait, I know this company. I met them at an event last month, and I logged it back then. Now the record has two truths, the inbound touch and the event touch, and one field to hold them. Whatever wrote last wins. The earlier touch is simply gone.</p>
 
@@ -160,6 +165,9 @@
           <div class="row" style="--d:1.5s"><span class="d"></span><span class="when">Jul 28</span><span class="type">Event meeting</span><div class="what">Met by A. Rivera at the RevOps Summit, tagged to the deal.</div></div>
           <div class="row" style="--d:1.8s"><span class="d"></span><span class="when">Aug 01</span><span class="type">Meeting</span><div class="what">Discovery call booked with the account owner.</div></div>
         </div>
+
+        <h2>The honest caveats</h2>
+        <p>This approach has a cost, so a few caveats before you copy it. Activities are only as good as what writes them, which means the logging has to be automated. Lean on reps to remember and the timeline fills with holes. Be selective too. Auto-logging every page view buries the touches that matter, so I keep custom types and record the meaningful interactions rather than the noise. And reporting on activities is harder than reporting on one field, because Pipedrive dashboards lean on fields. The way I square that is to keep both. The stream holds the full history, and a small automation writes the first touch and the last touch back into two plain fields, so the pipeline reports stay simple while the journey stays intact.</p>
 
         <h2>The impact</h2>
         <p>Now the attribution is not a guess. You can read the order of touches straight off the record: the blog post pulled them in, the playbook download warmed them, the seller closed the loop at an event. Marketing and sales both get credit for the touch they actually contributed, because both touches are still there. Nothing gets overwritten, so you also get an audit trail for free, which matters the day someone asks why a deal is sourced the way it is. And it costs nothing extra: activities do not count against a field limit or a plan tier. First touch, last touch, and everything in between, on any version of Pipedrive.</p>
