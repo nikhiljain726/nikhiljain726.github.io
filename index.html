@@ -129,59 +129,80 @@
     <div class="wrap">
       <div class="eyebrow" style="margin-bottom:6px">How I work</div>
       <p class="lead muted measure" style="margin-top:0">Most of what I do is one shape: take the signals that are already lying around, turn them into something a person can act on the same day, and wire it so it keeps running.</p>
-      <div class="sysx-wrap">
-      <svg class="sysx sysx-anim" viewBox="0 0 920 430" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="How I work: signals flow through a system into same-day actions, and the loop compounds.">
+            <div class="sysx-wrap">
+      <svg class="sysx sysx-anim" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Dozens of signals flow through one system into dozens of same-day actions, and the loop compounds.">
         <defs>
-          <radialGradient id="sysxaura" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgb(225,67,42)" stop-opacity="0.22"/>
-            <stop offset="70%" stop-color="rgb(225,67,42)" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="sysxglow" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="rgb(225,67,42)" flood-opacity="0.65"/></filter>
+          <radialGradient id="sysxaura" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgb(225,67,42)" stop-opacity="0.22"/><stop offset="70%" stop-color="rgb(225,67,42)" stop-opacity="0"/></radialGradient>
+          <filter id="sysxglow" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="rgb(225,67,42)" flood-opacity="0.65"/></filter>
           <filter id="sysxshadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="9" flood-color="rgb(20,16,12)" flood-opacity="0.08"/></filter>
         </defs>
-        <path id="pf" class="feed" d="M797 350 C 700 408 250 408 143 350"/>
-        <text class="flabel" x="470" y="404" text-anchor="middle">same signals, sharper every pass</text>
-        <path id="p1" class="wire" d="M250 98 C 312 98 318 160 362 160"/>
-        <path id="p2" class="wire" d="M250 208 C 312 208 320 220 362 220"/>
-        <path id="p3" class="wire" d="M250 318 C 312 318 318 280 362 280"/>
-        <path id="p4" class="wire" d="M578 160 C 636 160 628 98 690 98"/>
-        <path id="p5" class="wire" d="M578 220 C 636 220 636 208 690 208"/>
-        <path id="p6" class="wire" d="M578 280 C 636 280 628 318 690 318"/>
-        <ellipse class="hubaura" cx="470" cy="220" rx="128" ry="128" fill="url(#sysxaura)"/>
-        <circle class="ring" cx="470" cy="220" r="150" fill="none" stroke="rgba(225,67,42,0.22)" stroke-width="1.4" stroke-dasharray="3 13"/>
-        <circle class="ring2" cx="470" cy="220" r="126" fill="none" stroke="rgba(225,67,42,0.16)" stroke-width="1" stroke-dasharray="2 10"/>
-        <text class="band" x="20" y="54">SIGNALS</text>
-        <rect class="nodebox" x="18" y="72" width="232" height="52" rx="12"/><text class="nlabel" x="36" y="103">LinkedIn engagement</text>
-        <rect class="nodebox" x="18" y="182" width="232" height="52" rx="12"/><text class="nlabel" x="36" y="213">The CRM</text>
-        <rect class="nodebox" x="18" y="292" width="232" height="52" rx="12"/><text class="nlabel" x="36" y="323">Competitive intel</text>
-        <rect class="hub" x="362" y="112" width="216" height="216" rx="22" filter="url(#sysxshadow)"/>
-        <text class="hubtitle" x="470" y="138" text-anchor="middle">THE SYSTEM</text>
-        <rect class="stg" x="392" y="150" width="156" height="26" rx="7" style="animation-delay:0s"/><text class="stglabel" x="470" y="167" text-anchor="middle">Enrich</text>
-        <rect class="stg" x="392" y="184" width="156" height="26" rx="7" style="animation-delay:.9s"/><text class="stglabel" x="470" y="201" text-anchor="middle">Score</text>
-        <rect class="stg" x="392" y="218" width="156" height="26" rx="7" style="animation-delay:1.8s"/><text class="stglabel" x="470" y="235" text-anchor="middle">Dedupe</text>
-        <rect class="stg" x="392" y="252" width="156" height="26" rx="7" style="animation-delay:2.7s"/><text class="stglabel" x="470" y="269" text-anchor="middle">Route</text>
-        <text class="band" x="690" y="54">ACTIONS &middot; SAME DAY</text>
-        <rect class="nodebox act" x="690" y="72" width="214" height="52" rx="12" style="animation-delay:0s"/><text class="nlabel hi" x="708" y="103">A ranked list, today</text>
-        <rect class="nodebox act" x="690" y="182" width="214" height="52" rx="12" style="animation-delay:1.3s"/><text class="nlabel hi" x="708" y="213">Next best action, into the CRM</text>
-        <rect class="nodebox act" x="690" y="292" width="214" height="52" rx="12" style="animation-delay:2.6s"/><text class="nlabel hi" x="708" y="323">Outreach that lands</text>
+        <path id="pf" class="feed" d="M840 470 C 720 524 240 524 120 470"/>
+        <text class="flabel" x="480" y="512" text-anchor="middle">same signals, sharper every pass</text>
+        <path id="s0" class="wthin" d="M228 87 C 320 87 336 255 384 255"/>
+        <path id="s1" class="wthin" d="M228 129 C 320 129 336 255 384 255"/>
+        <path id="s2" class="wthin" d="M228 171 C 320 171 336 255 384 255"/>
+        <path id="s3" class="wthin" d="M228 213 C 320 213 336 255 384 255"/>
+        <path id="s4" class="wthin" d="M228 255 C 320 255 336 255 384 255"/>
+        <path id="s5" class="wthin" d="M228 297 C 320 297 336 255 384 255"/>
+        <path id="s6" class="wthin" d="M228 339 C 320 339 336 255 384 255"/>
+        <path id="s7" class="wthin" d="M228 381 C 320 381 336 255 384 255"/>
+        <path id="a0" class="wthin" d="M576 255 C 634 255 648 87 732 87"/>
+        <path id="a1" class="wthin" d="M576 255 C 634 255 648 129 732 129"/>
+        <path id="a2" class="wthin" d="M576 255 C 634 255 648 171 732 171"/>
+        <path id="a3" class="wthin" d="M576 255 C 634 255 648 213 732 213"/>
+        <path id="a4" class="wthin" d="M576 255 C 634 255 648 255 732 255"/>
+        <path id="a5" class="wthin" d="M576 255 C 634 255 648 297 732 297"/>
+        <path id="a6" class="wthin" d="M576 255 C 634 255 648 339 732 339"/>
+        <path id="a7" class="wthin" d="M576 255 C 634 255 648 381 732 381"/>
+        <ellipse class="hubaura" cx="480" cy="255" rx="122" ry="122" fill="url(#sysxaura)"/>
+        <circle class="ring" cx="480" cy="255" r="146" fill="none" stroke="rgba(225,67,42,0.22)" stroke-width="1.4" stroke-dasharray="3 13"/>
+        <circle class="ring2" cx="480" cy="255" r="120" fill="none" stroke="rgba(225,67,42,0.16)" stroke-width="1" stroke-dasharray="2 10"/>
+        <text class="band" x="18" y="54">SIGNALS</text>
+        <rect class="nodebox" x="16" y="70" width="212" height="34" rx="9"/><text class="clabel" x="32" y="92">LinkedIn engagement</text>
+        <rect class="nodebox" x="16" y="112" width="212" height="34" rx="9"/><text class="clabel" x="32" y="134">The CRM</text>
+        <rect class="nodebox" x="16" y="154" width="212" height="34" rx="9"/><text class="clabel" x="32" y="176">Competitive intel</text>
+        <rect class="nodebox" x="16" y="196" width="212" height="34" rx="9"/><text class="clabel" x="32" y="218">Website visits</text>
+        <rect class="nodebox" x="16" y="238" width="212" height="34" rx="9"/><text class="clabel" x="32" y="260">Job postings</text>
+        <rect class="nodebox" x="16" y="280" width="212" height="34" rx="9"/><text class="clabel" x="32" y="302">Funding & news</text>
+        <rect class="nodebox" x="16" y="322" width="212" height="34" rx="9"/><text class="clabel" x="32" y="344">Tech-stack shifts</text>
+        <rect class="nodebox" x="16" y="364" width="212" height="34" rx="9"/><text class="clabel" x="32" y="386">Champion job moves</text>
+        <rect class="morechip" x="16" y="406" width="212" height="34" rx="9"/><text class="moretext" x="32" y="428">+ dozens more</text>
+        <rect class="hub" x="384" y="155" width="192" height="200" rx="22" filter="url(#sysxshadow)"/>
+        <text class="hubtitle" x="480" y="182" text-anchor="middle">THE SYSTEM</text>
+        <rect class="stg" x="404" y="196" width="152" height="24" rx="7" style="animation-delay:0s"/><text class="stglabel" x="480" y="212" text-anchor="middle">Enrich</text>
+        <rect class="stg" x="404" y="228" width="152" height="24" rx="7" style="animation-delay:.9s"/><text class="stglabel" x="480" y="244" text-anchor="middle">Score</text>
+        <rect class="stg" x="404" y="260" width="152" height="24" rx="7" style="animation-delay:1.8s"/><text class="stglabel" x="480" y="276" text-anchor="middle">Dedupe</text>
+        <rect class="stg" x="404" y="292" width="152" height="24" rx="7" style="animation-delay:2.7s"/><text class="stglabel" x="480" y="308" text-anchor="middle">Route</text>
+        <text class="flabel" x="480" y="336" text-anchor="middle">one operator</text>
+        <text class="band" x="732" y="54">ACTIONS &middot; SAME DAY</text>
+        <rect class="nodebox act" x="732" y="70" width="212" height="34" rx="9" style="animation-delay:0.0s"/><text class="clabel hi" x="748" y="92">Ranked account list</text>
+        <rect class="nodebox act" x="732" y="112" width="212" height="34" rx="9" style="animation-delay:0.4s"/><text class="clabel hi" x="748" y="134">Next best action, in CRM</text>
+        <rect class="nodebox act" x="732" y="154" width="212" height="34" rx="9" style="animation-delay:0.8s"/><text class="clabel hi" x="748" y="176">Outreach that lands</text>
+        <rect class="nodebox act" x="732" y="196" width="212" height="34" rx="9" style="animation-delay:1.2s"/><text class="clabel hi" x="748" y="218">Auto-enriched record</text>
+        <rect class="nodebox act" x="732" y="238" width="212" height="34" rx="9" style="animation-delay:1.6s"/><text class="clabel hi" x="748" y="260">Rep task, assigned</text>
+        <rect class="nodebox act" x="732" y="280" width="212" height="34" rx="9" style="animation-delay:2.0s"/><text class="clabel hi" x="748" y="302">Slack alert to the owner</text>
+        <rect class="nodebox act" x="732" y="322" width="212" height="34" rx="9" style="animation-delay:2.4s"/><text class="clabel hi" x="748" y="344">Sequence enrolled</text>
+        <rect class="nodebox act" x="732" y="364" width="212" height="34" rx="9" style="animation-delay:2.8s"/><text class="clabel hi" x="748" y="386">Meeting booked</text>
+        <rect class="morechip" x="732" y="406" width="212" height="34" rx="9"/><text class="moretext" x="748" y="428">+ dozens more</text>
         <g class="particles" filter="url(#sysxglow)" fill="rgb(225,67,42)">
-          <circle r="4"><animateMotion dur="3s" begin="0s" repeatCount="indefinite"><mpath xlink:href="#p1"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="1s" repeatCount="indefinite"><mpath xlink:href="#p1"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="2s" repeatCount="indefinite"><mpath xlink:href="#p1"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin=".4s" repeatCount="indefinite"><mpath xlink:href="#p2"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="1.4s" repeatCount="indefinite"><mpath xlink:href="#p2"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="2.4s" repeatCount="indefinite"><mpath xlink:href="#p2"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin=".8s" repeatCount="indefinite"><mpath xlink:href="#p3"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="1.8s" repeatCount="indefinite"><mpath xlink:href="#p3"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="3s" begin="2.8s" repeatCount="indefinite"><mpath xlink:href="#p3"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin=".2s" repeatCount="indefinite"><mpath xlink:href="#p4"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin="1.5s" repeatCount="indefinite"><mpath xlink:href="#p4"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin=".6s" repeatCount="indefinite"><mpath xlink:href="#p5"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin="1.9s" repeatCount="indefinite"><mpath xlink:href="#p5"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin="1s" repeatCount="indefinite"><mpath xlink:href="#p6"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.6s" begin="2.3s" repeatCount="indefinite"><mpath xlink:href="#p6"/></animateMotion></circle>
-          <circle r="3.4" fill-opacity="0.85"><animateMotion dur="5s" begin="0s" repeatCount="indefinite"><mpath xlink:href="#pf"/></animateMotion></circle>
-          <circle r="3.4" fill-opacity="0.85"><animateMotion dur="5s" begin="2.5s" repeatCount="indefinite"><mpath xlink:href="#pf"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="0.0s" repeatCount="indefinite"><mpath xlink:href="#s0"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.0999999999999996s" begin="0.37s" repeatCount="indefinite"><mpath xlink:href="#s1"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.4s" begin="0.74s" repeatCount="indefinite"><mpath xlink:href="#s2"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="1.11s" repeatCount="indefinite"><mpath xlink:href="#s3"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.0999999999999996s" begin="1.48s" repeatCount="indefinite"><mpath xlink:href="#s4"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.4s" begin="1.85s" repeatCount="indefinite"><mpath xlink:href="#s5"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="2.22s" repeatCount="indefinite"><mpath xlink:href="#s6"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.0999999999999996s" begin="2.59s" repeatCount="indefinite"><mpath xlink:href="#s7"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.4s" begin="2.96s" repeatCount="indefinite"><mpath xlink:href="#a0"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="0.13s" repeatCount="indefinite"><mpath xlink:href="#a1"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.0999999999999996s" begin="0.5s" repeatCount="indefinite"><mpath xlink:href="#a2"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.4s" begin="0.87s" repeatCount="indefinite"><mpath xlink:href="#a3"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="1.24s" repeatCount="indefinite"><mpath xlink:href="#a4"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.0999999999999996s" begin="1.61s" repeatCount="indefinite"><mpath xlink:href="#a5"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="3.4s" begin="1.98s" repeatCount="indefinite"><mpath xlink:href="#a6"/></animateMotion></circle>
+          <circle r="3.6"><animateMotion dur="2.8s" begin="2.35s" repeatCount="indefinite"><mpath xlink:href="#a7"/></animateMotion></circle>
+          <circle r="3.2" fill-opacity="0.85"><animateMotion dur="5.5s" begin="0s" repeatCount="indefinite"><mpath xlink:href="#pf"/></animateMotion></circle>
+          <circle r="3.2" fill-opacity="0.85"><animateMotion dur="5.5s" begin="2.7s" repeatCount="indefinite"><mpath xlink:href="#pf"/></animateMotion></circle>
         </g>
       </svg>
       </div>

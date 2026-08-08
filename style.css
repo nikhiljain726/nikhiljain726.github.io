@@ -568,3 +568,10 @@ a.lm-item:hover{border-color:var(--signal);color:var(--signal)}
 @keyframes sysxDash{to{stroke-dashoffset:-22}}
 @media(max-width:600px){.sysx-wrap{overflow-x:auto}.sysx{min-width:560px}}
 @media(prefers-reduced-motion:reduce){.sysx .particles{display:none}.sysx .ring,.sysx .ring2,.sysx .hubaura,.sysx .stg,.sysx .nodebox.act,.sysx .feed{animation:none}}
+
+/* dense sysx chips */
+.sysx .clabel{font-size:11.5px;font-weight:600;fill:var(--ink-soft)}
+.sysx .clabel.hi{fill:var(--ink)}
+.sysx .wthin{fill:none;stroke:var(--line);stroke-width:1.3}
+.sysx .morechip{fill:none;stroke:rgba(var(--signal-rgb),.5);stroke-width:1.1;stroke-dasharray:4 4}
+.sysx .moretext{font-family:var(--mono);font-size:10.5px;letter-spacing:.5px;fill:var(--signal)}
