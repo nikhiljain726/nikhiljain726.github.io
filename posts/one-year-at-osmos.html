@@ -13,14 +13,14 @@
   .tldr{border:1px solid var(--line);background:var(--tint);border-radius:12px;padding:16px 18px;margin:0 0 24px;max-width:var(--measure)}
   .tldr .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:6px}
   .tldr p{margin:0;font-size:1rem;line-height:1.62;color:var(--ink)}
-  .ba{margin:8px 0 28px;max-width:var(--measure)}
-  .ba .row{display:grid;grid-template-columns:1fr auto 1.4fr;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
-  .ba .row:last-child{border-bottom:1px solid var(--line)}
-  .ba .area{font-family:var(--mono);font-size:.74rem;letter-spacing:.02em;color:var(--ink);font-weight:500}
-  .ba .was{font-size:.92rem;color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(var(--signal-rgb),.4)}
-  .ba .arr{color:var(--signal);font-weight:600}
-  .ba .now{font-size:.96rem;color:var(--ink);line-height:1.45}
-  @media(max-width:620px){.ba .row{grid-template-columns:1fr;gap:4px}.ba .arr{display:none}.ba .was{font-size:.85rem}}
+  .ba{width:100%;border-collapse:collapse;margin:8px 0 28px;font-size:.95rem}
+  .ba thead th{text-align:left;font-weight:500;color:var(--ink-soft);font-size:.82rem;padding:0 16px 10px 0;border-bottom:1px solid var(--line)}
+  .ba td{vertical-align:top;padding:13px 16px 13px 0;border-bottom:1px solid var(--line);line-height:1.45}
+  .ba td:last-child{padding-right:0}
+  .ba .area{font-weight:600;color:var(--ink);width:24%}
+  .ba .was{color:var(--ink-soft);width:34%}
+  .ba .now{color:var(--ink)}
+  @media(max-width:620px){.ba,.ba thead,.ba tbody,.ba tr,.ba td{display:block;width:auto}.ba thead{display:none}.ba tr{padding:12px 0;border-bottom:1px solid var(--line)}.ba td{border:0;padding:2px 0}.ba .area{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}}
 </style>
 <meta property="og:site_name" content="Nikhil Jain">
 <meta property="og:type" content="article">
@@ -72,16 +72,19 @@
 
         <h2>What changed</h2>
         <p>Start with outcomes, because that is what the year is judged on. The shape of the before and after:</p>
-        <div class="ba">
-          <div class="row"><span class="area">Lead capture</span><span class="was">Missed or delayed</span><span class="arr">&rarr;</span><span class="now">Every form, booking, chat and identified visitor lands in the CRM the same day.</span></div>
-          <div class="row"><span class="area">Routing</span><span class="was">Manual, no clear owner</span><span class="arr">&rarr;</span><span class="now">Routed to the right seller, already enriched, with a next step.</span></div>
-          <div class="row"><span class="area">Website visitors</span><span class="was">Anonymous traffic</span><span class="arr">&rarr;</span><span class="now">Identified, matched to accounts, and sent to the owner.</span></div>
-          <div class="row"><span class="area">Seller prep</span><span class="was">Manual research per deal</span><span class="arr">&rarr;</span><span class="now">An agent writes the next best action into each deal.</span></div>
-          <div class="row"><span class="area">The CRM</span><span class="was">Years of duplicates, no RevOps</span><span class="arr">&rarr;</span><span class="now">Cleaned, with daily dedup, enrichment and an audit log.</span></div>
-          <div class="row"><span class="area">Organic</span><span class="was">A small share of leads</span><span class="arr">&rarr;</span><span class="now">Our largest lead source.</span></div>
-          <div class="row"><span class="area">AI search</span><span class="was">Effectively invisible</span><span class="arr">&rarr;</span><span class="now">Osmos cited on nearly every buying question we track.</span></div>
-          <div class="row"><span class="area">Website</span><span class="was">Older site, untidy tracking</span><span class="arr">&rarr;</span><span class="now">Relaunched, with tracking and consent rebuilt.</span></div>
-        </div>
+        <table class="ba">
+          <thead><tr><th>Area</th><th>Before</th><th>After</th></tr></thead>
+          <tbody>
+            <tr><td class="area">Lead capture</td><td class="was">Missed or delayed</td><td class="now">Every form, booking, chat and identified visitor lands in the CRM the same day</td></tr>
+            <tr><td class="area">Lead routing</td><td class="was">Manual, no clear owner</td><td class="now">Routed to the right seller, already enriched, with a next step</td></tr>
+            <tr><td class="area">Website visitors</td><td class="was">Anonymous traffic across overlapping tools</td><td class="now">Identified, matched to accounts, and sent to the owner</td></tr>
+            <tr><td class="area">Seller prep</td><td class="was">Manual research on every deal</td><td class="now">An agent writes the next best action into each deal</td></tr>
+            <tr><td class="area">The CRM</td><td class="was">Years of duplicates, no RevOps</td><td class="now">Cleaned, with daily dedup, enrichment and an audit log</td></tr>
+            <tr><td class="area">Organic</td><td class="was">A small share of leads</td><td class="now">Our largest lead source</td></tr>
+            <tr><td class="area">AI search</td><td class="was">Effectively invisible</td><td class="now">Osmos cited on nearly every buying question we track</td></tr>
+            <tr><td class="area">Website</td><td class="was">Older site, untidy tracking</td><td class="now">Relaunched, with tracking and consent rebuilt</td></tr>
+          </tbody>
+        </table>
         <p>None of that was the goal in itself. The goal was a go-to-market that runs like a system: take the signals already lying around, from the website, the CRM, LinkedIn, and the market, turn them into something a person can act on the same day, and wire it so it keeps running. The rest of this is how.</p>
 
         <h2>What I built</h2>
