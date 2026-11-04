@@ -13,6 +13,14 @@
   .tldr{border:1px solid var(--line);background:var(--tint);border-radius:12px;padding:16px 18px;margin:0 0 24px;max-width:var(--measure)}
   .tldr .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:6px}
   .tldr p{margin:0;font-size:1rem;line-height:1.62;color:var(--ink)}
+  .ba{margin:8px 0 28px;max-width:var(--measure)}
+  .ba .row{display:grid;grid-template-columns:1fr auto 1.4fr;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+  .ba .row:last-child{border-bottom:1px solid var(--line)}
+  .ba .area{font-family:var(--mono);font-size:.74rem;letter-spacing:.02em;color:var(--ink);font-weight:500}
+  .ba .was{font-size:.92rem;color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(var(--signal-rgb),.4)}
+  .ba .arr{color:var(--signal);font-weight:600}
+  .ba .now{font-size:.96rem;color:var(--ink);line-height:1.45}
+  @media(max-width:620px){.ba .row{grid-template-columns:1fr;gap:4px}.ba .arr{display:none}.ba .was{font-size:.85rem}}
 </style>
 <meta property="og:site_name" content="Nikhil Jain">
 <meta property="og:type" content="article">
@@ -58,12 +66,23 @@
       <div class="byline">Notes &nbsp;&middot;&nbsp; Nov 2026 &nbsp;&middot;&nbsp; 6 min read</div>
       <div class="post-body">
 
-        <div class="tldr"><div class="k">TL;DR</div><p>I joined to build go-to-market as a system, not a calendar. Most of the year went into pipelines that turn signals from the website, the CRM, LinkedIn, and the market into same-day actions for a rep, plus the CRM infrastructure under them. The lesson that stuck: the work is not the clever idea, it is the system that makes the clever idea happen every day without you.</p></div>
+        <div class="tldr"><div class="k">TL;DR</div><p>I joined to build go-to-market as a system. A year in, the outcomes are the point: organic went from a small share of leads to our largest source, every lead is captured and routed to a seller the same day, the CRM is clean after years of neglect, and AI assistants now cite us on nearly every buying question we track. The systems underneath, signal-to-action pipelines, a CRM rebuilt as infrastructure, targeted paid ads, personalized email, and a relaunched site, are what produced them. The lesson that stuck: the work is not the clever idea, it is the system that makes the clever idea happen every day without you.</p></div>
 
         <p>A year ago I joined Osmos to build the growth and GTM engineering function close to scratch. Osmos builds the retail media infrastructure layer for marketplaces and retailers. My job was the other side of that coin: get our own go-to-market running like a system. This is the public version of my year-one reflection, the honest shape of it, with the internal numbers left where they belong.</p>
 
-        <h2>The job, in one sentence</h2>
-        <p>Take the signals already lying around, from the website, the CRM, LinkedIn, and the market, turn them into something a person can act on the same day, and wire it so it keeps running. Less a marketing calendar, more a set of pipelines. I spent the year building that machine rather than running campaigns off the side of my desk.</p>
+        <h2>What changed</h2>
+        <p>Start with outcomes, because that is what the year is judged on. The shape of the before and after:</p>
+        <div class="ba">
+          <div class="row"><span class="area">Lead capture</span><span class="was">Missed or delayed</span><span class="arr">&rarr;</span><span class="now">Every form, booking, chat and identified visitor lands in the CRM the same day.</span></div>
+          <div class="row"><span class="area">Routing</span><span class="was">Manual, no clear owner</span><span class="arr">&rarr;</span><span class="now">Routed to the right seller, already enriched, with a next step.</span></div>
+          <div class="row"><span class="area">Website visitors</span><span class="was">Anonymous traffic</span><span class="arr">&rarr;</span><span class="now">Identified, matched to accounts, and sent to the owner.</span></div>
+          <div class="row"><span class="area">Seller prep</span><span class="was">Manual research per deal</span><span class="arr">&rarr;</span><span class="now">An agent writes the next best action into each deal.</span></div>
+          <div class="row"><span class="area">The CRM</span><span class="was">Years of duplicates, no RevOps</span><span class="arr">&rarr;</span><span class="now">Cleaned, with daily dedup, enrichment and an audit log.</span></div>
+          <div class="row"><span class="area">Organic</span><span class="was">A small share of leads</span><span class="arr">&rarr;</span><span class="now">Our largest lead source.</span></div>
+          <div class="row"><span class="area">AI search</span><span class="was">Effectively invisible</span><span class="arr">&rarr;</span><span class="now">Osmos cited on nearly every buying question we track.</span></div>
+          <div class="row"><span class="area">Website</span><span class="was">Older site, untidy tracking</span><span class="arr">&rarr;</span><span class="now">Relaunched, with tracking and consent rebuilt.</span></div>
+        </div>
+        <p>None of that was the goal in itself. The goal was a go-to-market that runs like a system: take the signals already lying around, from the website, the CRM, LinkedIn, and the market, turn them into something a person can act on the same day, and wire it so it keeps running. The rest of this is how.</p>
 
         <h2>What I built</h2>
         <p>Most of the pieces are written up here in more detail:</p>
@@ -77,6 +96,15 @@
           <li><a href="pipedrive-activities-attribution.html">Multitouch attribution</a> built on activities, so the CRM stops overwriting the story of how a deal came in.</li>
         </ul>
 
+        <p>It was not all internal plumbing. A good part of the year ran outward, with the same signal-first discipline:</p>
+        <ul class="nlist">
+          <li>Highly targeted paid ads, built around tight audiences and real intent rather than broad spray.</li>
+          <li>Personalized email campaigns at scale, each message tied to what the person actually did, not a blast to a list.</li>
+          <li>A full revamp and relaunch of the website.</li>
+          <li>SEO and AEO work, so we show up both in classic search and in the answers AI assistants hand back.</li>
+          <li>Launched the Osmos app for ChatGPT, so the product meets buyers inside the assistant they already use.</li>
+        </ul>
+
         <figure class="fx">
           <div class="fx-t">The year, roughly</div>
           <div class="fx-steps">
@@ -86,6 +114,9 @@
             <div class="st"><span class="n" style="--d:1.5s">4</span><span class="sx">Built agents on top: next best action, visitor to intent, competitor tracking.</span></div>
             <div class="st"><span class="n" style="--d:2s">5</span><span class="sx">Cleaned up years of CRM debt, then kept it clean with daily workflows.</span></div>
             <div class="st"><span class="n" style="--d:2.5s">6</span><span class="sx">Wired multitouch attribution so nothing overwrites the story.</span></div>
+            <div class="st"><span class="n" style="--d:3s">7</span><span class="sx">Revamped and relaunched the website, with SEO and AEO so we show up in search and in AI answers.</span></div>
+            <div class="st"><span class="n" style="--d:3.5s">8</span><span class="sx">Ran highly targeted paid ads and personalized email at scale, wired to the same signals.</span></div>
+            <div class="st"><span class="n" style="--d:4s">9</span><span class="sx">Launched the Osmos app for ChatGPT, meeting buyers inside the assistant they already use.</span></div>
           </div>
           <div class="fx-cap">Each piece is small. The compounding is the point.</div>
         </figure>
