@@ -21,6 +21,11 @@
   .ba .was{color:var(--ink-soft);width:34%}
   .ba .now{color:var(--ink)}
   @media(max-width:620px){.ba,.ba thead,.ba tbody,.ba tr,.ba td{display:block;width:auto}.ba thead{display:none}.ba tr{padding:12px 0;border-bottom:1px solid var(--line)}.ba td{border:0;padding:2px 0}.ba .area{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:10px 0 10px;max-width:var(--measure)}
+  .stats .c{background:var(--paper);padding:18px 16px}
+  .stats .big{font-family:var(--serif,'Fraunces',serif);font-size:1.75rem;line-height:1;color:var(--signal);font-weight:500;letter-spacing:-.01em}
+  .stats .lab{font-size:.8rem;color:var(--ink-soft);line-height:1.38;margin-top:7px}
+  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}.stats .big{font-size:1.5rem}}
 </style>
 <meta property="og:site_name" content="Nikhil Jain">
 <meta property="og:type" content="article">
@@ -85,6 +90,19 @@
             <tr><td class="area">Website</td><td class="was">Older site, untidy tracking</td><td class="now">Relaunched, with tracking and consent rebuilt</td></tr>
           </tbody>
         </table>
+        <p>Some of that movement in numbers, kept directional on purpose:</p>
+        <div class="stats">
+          <div class="c"><div class="big">~1 in 3</div><div class="lab">of all leads now come from organic, up from a small share</div></div>
+          <div class="c"><div class="big">49 / 50</div><div class="lab">buying questions where AI assistants now cite Osmos</div></div>
+          <div class="c"><div class="big">~10&times;</div><div class="lab">growth in non-brand keywords ranking in the top three</div></div>
+          <div class="c"><div class="big">~8&times;</div><div class="lab">growth in monthly blog clicks</div></div>
+          <div class="c"><div class="big">2&times;</div><div class="lab">weekly website visitors, start of year to now</div></div>
+          <div class="c"><div class="big">~100k</div><div class="lab">CRM contacts cleaned, then kept clean daily</div></div>
+          <div class="c"><div class="big">13</div><div class="lab">production workflows capturing and routing every lead</div></div>
+          <div class="c"><div class="big">53</div><div class="lab">open-source tools that let AI run the CRM safely</div></div>
+        </div>
+        <p class="small" style="color:var(--ink-soft);font-size:.85rem;margin:0 0 26px">Multiples and ratios rather than absolute pipeline, so the shape is clear without the confidential detail.</p>
+
         <p>None of that was the goal in itself. The goal was a go-to-market that runs like a system: take the signals already lying around, from the website, the CRM, LinkedIn, and the market, turn them into something a person can act on the same day, and wire it so it keeps running. The rest of this is how.</p>
 
         <h2>What I built</h2>
